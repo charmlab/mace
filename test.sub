@@ -1,0 +1,6000 @@
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 0 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 1 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 2 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 3 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 4 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 5 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 6 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 7 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 8 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 9 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 10 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 11 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 12 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 13 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 14 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 15 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 16 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 17 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 18 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 19 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 20 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 21 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 22 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 23 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 24 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 25 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 26 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 27 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 28 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 29 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 30 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 31 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 32 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 33 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 34 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 35 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 36 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 37 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 38 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 39 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 40 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 41 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 42 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 43 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 44 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 45 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 46 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 47 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 48 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 49 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 50 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 51 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 52 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 53 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 54 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 55 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 56 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 57 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 58 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 59 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 60 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 61 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 62 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 63 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 64 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 65 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 66 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 67 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 68 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 69 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 70 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 71 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 72 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 73 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 74 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 75 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 76 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 77 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 78 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 79 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 80 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 81 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 82 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 83 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 84 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 85 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 86 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 87 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 88 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 89 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 90 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 91 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 92 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 93 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 94 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 95 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 96 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 97 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 98 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a SAT -b 99 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 0 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 1 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 2 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 3 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 4 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 5 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 6 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 7 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 8 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 9 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 10 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 11 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 12 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 13 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 14 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 15 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 16 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 17 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 18 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 19 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 20 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 21 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 22 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 23 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 24 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 25 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 26 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 27 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 28 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 29 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 30 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 31 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 32 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 33 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 34 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 35 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 36 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 37 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 38 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 39 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 40 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 41 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 42 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 43 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 44 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 45 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 46 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 47 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 48 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 49 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 50 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 51 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 52 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 53 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 54 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 55 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 56 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 57 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 58 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 59 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 60 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 61 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 62 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 63 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 64 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 65 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 66 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 67 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 68 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 69 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 70 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 71 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 72 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 73 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 74 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 75 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 76 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 77 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 78 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 79 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 80 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 81 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 82 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 83 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 84 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 85 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 86 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 87 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 88 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 89 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 90 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 91 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 92 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 93 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 94 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 95 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 96 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 97 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 98 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n zero_norm -a MO -b 99 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 0 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 1 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 2 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 3 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 4 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 5 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 6 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 7 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 8 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 9 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 10 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 11 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 12 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 13 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 14 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 15 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 16 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 17 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 18 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 19 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 20 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 21 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 22 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 23 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 24 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 25 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 26 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 27 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 28 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 29 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 30 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 31 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 32 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 33 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 34 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 35 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 36 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 37 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 38 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 39 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 40 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 41 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 42 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 43 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 44 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 45 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 46 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 47 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 48 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 49 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 50 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 51 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 52 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 53 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 54 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 55 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 56 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 57 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 58 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 59 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 60 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 61 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 62 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 63 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 64 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 65 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 66 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 67 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 68 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 69 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 70 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 71 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 72 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 73 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 74 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 75 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 76 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 77 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 78 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 79 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 80 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 81 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 82 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 83 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 84 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 85 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 86 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 87 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 88 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 89 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 90 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 91 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 92 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 93 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 94 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 95 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 96 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 97 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 98 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a SAT -b 99 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 0 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 1 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 2 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 3 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 4 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 5 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 6 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 7 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 8 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 9 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 10 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 11 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 12 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 13 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 14 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 15 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 16 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 17 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 18 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 19 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 20 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 21 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 22 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 23 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 24 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 25 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 26 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 27 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 28 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 29 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 30 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 31 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 32 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 33 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 34 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 35 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 36 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 37 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 38 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 39 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 40 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 41 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 42 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 43 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 44 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 45 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 46 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 47 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 48 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 49 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 50 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 51 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 52 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 53 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 54 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 55 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 56 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 57 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 58 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 59 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 60 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 61 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 62 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 63 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 64 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 65 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 66 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 67 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 68 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 69 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 70 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 71 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 72 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 73 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 74 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 75 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 76 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 77 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 78 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 79 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 80 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 81 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 82 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 83 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 84 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 85 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 86 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 87 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 88 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 89 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 90 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 91 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 92 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 93 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 94 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 95 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 96 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 97 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 98 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n one_norm -a MO -b 99 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 0 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 1 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 2 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 3 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 4 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 5 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 6 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 7 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 8 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 9 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 10 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 11 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 12 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 13 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 14 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 15 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 16 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 17 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 18 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 19 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 20 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 21 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 22 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 23 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 24 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 25 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 26 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 27 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 28 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 29 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 30 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 31 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 32 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 33 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 34 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 35 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 36 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 37 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 38 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 39 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 40 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 41 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 42 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 43 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 44 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 45 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 46 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 47 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 48 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 49 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 50 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 51 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 52 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 53 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 54 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 55 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 56 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 57 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 58 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 59 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 60 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 61 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 62 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 63 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 64 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 65 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 66 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 67 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 68 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 69 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 70 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 71 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 72 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 73 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 74 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 75 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 76 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 77 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 78 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 79 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 80 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 81 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 82 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 83 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 84 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 85 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 86 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 87 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 88 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 89 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 90 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 91 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 92 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 93 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 94 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 95 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 96 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 97 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 98 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a SAT -b 99 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 0 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 1 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 2 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 3 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 4 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 5 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 6 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 7 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 8 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 9 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 10 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 11 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 12 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 13 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 14 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 15 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 16 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 17 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 18 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 19 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 20 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 21 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 22 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 23 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 24 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 25 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 26 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 27 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 28 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 29 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 30 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 31 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 32 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 33 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 34 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 35 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 36 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 37 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 38 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 39 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 40 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 41 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 42 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 43 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 44 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 45 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 46 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 47 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 48 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 49 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 50 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 51 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 52 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 53 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 54 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 55 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 56 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 57 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 58 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 59 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 60 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 61 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 62 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 63 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 64 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 65 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 66 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 67 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 68 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 69 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 70 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 71 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 72 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 73 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 74 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 75 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 76 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 77 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 78 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 79 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 80 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 81 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 82 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 83 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 84 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 85 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 86 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 87 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 88 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 89 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 90 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 91 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 92 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 93 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 94 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 95 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 96 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 97 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 98 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+
+executable = /home/amir/dev/interp/_venv/bin/python
+arguments = batchTest.py -d adult -m forest -n infty_norm -a MO -b 99 -s 5
+error = _cluster_logs/test.$(Process).err
+output = _cluster_logs/test.$(Process).out
+log = _cluster_logs/test.$(Process).log
+request_memory = 8192
+request_cpus = 1
+queue
+
+

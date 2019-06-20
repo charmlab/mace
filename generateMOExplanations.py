@@ -1,0 +1,109 @@
+import pickle
+import numpy as np
+import pandas as pd
+from pprint import pprint
+
+import normalizedDistance
+
+from random import seed
+RANDOM_SEED = 1122334455
+seed(RANDOM_SEED) # set the random seed so that the random permutations can be reproduced again
+np.random.seed(RANDOM_SEED)
+
+
+def findClosestObservableSample(potential_observable_samples, dataset_obj, factual_sample, norm_type):
+
+  observables = []
+  observables.append({'sample': {}, 'distance': np.infty, 'norm_type': None}) # in case no observables are found.
+
+  for observable_sample_index, observable_sample in potential_observable_samples.items():
+
+    observable_sample['y'] = True
+
+    # Only compare against those observable samples that DO NOT differ with the
+    # factual sample in non-actionable features!
+    violating_actionable_attributes = False
+    for attr_name_kurz in dataset_obj.getInputAttributeNames('kurz'):
+      attr_obj = dataset_obj.attributes_kurz[attr_name_kurz]
+      if attr_obj.actionability == 'none' and factual_sample[attr_name_kurz] != observable_sample[attr_name_kurz]:
+        violating_actionable_attributes = True
+      elif attr_obj.actionability == 'same-or-increase' and factual_sample[attr_name_kurz] > observable_sample[attr_name_kurz]:
+        violating_actionable_attributes = True
+      elif attr_obj.actionability == 'same-or-decrease' and factual_sample[attr_name_kurz] < observable_sample[attr_name_kurz]:
+        violating_actionable_attributes = True
+
+    if violating_actionable_attributes:
+      continue
+
+    observable_distance = normalizedDistance.getDistanceBetweenSamples(factual_sample, observable_sample, norm_type, dataset_obj)
+    observables.append({'sample': observable_sample, 'distance': observable_distance, 'norm_type': norm_type})
+
+  sorted_observables = sorted(observables, key = lambda x: x['distance'])
+  closest_observable_sample = sorted_observables[0] # IMPORTANT: there may be many more at this same distance! OR NONE!
+
+  return closest_observable_sample
+
+
+def getPrettyStringForSampleDictionary(sample, dataset_obj):
+
+  if len(sample.keys()) == 0 :
+    return 'No sample found.'
+
+  key_value_pairs_with_x_in_key = {}
+  key_value_pairs_with_y_in_key = {}
+  for key, value in sample.items():
+    if key in dataset_obj.getInputAttributeNames('kurz'):
+      key_value_pairs_with_x_in_key[key] = value
+    elif key in dataset_obj.getOutputAttributeNames('kurz'):
+      key_value_pairs_with_y_in_key[key] = value
+    else:
+      raise Exception('Sample keys may only be `x` or `y`.')
+
+  assert \
+    len(key_value_pairs_with_y_in_key.keys()) == 1, \
+    f'expecting only 1 output variables, got {len(key_value_pairs_with_y_in_key.keys())}'
+
+  all_key_value_pairs = []
+  for key, value in sorted(key_value_pairs_with_x_in_key.items(), key = lambda x: int(x[0][1:].split('_')[0])):
+    all_key_value_pairs.append(f'{key} : {value}')
+  all_key_value_pairs.append(f"{'y'}: {key_value_pairs_with_y_in_key['y']}")
+
+  return f"{{{', '.join(all_key_value_pairs)}}}"
+
+
+def genExp(
+  explanation_file_name,
+  dataset_obj,
+  factual_sample,
+  potential_observable_samples,
+  norm_type):
+
+  log_file = open(explanation_file_name,'w')
+
+  factual_sample['y'] = False
+
+  closest_observable_sample = findClosestObservableSample(
+    potential_observable_samples,
+    dataset_obj,
+    factual_sample,
+    norm_type
+  )
+
+  print('\n', file=log_file)
+  print(f"Factual sample: \t\t {getPrettyStringForSampleDictionary(factual_sample, dataset_obj)}", file=log_file)
+  print(f"Best observable sample: \t {getPrettyStringForSampleDictionary(closest_observable_sample['sample'], dataset_obj)} (verified)", file=log_file)
+  print('', file=log_file)
+  print(f"Minimum observable distance (by searching the dataset):\t {closest_observable_sample['distance']:.6f}", file=log_file)
+
+  return {
+    'factual_sample': factual_sample,
+    'counterfactual_sample': closest_observable_sample['sample'],
+    'counterfactual_found': True,
+    'counterfactual_plausible': True,
+    'counterfactual_distance': closest_observable_sample['distance'],
+  }
+
+
+
+
+
