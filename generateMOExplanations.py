@@ -1,3 +1,4 @@
+import time
 import pickle
 import numpy as np
 import pandas as pd
@@ -78,6 +79,8 @@ def genExp(
   potential_observable_samples,
   norm_type):
 
+  start_time = time.time()
+
   log_file = open(explanation_file_name,'w')
 
   factual_sample['y'] = False
@@ -95,12 +98,15 @@ def genExp(
   print('', file=log_file)
   print(f"Minimum observable distance (by searching the dataset):\t {closest_observable_sample['distance']:.6f}", file=log_file)
 
+  end_time = time.time()
+
   return {
     'factual_sample': factual_sample,
     'counterfactual_sample': closest_observable_sample['sample'],
     'counterfactual_found': True,
     'counterfactual_plausible': True,
     'counterfactual_distance': closest_observable_sample['distance'],
+    'counterfactual_time': end_time - start_time,
   }
 
 

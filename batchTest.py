@@ -219,10 +219,11 @@ def runExperiments(dataset_values, model_class_values, norm_values, approaches_v
           for factual_sample_index, factual_sample in neg_pred_data_dict.items():
 
             print(
-              f'Generating explanation for \
-              batch #{batch_number} \
-              sample #{explanation_counter}/{len(neg_pred_data_dict.keys())} \
-              (sample index {factual_sample_index}): ', end = '') # , file=log_file)
+              '\t\t\t\t'
+              f'Generating explanation for\t'
+              f'batch #{batch_number}\t'
+              f'sample #{explanation_counter}/{len(neg_pred_data_dict.keys())}\t'
+              f'(sample index {factual_sample_index}): ', end = '') # , file=log_file)
             explanation_counter = explanation_counter + 1
 
             explanation_file_name = f'{explanation_folder_name}/sample_{factual_sample_index}.txt'
@@ -239,7 +240,12 @@ def runExperiments(dataset_values, model_class_values, norm_values, approaches_v
               standard_deviations, # used solely for feature_tweaking method
             )
 
-            print(f'distance: {explanation_object["counterfactual_distance"]:.4f}') # , file=log_file)
+            print(
+              f'\tcf_found: {explanation_object["counterfactual_found"]}'
+              f'\tcf_plausible: {explanation_object["counterfactual_plausible"]}'
+              f'\tcf_distance: {explanation_object["counterfactual_distance"]:.4f}'
+              f'\tcf_time: {explanation_object["counterfactual_time"]:.4f}'
+            ) # , file=log_file)
 
             all_minimum_distances[f'sample_{factual_sample_index}'] = explanation_object
             # {

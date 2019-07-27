@@ -1,6 +1,7 @@
+import time
+import copy
 import numpy as np
 import pandas as pd
-import copy
 import scipy.stats
 import normalizedDistance
 
@@ -110,6 +111,7 @@ def genExp(model_trained, factual_sample, class_labels, aim_label, epsilon, norm
     """
 
     """ initialize """
+    start_time = time.time()
     x = np.array(list(factual_sample.values()))
     factual_sample['y'] = False
 
@@ -220,7 +222,7 @@ def genExp(model_trained, factual_sample, class_labels, aim_label, epsilon, norm
                 # distance = 1000
                 # return factual_sample, counterfactual_sample, distance
 
-
+    end_time = time.time()
 
     return {
         'factual_sample': factual_sample,
@@ -228,6 +230,7 @@ def genExp(model_trained, factual_sample, class_labels, aim_label, epsilon, norm
         'counterfactual_found': counterfactual_found,
         'counterfactual_plausible': counterfactual_plausible,
         'counterfactual_distance': distance,
+        'counterfactual_time': end_time - start_time,
     }
 
 

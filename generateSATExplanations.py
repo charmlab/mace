@@ -1,3 +1,4 @@
+import time
 import copy
 import pickle
 import numpy as np
@@ -471,6 +472,8 @@ def genExp(
   norm_type,
   epsilon):
 
+  start_time = time.time()
+
   log_file = open(explanation_file_name,'w')
 
   # Initial params
@@ -521,12 +524,15 @@ def genExp(
   print('', file=log_file)
   print(f"Minimum counterfactual distance (by solving the formula):\t {closest_counterfactual_sample['distance']:.6f}", file=log_file)
 
+  end_time = time.time()
+
   return {
     'factual_sample': factual_sample,
     'counterfactual_sample': closest_counterfactual_sample['sample'],
     'counterfactual_found': True,
     'counterfactual_plausible': True,
     'counterfactual_distance': closest_counterfactual_sample['distance'],
+    'counterfactual_time': end_time - start_time,
   }
 
 

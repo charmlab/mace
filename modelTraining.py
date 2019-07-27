@@ -61,7 +61,7 @@ def trainAndSaveModels(experiment_folder_name, model_class, X_train, X_test, y_t
     elif model_class == 'lr':
         model_pretrain = LogisticRegression()
     elif model_class == 'mlp':
-        model_pretrain = MLPClassifier(hidden_layer_sizes = (10, 10))
+        model_pretrain = MLPClassifier(hidden_layer_sizes = (3, 3))
 
     print('[INFO] Training `{}` on {:,} samples (%{:.2f} of {:,} samples)...'.format(model_class, X_train.shape[0], 100 * X_train.shape[0] / (X_train.shape[0] + X_test.shape[0]), X_train.shape[0] + X_test.shape[0]), file=log_file)
     model_trained = model_pretrain.fit(X_train, y_train)

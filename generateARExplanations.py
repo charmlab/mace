@@ -1,4 +1,5 @@
 import os
+import time
 import numpy as np
 import pandas as pd
 import normalizedDistance
@@ -9,8 +10,10 @@ from recourse.builder import ActionSet
 
 def genExp(model_trained, factual_sample, norm_type, dataset_obj):
 
-  # SIMPLE HACk!!
-  # ActionSet() construction demands that all variabls have a range to them. In
+  start_time = time.time()
+
+  # SIMPLE HACK!!
+  # ActionSet() construction demands that all variables have a range to them. In
   # the case of one-hot ordinal variables (e.g., x2_ord_0, x2_ord_1, x2_ord_2)),
   # the first sub-category (i.e., x2_ord_0) will always have range(1,1), failing
   # the requirements of ActionSet(). Therefore, we add a DUMMY ROW to the data-
@@ -166,11 +169,14 @@ def genExp(model_trained, factual_sample, norm_type, dataset_obj):
   #             key = lambda x : abs(x - es_instance[idx])
   #         )
 
+  end_time = time.time()
+
   return {
     'factual_sample': factual_sample,
     'counterfactual_sample': counterfactual_sample,
     'counterfactual_found': True, # TODO?
     'counterfactual_plausible': counterfactual_plausible,
     'counterfactual_distance': distance,
+    'counterfactual_time': end_time - start_time,
   }
 

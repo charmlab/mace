@@ -172,6 +172,7 @@ def gatherAndSaveDistances():
               'counterfactual found': minimum_distance_file[key]['counterfactual_found'],
               'counterfactual plausible': minimum_distance_file[key]['counterfactual_plausible'],
               'counterfactual distance': minimum_distance_file[key]['counterfactual_distance'],
+              'counterfactual time': minimum_distance_file[key]['counterfactual_time'],
               'changed age': changed_age,
               'changed gender': changed_gender,
               'changed race': changed_race,
