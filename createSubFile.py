@@ -9,10 +9,10 @@
 # NORM_VALUES = ['zero_norm', 'one_norm', 'infty_norm']
 # APPROACHES_VALUES = ['FT']
 
-DATASET_VALUES = ['adult']
-MODEL_CLASS_VALUES = ['forest']
+DATASET_VALUES = ['adult', 'credit', 'compass']
+MODEL_CLASS_VALUES = ['tree']
 NORM_VALUES = ['zero_norm', 'one_norm', 'infty_norm']
-APPROACHES_VALUES = ['SAT', 'MO']
+APPROACHES_VALUES = ['SAT', 'MO', 'PFT']
 
 NUM_BATCHES = 100
 NUM_NEG_SAMPLES_PER_BATCH = 5
@@ -31,7 +31,7 @@ for dataset_string in DATASET_VALUES:
 
         for batch_number in range(NUM_BATCHES):
 
-          print('executable = /home/amir/dev/interp/_venv/bin/python', file=sub_file)
+          print('executable = /home/amir/dev/mace/_venv/bin/python', file=sub_file)
           print(f'arguments = batchTest.py' + \
              f' -d {dataset_string}' \
              f' -m {model_class_string}' \

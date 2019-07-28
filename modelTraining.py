@@ -51,17 +51,17 @@ def trainAndSaveModels(experiment_folder_name, model_class, X_train, X_test, y_t
     log_file = open(f'{experiment_folder_name}/log_training.txt','w')
 
     if model_class == 'tree':
-        # model_pretrain = DecisionTreeClassifier(min_samples_leaf = round(0.1 * X_train.shape[0]))
         # model_pretrain = DecisionTreeClassifier(min_samples_leaf = min(100, round(0.1 * X_train.shape[0])))
         model_pretrain = DecisionTreeClassifier()
     elif model_class == 'forest':
-        # model_pretrain = RandomForestClassifier(min_samples_leaf = round(0.1 * X_train.shape[0]))
         # model_pretrain = RandomForestClassifier(min_samples_leaf = min(100, round(0.1 * X_train.shape[0])))
         model_pretrain = RandomForestClassifier()
     elif model_class == 'lr':
         model_pretrain = LogisticRegression()
     elif model_class == 'mlp':
-        model_pretrain = MLPClassifier(hidden_layer_sizes = (3, 3))
+        model_pretrain = MLPClassifier(hidden_layer_sizes = (10, 10))
+        # model_pretrain = MLPClassifier() # = hidden_layer_sizes = (100, 100)
+        # model_pretrain = MLPClassifier(hidden_layer_sizes = (100, 100))
 
     print('[INFO] Training `{}` on {:,} samples (%{:.2f} of {:,} samples)...'.format(model_class, X_train.shape[0], 100 * X_train.shape[0] / (X_train.shape[0] + X_test.shape[0]), X_train.shape[0] + X_test.shape[0]), file=log_file)
     model_trained = model_pretrain.fit(X_train, y_train)

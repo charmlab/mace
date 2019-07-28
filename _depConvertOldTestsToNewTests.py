@@ -7,7 +7,7 @@ from pprint import pprint
 
 
 
-parent_folder = '/Users/a6karimi/dev/interp/_may_17_test_02_all_mlp_results_final'
+parent_folder = '/Users/a6karimi/dev/mace/_may_17_test_02_all_mlp_results_final'
 
 child_folders = [
   '2019.05.15_12.56.09__compass__mlp__zero_norm__SAT',

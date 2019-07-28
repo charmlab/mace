@@ -9,9 +9,10 @@ import matplotlib.pyplot as plt
 from pprint import pprint
 
 parent_folders = [
-  # '/Volumes/amir/dev/interp/_experiments/_may_20_all_results',
-  # '/Volumes/amir/dev/interp/_experiments/_may_22_restricted_results_no_age_change',
-  '/Users/a6karimi/dev/interp/_results/_may_20_all_results_backup'
+  # '/Volumes/amir/dev/mace/_experiments/_may_20_all_results',
+  # '/Volumes/amir/dev/mace/_experiments/_may_22_restricted_results_no_age_change',
+  # '/Users/a6karimi/dev/mace/_results/_may_20_all_results_backup'
+  '/Users/a6karimi/dev/mace/_experiments/__merged'
 ]
 
 all_child_folders = []
@@ -49,6 +50,7 @@ def gatherAndSaveDistances():
     'counterfactual found': [], \
     'counterfactual plausible': [], \
     'counterfactual distance': [], \
+    'counterfactual time': [], \
     'changed age': [], \
     'changed gender': [], \
     'changed race': [], \
@@ -399,41 +401,6 @@ def plotDistancesAppendix():
     ax.savefig(f'_results/distances_{model_string}_appendix.png', dpi = 400)
 
 
-def prepareCoverageTable():
-  DATASET_VALUES = ['adult', 'credit', 'compass']
-  MODEL_CLASS_VALUES = ['tree', 'forest', 'lr', 'mlp']
-  NORM_VALUES = ['zero_norm', 'one_norm', 'infty_norm']
-  APPROACHES_VALUES = ['SAT', 'MO', 'PFT', 'AR']
-  # Remove FeatureTweaking / ActionableRecourse distances that were unsuccessful or non-plausible
-  df_all_distances = pickle.load(open(f'_results/df_all_distances', 'rb'))
-  # DO NOT INCLUDE THE LINES BELOW!!!!!!!!!!!!!!!!!!!!
-  # df_all_distances = df_all_distances.where(
-  #   (df_all_distances['counterfactual found'] == True) &
-  #   (df_all_distances['counterfactual plausible'] == True)
-  # ).dropna()
-  for model_class_string in MODEL_CLASS_VALUES:
-    for approach_string in APPROACHES_VALUES:
-      for dataset_string in DATASET_VALUES:
-        for norm_type_string in NORM_VALUES:
-          df = df_all_distances.where(
-            (df_all_distances['dataset'] == dataset_string) &
-            (df_all_distances['model'] == model_class_string) &
-            (df_all_distances['norm'] == norm_type_string) &
-            (df_all_distances['approach'] == approach_string),
-          ).dropna()
-          if df.shape[0]: # if any tests exist for this setup
-            found_and_plausible = df.where((df['counterfactual found'] == True) & (df['counterfactual plausible'] == True)).dropna().shape[0]
-            found_and_not_plausible = df.where((df['counterfactual found'] == True) & (df['counterfactual plausible'] == False)).dropna().shape[0]
-            not_found = df.where(df['counterfactual found'] == False).dropna().shape[0]
-            assert df.shape[0] == \
-              found_and_plausible + \
-              found_and_not_plausible + \
-              not_found
-            coverage = found_and_plausible / df.shape[0] * 100
-            print(f'{dataset_string}-{model_class_string}-{norm_type_string}-{approach_string}:'.ljust(40), end = '')
-            print(f'%{coverage}')
-
-
 def measureSensitiveAttributeChange():
   df_all_distances = pickle.load(open(f'_results/df_all_distances', 'rb'))
   df_all_distances = df_all_distances.where(
@@ -539,8 +506,8 @@ def measureEffectOfRaceCompass():
   pairs = [
     (
       'compass-lr-one_norm-AR',
-      '/Users/a6karimi/dev/interp/_experiments/2019.05.23_14.10.06__compass__lr__one_norm__AR__batch0__samples500/_minimum_distances',
-      '/Users/a6karimi/dev/interp/_experiments/2019.05.23_14.10.40__compass__lr__one_norm__AR__batch0__samples500/_minimum_distances',
+      '/Users/a6karimi/dev/mace/_experiments/2019.05.23_14.10.06__compass__lr__one_norm__AR__batch0__samples500/_minimum_distances',
+      '/Users/a6karimi/dev/mace/_experiments/2019.05.23_14.10.40__compass__lr__one_norm__AR__batch0__samples500/_minimum_distances',
     ), \
     # ('compass-lr-infty_norm-AR', ), \
   ]
@@ -653,20 +620,20 @@ def measureEffectOfAgeAdultPart1():
 def measureEffectOfAgeAdultPart2():
 
   # pairs = [
-  #   ('adult-forest-zero_norm-SAT', '_results/adult-forest-zero_norm-SAT_age_decreased_df', '/Volumes/amir/dev/interp/_experiments/_may_21_restricted_results_no_age_reduction/2019.05.21_17.17.39__adult__forest__zero_norm__SAT/_minimum_distances'), \
-  #   ('adult-forest-one_norm-SAT', '_results/adult-forest-one_norm-SAT_age_decreased_df', '/Volumes/amir/dev/interp/_experiments/_may_21_restricted_results_no_age_reduction/2019.05.21_17.37.32__adult__forest__one_norm__SAT/_minimum_distances'), \
-  #   ('adult-forest-infty_norm-SAT', '_results/adult-forest-infty_norm-SAT_age_decreased_df', '/Volumes/amir/dev/interp/_experiments/_may_21_restricted_results_no_age_reduction/2019.05.21_17.46.25__adult__forest__infty_norm__SAT/_minimum_distances'), \
-  #   ('adult-forest-zero_norm-MO', '_results/adult-forest-zero_norm-MO_age_decreased_df', '/Volumes/amir/dev/interp/_experiments/_may_21_restricted_results_no_age_reduction/2019.05.21_17.19.16__adult__forest__zero_norm__MO/_minimum_distances'), \
-  #   ('adult-forest-one_norm-MO', '_results/adult-forest-one_norm-MO_age_decreased_df', '/Volumes/amir/dev/interp/_experiments/_may_21_restricted_results_no_age_reduction/2019.05.21_17.37.35__adult__forest__one_norm__MO/_minimum_distances'), \
-  #   ('adult-forest-infty_norm-MO', '_results/adult-forest-infty_norm-MO_age_decreased_df', '/Volumes/amir/dev/interp/_experiments/_may_21_restricted_results_no_age_reduction/2019.05.21_17.54.09__adult__forest__infty_norm__MO/_minimum_distances'), \
+  #   ('adult-forest-zero_norm-SAT', '_results/adult-forest-zero_norm-SAT_age_decreased_df', '/Volumes/amir/dev/mace/_experiments/_may_21_restricted_results_no_age_reduction/2019.05.21_17.17.39__adult__forest__zero_norm__SAT/_minimum_distances'), \
+  #   ('adult-forest-one_norm-SAT', '_results/adult-forest-one_norm-SAT_age_decreased_df', '/Volumes/amir/dev/mace/_experiments/_may_21_restricted_results_no_age_reduction/2019.05.21_17.37.32__adult__forest__one_norm__SAT/_minimum_distances'), \
+  #   ('adult-forest-infty_norm-SAT', '_results/adult-forest-infty_norm-SAT_age_decreased_df', '/Volumes/amir/dev/mace/_experiments/_may_21_restricted_results_no_age_reduction/2019.05.21_17.46.25__adult__forest__infty_norm__SAT/_minimum_distances'), \
+  #   ('adult-forest-zero_norm-MO', '_results/adult-forest-zero_norm-MO_age_decreased_df', '/Volumes/amir/dev/mace/_experiments/_may_21_restricted_results_no_age_reduction/2019.05.21_17.19.16__adult__forest__zero_norm__MO/_minimum_distances'), \
+  #   ('adult-forest-one_norm-MO', '_results/adult-forest-one_norm-MO_age_decreased_df', '/Volumes/amir/dev/mace/_experiments/_may_21_restricted_results_no_age_reduction/2019.05.21_17.37.35__adult__forest__one_norm__MO/_minimum_distances'), \
+  #   ('adult-forest-infty_norm-MO', '_results/adult-forest-infty_norm-MO_age_decreased_df', '/Volumes/amir/dev/mace/_experiments/_may_21_restricted_results_no_age_reduction/2019.05.21_17.54.09__adult__forest__infty_norm__MO/_minimum_distances'), \
   # ]
   pairs = [
-    ('adult-forest-zero_norm-SAT', '_results/adult-forest-zero_norm-SAT_age_decreased_df', '/Volumes/amir/dev/interp/_experiments/_may_22_restricted_results_no_age_change/2019.05.22_17.42.00__adult__forest__zero_norm__SAT/_minimum_distances'), \
-    ('adult-forest-one_norm-SAT', '_results/adult-forest-one_norm-SAT_age_decreased_df', '/Volumes/amir/dev/interp/_experiments/_may_22_restricted_results_no_age_change/2019.05.22_18.17.48__adult__forest__one_norm__SAT/_minimum_distances'), \
-    ('adult-forest-infty_norm-SAT', '_results/adult-forest-infty_norm-SAT_age_decreased_df', '/Volumes/amir/dev/interp/_experiments/_may_22_restricted_results_no_age_change/2019.05.22_18.36.35__adult__forest__infty_norm__SAT/_minimum_distances'), \
-    ('adult-forest-zero_norm-MO', '_results/adult-forest-zero_norm-MO_age_decreased_df', '/Volumes/amir/dev/interp/_experiments/_may_22_restricted_results_no_age_change/2019.05.22_18.00.02__adult__forest__zero_norm__MO/_minimum_distances'), \
-    ('adult-forest-one_norm-MO', '_results/adult-forest-one_norm-MO_age_decreased_df', '/Volumes/amir/dev/interp/_experiments/_may_22_restricted_results_no_age_change/2019.05.22_18.20.50__adult__forest__one_norm__MO/_minimum_distances'), \
-    ('adult-forest-infty_norm-MO', '_results/adult-forest-infty_norm-MO_age_decreased_df', '/Volumes/amir/dev/interp/_experiments/_may_22_restricted_results_no_age_change/2019.05.22_18.32.33__adult__forest__infty_norm__MO/_minimum_distances'), \
+    ('adult-forest-zero_norm-SAT', '_results/adult-forest-zero_norm-SAT_age_decreased_df', '/Volumes/amir/dev/mace/_experiments/_may_22_restricted_results_no_age_change/2019.05.22_17.42.00__adult__forest__zero_norm__SAT/_minimum_distances'), \
+    ('adult-forest-one_norm-SAT', '_results/adult-forest-one_norm-SAT_age_decreased_df', '/Volumes/amir/dev/mace/_experiments/_may_22_restricted_results_no_age_change/2019.05.22_18.17.48__adult__forest__one_norm__SAT/_minimum_distances'), \
+    ('adult-forest-infty_norm-SAT', '_results/adult-forest-infty_norm-SAT_age_decreased_df', '/Volumes/amir/dev/mace/_experiments/_may_22_restricted_results_no_age_change/2019.05.22_18.36.35__adult__forest__infty_norm__SAT/_minimum_distances'), \
+    ('adult-forest-zero_norm-MO', '_results/adult-forest-zero_norm-MO_age_decreased_df', '/Volumes/amir/dev/mace/_experiments/_may_22_restricted_results_no_age_change/2019.05.22_18.00.02__adult__forest__zero_norm__MO/_minimum_distances'), \
+    ('adult-forest-one_norm-MO', '_results/adult-forest-one_norm-MO_age_decreased_df', '/Volumes/amir/dev/mace/_experiments/_may_22_restricted_results_no_age_change/2019.05.22_18.20.50__adult__forest__one_norm__MO/_minimum_distances'), \
+    ('adult-forest-infty_norm-MO', '_results/adult-forest-infty_norm-MO_age_decreased_df', '/Volumes/amir/dev/mace/_experiments/_may_22_restricted_results_no_age_change/2019.05.22_18.32.33__adult__forest__infty_norm__MO/_minimum_distances'), \
   ]
   print('\n\n<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>\n\n')
   for pair in pairs:
@@ -698,8 +665,8 @@ def measureEffectOfAgeAdultPart3():
     'adult-forest-zero_norm-SAT',
     '_results/adult-forest-zero_norm-SAT_age_decreased_df',
     '_results/adult-forest-zero_norm-SAT_age_increased_df',
-    '/Volumes/amir/dev/interp/_experiments/_may_20_all_results/2019.05.20_17.44.50__adult__forest__zero_norm__SAT/_minimum_distances',
-    '/Volumes/amir/dev/interp/_experiments/_may_22_restricted_results_no_age_change/2019.05.22_17.42.00__adult__forest__zero_norm__SAT/_minimum_distances'
+    '/Volumes/amir/dev/mace/_experiments/_may_20_all_results/2019.05.20_17.44.50__adult__forest__zero_norm__SAT/_minimum_distances',
+    '/Volumes/amir/dev/mace/_experiments/_may_22_restricted_results_no_age_change/2019.05.22_17.42.00__adult__forest__zero_norm__SAT/_minimum_distances'
   )]
   print('\n\n<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>\n\n')
   for pair in pairs:
@@ -838,15 +805,57 @@ def analyzeDistances():
             print(f'\t Distance reduction for {dataset_string} {model_class_string} {norm_type_string} (1 - d_SAT / d_{approach_string}) = \t {tmp_mean:.2f} +/- {tmp_std:.2f} \t (N = {len(distance_reduction_list)})')
 
 
+def analyzeAverageDistanceRunTime():
+  DATASET_VALUES = ['adult', 'credit', 'compass']
+  MODEL_CLASS_VALUES = ['tree', 'forest', 'lr', 'mlp']
+  NORM_VALUES = ['zero_norm', 'one_norm', 'infty_norm']
+  APPROACHES_VALUES = ['SAT', 'MO', 'PFT', 'AR']
+  # Remove FeatureTweaking / ActionableRecourse distances that were unsuccessful or non-plausible
+  df_all_distances = pickle.load(open(f'_results/df_all_distances', 'rb'))
+  # DO NOT INCLUDE THE LINES BELOW!!!!!!!!!!!!!!!!!!!! WHY???
+  # df_all_distances = df_all_distances.where(
+  #   (df_all_distances['counterfactual found'] == True) &
+  #   (df_all_distances['counterfactual plausible'] == True)
+  # ).dropna()
+  for model_class_string in MODEL_CLASS_VALUES:
+    for approach_string in APPROACHES_VALUES:
+      for dataset_string in DATASET_VALUES:
+        for norm_type_string in NORM_VALUES:
+          df = df_all_distances.where(
+            (df_all_distances['dataset'] == dataset_string) &
+            (df_all_distances['model'] == model_class_string) &
+            (df_all_distances['norm'] == norm_type_string) &
+            (df_all_distances['approach'] == approach_string),
+          ).dropna()
+          if df.shape[0]: # if any tests exist for this setup
+            found_and_plausible = df.where((df['counterfactual found'] == True) & (df['counterfactual plausible'] == True))
+            found_and_not_plausible = df.where((df['counterfactual found'] == True) & (df['counterfactual plausible'] == False))
+            not_found = df.where(df['counterfactual found'] == False)
+            count_found_and_plausible = found_and_plausible.dropna().shape[0]
+            count_found_and_not_plausible = found_and_not_plausible.dropna().shape[0]
+            count_not_found = not_found.dropna().shape[0]
+            assert df.shape[0] == \
+              count_found_and_plausible + \
+              count_found_and_not_plausible + \
+              count_not_found
+            average_distance = found_and_plausible['counterfactual distance'].mean() # this is NOT a good way to compare methods! see analyzeDistances() instead, as it compares ratio of distances for the same samples!
+            average_run_time = found_and_plausible['counterfactual time'].mean()
+            coverage = count_found_and_plausible / df.shape[0] * 100
+            print(f'{dataset_string}-{model_class_string}-{norm_type_string}-{approach_string} ({df.shape[0]} samples):')
+            print(f'\tAvg distance: {average_distance}')
+            print(f'\tAvg run-time: {average_run_time} seconds')
+            print(f'\tCoverage: %{coverage}')
+
+
 if __name__ == '__main__':
   # gatherAndSaveDistances()
-  measureEffectOfRaceCompass()
+  # measureEffectOfRaceCompass()
   # measureSensitiveAttributeChange()
   # DEPRECATED # measureEffectOfAgeCompass()
   # measureEffectOfAgeAdultPart1()
   # measureEffectOfAgeAdultPart2()
   # measureEffectOfAgeAdultPart3()
-  # DONE # prepareCoverageTable()
+  analyzeAverageDistanceRunTime()
   # plotDistancesMainBody()
   # plotDistancesAppendix()
   # DONE # analyzeDistances()

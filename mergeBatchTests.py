@@ -5,13 +5,19 @@ from tqdm import tqdm
 from shutil import copyfile
 
 
-DATASET_VALUES = ['adult']
-MODEL_CLASS_VALUES = ['forest']
-NORM_VALUES = ['zero_norm', 'one_norm', 'infty_norm']
+# DATASET_VALUES = ['adult']
+# MODEL_CLASS_VALUES = ['forest']
+# NORM_VALUES = ['zero_norm', 'one_norm', 'infty_norm']
+# APPROACHES_VALUES = ['SAT', 'MO']
+
+DATASET_VALUES = ['credit']
+MODEL_CLASS_VALUES = ['tree']
+NORM_VALUES = ['one_norm']
 APPROACHES_VALUES = ['SAT', 'MO']
 
-experiments_folder_path = '/Volumes/amir/dev/interp/_experiments/'
-# experiments_folder_path = '/Users/a6karimi/dev/interp/_experiments/'
+
+# experiments_folder_path = '/Volumes/amir/dev/mace/_experiments/'
+experiments_folder_path = '/Users/a6karimi/dev/mace/_experiments/'
 all_counter = len(DATASET_VALUES) * len(MODEL_CLASS_VALUES) * len(NORM_VALUES) * len(APPROACHES_VALUES)
 counter = 0
 

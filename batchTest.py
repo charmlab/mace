@@ -136,7 +136,7 @@ def generateExplanations(
 
 
 def runExperiments(dataset_values, model_class_values, norm_values, approaches_values, batch_number, neg_sample_count):
-  epsilon = 1e-5
+  epsilon = 1e-1
 
   for dataset_string in dataset_values:
 
