@@ -11,7 +11,7 @@ from shutil import copyfile
 # APPROACHES_VALUES = ['SAT', 'MO']
 
 DATASET_VALUES = ['adult', 'credit', 'compass']
-MODEL_CLASS_VALUES = ['lr']
+MODEL_CLASS_VALUES = ['mlp']
 NORM_VALUES = ['zero_norm', 'one_norm', 'infty_norm']
 APPROACHES_VALUES = ['SAT', 'MO']
 
