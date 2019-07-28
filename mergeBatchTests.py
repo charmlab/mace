@@ -11,10 +11,9 @@ from shutil import copyfile
 # APPROACHES_VALUES = ['SAT', 'MO']
 
 DATASET_VALUES = ['adult', 'credit', 'compass']
-MODEL_CLASS_VALUES = ['forest']
+MODEL_CLASS_VALUES = ['lr']
 NORM_VALUES = ['zero_norm', 'one_norm', 'infty_norm']
-APPROACHES_VALUES = ['SAT', 'MO', 'PFT']
-
+APPROACHES_VALUES = ['SAT', 'MO']
 
 experiments_folder_path = '/Volumes/amir/dev/mace/_experiments/'
 # experiments_folder_path = '/Users/a6karimi/dev/mace/_experiments/'

@@ -851,7 +851,7 @@ def analyzeAverageDistanceRunTime():
 
 
 if __name__ == '__main__':
-  # gatherAndSaveDistances()
+  gatherAndSaveDistances()
   # measureEffectOfRaceCompass()
   # measureSensitiveAttributeChange()
   # DEPRECATED # measureEffectOfAgeCompass()

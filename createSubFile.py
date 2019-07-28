@@ -10,9 +10,9 @@
 # APPROACHES_VALUES = ['FT']
 
 DATASET_VALUES = ['adult', 'credit', 'compass']
-MODEL_CLASS_VALUES = ['forest']
+MODEL_CLASS_VALUES = ['lr']
 NORM_VALUES = ['zero_norm', 'one_norm', 'infty_norm']
-APPROACHES_VALUES = ['SAT', 'MO', 'PFT']
+APPROACHES_VALUES = ['SAT', 'MO']
 
 NUM_BATCHES = 100
 NUM_NEG_SAMPLES_PER_BATCH = 5
