@@ -10,7 +10,7 @@
 # APPROACHES_VALUES = ['FT']
 
 DATASET_VALUES = ['adult', 'credit', 'compass']
-MODEL_CLASS_VALUES = ['tree']
+MODEL_CLASS_VALUES = ['forest']
 NORM_VALUES = ['zero_norm', 'one_norm', 'infty_norm']
 APPROACHES_VALUES = ['SAT', 'MO', 'PFT']
 

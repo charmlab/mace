@@ -12,7 +12,8 @@ parent_folders = [
   # '/Volumes/amir/dev/mace/_experiments/_may_20_all_results',
   # '/Volumes/amir/dev/mace/_experiments/_may_22_restricted_results_no_age_change',
   # '/Users/a6karimi/dev/mace/_results/_may_20_all_results_backup'
-  '/Users/a6karimi/dev/mace/_experiments/__merged'
+  '/Volumes/amir/dev/mace/_experiments/__merged'
+  # '/Users/a6karimi/dev/mace/_experiments/__merged'
 ]
 
 all_child_folders = []
@@ -112,37 +113,37 @@ def gatherAndSaveDistances():
             changed_age = False
             changed_gender = False
             changed_race = False
-            if dataset_string == 'adult':
-              if not np.isclose(factual_sample['x0'], counterfactual_sample['x0']):
-                changed_gender = True
-              if not np.isclose(factual_sample['x1'], counterfactual_sample['x1']):
-                changed_age = True
+            # if dataset_string == 'adult':
+            #   if not np.isclose(factual_sample['x0'], counterfactual_sample['x0']):
+            #     changed_gender = True
+            #   if not np.isclose(factual_sample['x1'], counterfactual_sample['x1']):
+            #     changed_age = True
 
-            elif dataset_string == 'credit':
-              if not np.isclose(factual_sample['x0'], counterfactual_sample['x0']):
-                changed_gender = True
-              if model_class_string == 'tree' or model_class_string == 'forest': # non-hot
-                if not np.isclose(factual_sample['x2'], counterfactual_sample['x2']):
-                  changed_age = True
-              else: # one-hot
-                if not np.isclose(factual_sample['x2_ord_0'], counterfactual_sample['x2_ord_0']) or \
-                   not np.isclose(factual_sample['x2_ord_1'], counterfactual_sample['x2_ord_1']) or \
-                   not np.isclose(factual_sample['x2_ord_2'], counterfactual_sample['x2_ord_2']) or \
-                   not np.isclose(factual_sample['x2_ord_3'], counterfactual_sample['x2_ord_3']):
-                  changed_age = True
-            elif dataset_string == 'compass':
-              if model_class_string == 'tree' or model_class_string == 'forest': # non-hot
-                if not np.isclose(factual_sample['x0'], counterfactual_sample['x0']):
-                  changed_age = True
-              else: # one-hot
-                if not np.isclose(factual_sample['x0_ord_0'], counterfactual_sample['x0_ord_0']) or \
-                   not np.isclose(factual_sample['x0_ord_1'], counterfactual_sample['x0_ord_1']) or \
-                   not np.isclose(factual_sample['x0_ord_2'], counterfactual_sample['x0_ord_2']):
-                  changed_age = True
-              if not np.isclose(factual_sample['x1'], counterfactual_sample['x1']):
-                changed_race = True
-              if not np.isclose(factual_sample['x2'], counterfactual_sample['x2']):
-                changed_gender = True
+            # elif dataset_string == 'credit':
+            #   if not np.isclose(factual_sample['x0'], counterfactual_sample['x0']):
+            #     changed_gender = True
+            #   if model_class_string == 'tree' or model_class_string == 'forest': # non-hot
+            #     if not np.isclose(factual_sample['x2'], counterfactual_sample['x2']):
+            #       changed_age = True
+            #   else: # one-hot
+            #     if not np.isclose(factual_sample['x2_ord_0'], counterfactual_sample['x2_ord_0']) or \
+            #        not np.isclose(factual_sample['x2_ord_1'], counterfactual_sample['x2_ord_1']) or \
+            #        not np.isclose(factual_sample['x2_ord_2'], counterfactual_sample['x2_ord_2']) or \
+            #        not np.isclose(factual_sample['x2_ord_3'], counterfactual_sample['x2_ord_3']):
+            #       changed_age = True
+            # elif dataset_string == 'compass':
+            #   if model_class_string == 'tree' or model_class_string == 'forest': # non-hot
+            #     if not np.isclose(factual_sample['x0'], counterfactual_sample['x0']):
+            #       changed_age = True
+            #   else: # one-hot
+            #     if not np.isclose(factual_sample['x0_ord_0'], counterfactual_sample['x0_ord_0']) or \
+            #        not np.isclose(factual_sample['x0_ord_1'], counterfactual_sample['x0_ord_1']) or \
+            #        not np.isclose(factual_sample['x0_ord_2'], counterfactual_sample['x0_ord_2']):
+            #       changed_age = True
+            #   if not np.isclose(factual_sample['x1'], counterfactual_sample['x1']):
+            #     changed_race = True
+            #   if not np.isclose(factual_sample['x2'], counterfactual_sample['x2']):
+            #     changed_gender = True
 
             # changed_attributes = []
             # for attr in factual_sample.keys():
@@ -156,13 +157,13 @@ def gatherAndSaveDistances():
             age_constant = False
             age_increased = False
             age_decreased = False
-            if dataset_string == 'adult':
-              if factual_sample['x1'] < counterfactual_sample['x1']:
-                age_increased = True
-              elif factual_sample['x1'] == counterfactual_sample['x1']:
-                age_constant = True
-              elif factual_sample['x1'] > counterfactual_sample['x1']:
-                age_decreased = True
+            # if dataset_string == 'adult':
+            #   if factual_sample['x1'] < counterfactual_sample['x1']:
+            #     age_increased = True
+            #   elif factual_sample['x1'] == counterfactual_sample['x1']:
+            #     age_constant = True
+            #   elif factual_sample['x1'] > counterfactual_sample['x1']:
+            #     age_decreased = True
 
             # append rows
             df_all_distances = df_all_distances.append({
@@ -839,11 +840,13 @@ def analyzeAverageDistanceRunTime():
               count_found_and_not_plausible + \
               count_not_found
             average_distance = found_and_plausible['counterfactual distance'].mean() # this is NOT a good way to compare methods! see analyzeDistances() instead, as it compares ratio of distances for the same samples!
+            std_distance = found_and_plausible['counterfactual distance'].std()
             average_run_time = found_and_plausible['counterfactual time'].mean()
+            std_run_time = found_and_plausible['counterfactual time'].std()
             coverage = count_found_and_plausible / df.shape[0] * 100
-            print(f'{dataset_string}-{model_class_string}-{norm_type_string}-{approach_string} ({df.shape[0]} samples):')
-            print(f'\tAvg distance: {average_distance}')
-            print(f'\tAvg run-time: {average_run_time} seconds')
+            print(f'{model_class_string}-{approach_string}-{dataset_string}-{norm_type_string} ({df.shape[0]} samples):')
+            print(f'\tAvg distance: {average_distance:.2f} +/- {std_distance:.2f}')
+            print(f'\tAvg run-time: {average_run_time:.2f} +/- {std_run_time:.2f} seconds')
             print(f'\tCoverage: %{coverage}')
 
 
