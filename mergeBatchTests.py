@@ -4,16 +4,15 @@ import pickle
 from tqdm import tqdm
 from shutil import copyfile
 
+DATASET_VALUES = ['adult']
+MODEL_CLASS_VALUES = ['tree', 'forest']
+NORM_VALUES = ['zero_norm', 'one_norm', 'infty_norm']
+APPROACHES_VALUES = ['SAT', 'MO', 'PFT']
 
 # DATASET_VALUES = ['adult']
-# MODEL_CLASS_VALUES = ['forest']
+# MODEL_CLASS_VALUES = ['lr', 'mlp']
 # NORM_VALUES = ['zero_norm', 'one_norm', 'infty_norm']
 # APPROACHES_VALUES = ['SAT', 'MO']
-
-DATASET_VALUES = ['adult', 'credit', 'compass']
-MODEL_CLASS_VALUES = ['mlp']
-NORM_VALUES = ['zero_norm', 'one_norm', 'infty_norm']
-APPROACHES_VALUES = ['SAT', 'MO']
 
 experiments_folder_path = '/Volumes/amir/dev/mace/_experiments/'
 # experiments_folder_path = '/Users/a6karimi/dev/mace/_experiments/'
