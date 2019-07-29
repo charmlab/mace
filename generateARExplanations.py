@@ -28,8 +28,6 @@ def genExp(model_trained, factual_sample, norm_type, dataset_obj):
 
   df = tmp_df
   X = df.loc[:, df.columns != 'y']
-  # TODO: later AND below with actionability...
-  # OR maybe just set those not actionable to not actionable.... I don't know...
 
   # Enforce binary, categorical (including ordinal) variables only take on 2 values
   custom_bounds = {attr_name_kurz: (0, 100, 'p') for attr_name_kurz in np.union1d(
@@ -38,6 +36,15 @@ def genExp(model_trained, factual_sample, norm_type, dataset_obj):
   )}
   action_set = ActionSet(X = X, custom_bounds = custom_bounds)
   # action_set['x1'].mutable = False # x1 = 'Race'
+  # In the current implementation, we only supports any/none actionability
+  for attr_name_kurz in dataset_obj.getInputAttributeNames('kurz'):
+    attr_obj = dataset_obj.attributes_kurz[attr_name_kurz]
+    if attr_obj.actionability == 'none':
+      action_set[attr_name_kurz].mutable = False
+    elif attr_obj.actionability == 'any':
+      continue # do nothing
+    else:
+      raise ValueError(f'Actionable Recourse does not support actionability type {attr_obj.actionability}')
 
   # Enforce search over integer-based grid for integer-based variables
   for attr_name_kurz in np.union1d(
