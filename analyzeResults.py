@@ -38,7 +38,7 @@ APPROACHES_VALUES = ['SAT', 'MO', 'PFT', 'AR']
 # NORM_VALUES = ['zero_norm']
 # APPROACHES_VALUES = ['MO']
 
-all_counter = 72 + 18  + 6 # (without the unneccessary FT folders for lr and MLP)
+all_counter = 72 + 18  + 6 # (without the unneccessary FT folders for LR and MLP)
 # assert len(all_child_folders) == all_counter, 'missing, or too many experiment folders'
 
 def gatherAndSaveDistances():

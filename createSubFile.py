@@ -4,15 +4,15 @@
 
 # for f in $(ls | grep SAT); do echo $f; ls $f/__explanation_log/ | wc -l; done
 
-DATASET_VALUES = ['adult']
-MODEL_CLASS_VALUES = ['tree', 'forest']
-NORM_VALUES = ['zero_norm', 'one_norm', 'infty_norm']
-APPROACHES_VALUES = ['SAT', 'MO', 'PFT']
-
 # DATASET_VALUES = ['adult']
-# MODEL_CLASS_VALUES = ['lr', 'mlp']
+# MODEL_CLASS_VALUES = ['tree', 'forest']
 # NORM_VALUES = ['zero_norm', 'one_norm', 'infty_norm']
-# APPROACHES_VALUES = ['SAT', 'MO']
+# APPROACHES_VALUES = ['SAT', 'MO', 'PFT']
+
+DATASET_VALUES = ['adult']
+MODEL_CLASS_VALUES = ['lr', 'mlp']
+NORM_VALUES = ['zero_norm', 'one_norm', 'infty_norm']
+APPROACHES_VALUES = ['SAT', 'MO']
 
 
 NUM_BATCHES = 100
