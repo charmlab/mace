@@ -435,13 +435,13 @@ def loadDataset(dataset_name, return_one_hot, load_from_cache = True, debug_flag
 
       if col_name == 'Sex':
         attr_type = 'binary'
-        actionability = 'any' # 'none'
+        actionability = 'none' # 'any'
       elif col_name == 'Age':
         attr_type = 'numeric-int'
-        actionability = 'none' # 'none'
-      elif col_name == 'NativeCountry':
+        actionability = 'none' # 'any'
+      elif col_name == 'NativeCountry': #~ RACE
         attr_type = 'binary'
-        actionability = 'any' # 'none'
+        actionability = 'none' # 'any'
       elif col_name == 'WorkClass':
         attr_type = 'categorical'
         actionability = 'any'
@@ -453,7 +453,7 @@ def loadDataset(dataset_name, return_one_hot, load_from_cache = True, debug_flag
         actionability = 'any'
       elif col_name == 'MaritalStatus':
         attr_type = 'categorical'
-        actionability = 'any' # 'none'
+        actionability = 'any'
       elif col_name == 'Occupation':
         attr_type = 'categorical'
         actionability = 'any'
@@ -505,13 +505,13 @@ def loadDataset(dataset_name, return_one_hot, load_from_cache = True, debug_flag
 
       if col_name == 'isMale':
         attr_type = 'binary'
-        actionability = 'any' # 'none'
+        actionability = 'none' # 'any'
       elif col_name == 'isMarried':
         attr_type = 'binary'
-        actionability = 'any' # 'none'
+        actionability = 'any'
       elif col_name == 'AgeGroup':
         attr_type = 'ordinal'
-        actionability = 'any'
+        actionability = 'none' # 'any'
       elif col_name == 'EducationLevel':
         attr_type = 'ordinal'
         actionability = 'any'
@@ -581,13 +581,13 @@ def loadDataset(dataset_name, return_one_hot, load_from_cache = True, debug_flag
 
       if col_name == 'AgeGroup':
         attr_type = 'ordinal'
-        actionability = 'any' # 'none'
+        actionability = 'none' # 'any'
       elif col_name == 'Race':
         attr_type = 'binary'
-        actionability = 'any' # 'none'
+        actionability = 'none' # 'any'
       elif col_name == 'Sex':
         attr_type = 'binary'
-        actionability = 'any' # 'none'
+        actionability = 'none' # 'any'
       elif col_name == 'PriorsCount':
         attr_type = 'numeric-int'
         actionability = 'any'
