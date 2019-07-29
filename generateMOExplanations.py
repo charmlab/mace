@@ -14,8 +14,7 @@ np.random.seed(RANDOM_SEED)
 
 def findClosestObservableSample(potential_observable_samples, dataset_obj, factual_sample, norm_type):
 
-  observables = []
-  observables.append({'sample': {}, 'distance': np.infty, 'norm_type': None}) # in case no observables are found.
+  closest_observable_sample = {'sample': {}, 'distance': np.infty, 'norm_type': None} # in case no observables are found.
 
   for observable_sample_index, observable_sample in potential_observable_samples.items():
 
@@ -33,14 +32,13 @@ def findClosestObservableSample(potential_observable_samples, dataset_obj, factu
       elif attr_obj.actionability == 'same-or-decrease' and factual_sample[attr_name_kurz] < observable_sample[attr_name_kurz]:
         violating_actionable_attributes = True
 
+    observable_distance = normalizedDistance.getDistanceBetweenSamples(factual_sample, observable_sample, norm_type, dataset_obj)
+
     if violating_actionable_attributes:
       continue
 
-    observable_distance = normalizedDistance.getDistanceBetweenSamples(factual_sample, observable_sample, norm_type, dataset_obj)
-    observables.append({'sample': observable_sample, 'distance': observable_distance, 'norm_type': norm_type})
-
-  sorted_observables = sorted(observables, key = lambda x: x['distance'])
-  closest_observable_sample = sorted_observables[0] # IMPORTANT: there may be many more at this same distance! OR NONE!
+    if observable_distance < closest_observable_sample['distance']:
+      closest_observable_sample = {'sample': observable_sample, 'distance': observable_distance, 'norm_type': norm_type}
 
   return closest_observable_sample
 
