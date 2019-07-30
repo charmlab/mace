@@ -4,6 +4,12 @@ import pickle
 from tqdm import tqdm
 from shutil import copyfile
 
+
+# DATASET_VALUES = ['adult']
+# MODEL_CLASS_VALUES = ['forest']
+# NORM_VALUES = ['zero_norm', 'one_norm', 'infty_norm']
+# APPROACHES_VALUES = ['SAT', 'MO']
+
 DATASET_VALUES = ['adult']
 MODEL_CLASS_VALUES = ['tree', 'forest']
 NORM_VALUES = ['zero_norm', 'one_norm', 'infty_norm']
