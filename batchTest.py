@@ -62,12 +62,12 @@ def generateExplanations(
   dataset_obj,
   factual_sample,
   norm_type_string,
-  epsilon,
   potential_observable_samples,
   standard_deviations):
 
   if approach_string == 'SAT': # 'sat_counterfactual':
 
+    epsilon = 1e-3
     return generateSATExplanations.genExp(
       explanation_file_name,
       model_trained,
@@ -136,7 +136,6 @@ def generateExplanations(
 
 
 def runExperiments(dataset_values, model_class_values, norm_values, approaches_values, batch_number, neg_sample_count):
-  epsilon = 1e-1
 
   for dataset_string in dataset_values:
 
@@ -235,7 +234,6 @@ def runExperiments(dataset_values, model_class_values, norm_values, approaches_v
               dataset_obj,
               factual_sample,
               norm_type_string,
-              epsilon, # used solely for sat_proposed method
               potential_observable_samples, # used solely for minimum_observable method
               standard_deviations, # used solely for feature_tweaking method
             )

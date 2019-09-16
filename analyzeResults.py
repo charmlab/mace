@@ -12,8 +12,10 @@ parent_folders = [
   # '/Volumes/amir/dev/mace/_experiments/_may_20_all_results',
   # '/Volumes/amir/dev/mace/_experiments/_may_22_restricted_results_no_age_change',
   # '/Users/a6karimi/dev/mace/_results/_may_20_all_results_backup'
-  '/Volumes/amir/dev/mace/_experiments/__merged'
-  # '/Users/a6karimi/dev/mace/_experiments/__merged'
+  # '/Volumes/amir/dev/mace/_experiments/__merged'
+  # '/Volumes/amir/dev/mace/_experiments/__merged_all_unconstrained_tests_epsilon_1e-1_2019.07.30'
+  # '/Users/a6karimi/dev/mace/_results/__merged_all_unconstrained_tests_epsilon_1e-1_2019.07.30'
+  '/Users/a6karimi/dev/mace/_experiments/'
 ]
 
 all_child_folders = []
@@ -23,20 +25,30 @@ for parent_folder in parent_folders:
   child_folders = [os.path.join(parent_folder, x) for x in child_folders]
   all_child_folders.extend(child_folders) # happens in place
 
-DATASET_VALUES = ['adult', 'credit', 'compass']
-MODEL_CLASS_VALUES = ['tree', 'forest', 'lr', 'mlp']
-NORM_VALUES = ['zero_norm', 'one_norm', 'infty_norm']
-APPROACHES_VALUES = ['SAT', 'MO', 'PFT', 'AR']
+# 48 tests (54 tests - PFT x Adult x {tree, forest})
+# DATASET_VALUES = ['adult', 'credit', 'compass']
+# MODEL_CLASS_VALUES = ['tree', 'forest']
+# NORM_VALUES = ['zero_norm', 'one_norm', 'infty_norm']
+# APPROACHES_VALUES = ['SAT', 'MO', 'PFT']
 
-# DATASET_VALUES = ['adult']
-# MODEL_CLASS_VALUES = ['forest']
+# 18 tests
+# DATASET_VALUES = ['adult', 'credit', 'compass']
+# MODEL_CLASS_VALUES = ['lr']
 # NORM_VALUES = ['zero_norm', 'one_norm', 'infty_norm']
 # APPROACHES_VALUES = ['SAT', 'MO']
 
-# DATASET_VALUES = ['adult']
+# 6 tests
+# DATASET_VALUES = ['adult', 'credit', 'compass']
+# MODEL_CLASS_VALUES = ['lr']
+# NORM_VALUES = ['one_norm', 'infty_norm']
+# APPROACHES_VALUES = ['AR']
+
+# 18 tests
+# DATASET_VALUES = ['adult', 'credit', 'compass']
 # MODEL_CLASS_VALUES = ['mlp']
-# NORM_VALUES = ['zero_norm']
-# APPROACHES_VALUES = ['MO']
+# NORM_VALUES = ['zero_norm', 'one_norm', 'infty_norm']
+# APPROACHES_VALUES = ['SAT', 'MO']
+
 
 all_counter = 72 + 18  + 6 # (without the unneccessary FT folders for LR and MLP)
 # assert len(all_child_folders) == all_counter, 'missing, or too many experiment folders'
@@ -806,7 +818,7 @@ def analyzeDistances():
             print(f'\t Distance reduction for {dataset_string} {model_class_string} {norm_type_string} (1 - d_SAT / d_{approach_string}) = \t {tmp_mean:.2f} +/- {tmp_std:.2f} \t (N = {len(distance_reduction_list)})')
 
 
-def analyzeAverageDistanceRunTime():
+def analyzeAverageDistanceRunTimeCoverage():
   DATASET_VALUES = ['adult', 'credit', 'compass']
   MODEL_CLASS_VALUES = ['tree', 'forest', 'lr', 'mlp']
   NORM_VALUES = ['zero_norm', 'one_norm', 'infty_norm']
@@ -844,7 +856,7 @@ def analyzeAverageDistanceRunTime():
             average_run_time = found_and_plausible['counterfactual time'].mean()
             std_run_time = found_and_plausible['counterfactual time'].std()
             coverage = count_found_and_plausible / df.shape[0] * 100
-            print(f'{model_class_string}-{approach_string}-{dataset_string}-{norm_type_string} ({df.shape[0]} samples):')
+            print(f'{model_class_string}-{approach_string}-{dataset_string}-{norm_type_string} ({count_found_and_plausible} plausible samples found):')
             print(f'\tAvg distance: {average_distance:.2f} +/- {std_distance:.2f}')
             print(f'\tAvg run-time: {average_run_time:.2f} +/- {std_run_time:.2f} seconds')
             print(f'\tCoverage: %{coverage}')
@@ -858,7 +870,7 @@ if __name__ == '__main__':
   # measureEffectOfAgeAdultPart1()
   # measureEffectOfAgeAdultPart2()
   # measureEffectOfAgeAdultPart3()
-  analyzeAverageDistanceRunTime()
+  analyzeAverageDistanceRunTimeCoverage()
   # plotDistancesMainBody()
   # plotDistancesAppendix()
   # DONE # analyzeDistances()

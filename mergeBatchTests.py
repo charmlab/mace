@@ -4,24 +4,14 @@ import pickle
 from tqdm import tqdm
 from shutil import copyfile
 
+DATASET_VALUES = ['compass']
+MODEL_CLASS_VALUES = ['tree']
+NORM_VALUES = ['zero_norm']
+APPROACHES_VALUES = ['SAT', 'MO']
 
-# DATASET_VALUES = ['adult']
-# MODEL_CLASS_VALUES = ['forest']
-# NORM_VALUES = ['zero_norm', 'one_norm', 'infty_norm']
-# APPROACHES_VALUES = ['SAT', 'MO']
 
-DATASET_VALUES = ['adult']
-MODEL_CLASS_VALUES = ['tree', 'forest']
-NORM_VALUES = ['zero_norm', 'one_norm', 'infty_norm']
-APPROACHES_VALUES = ['SAT', 'MO', 'PFT']
-
-# DATASET_VALUES = ['adult']
-# MODEL_CLASS_VALUES = ['lr', 'mlp']
-# NORM_VALUES = ['zero_norm', 'one_norm', 'infty_norm']
-# APPROACHES_VALUES = ['SAT', 'MO']
-
-experiments_folder_path = '/Volumes/amir/dev/mace/_experiments/'
-# experiments_folder_path = '/Users/a6karimi/dev/mace/_experiments/'
+# experiments_folder_path = '/Volumes/amir/dev/mace/_experiments/'
+experiments_folder_path = '/Users/a6karimi/dev/mace/_experiments/'
 all_counter = len(DATASET_VALUES) * len(MODEL_CLASS_VALUES) * len(NORM_VALUES) * len(APPROACHES_VALUES)
 counter = 0
 
@@ -76,5 +66,3 @@ for dataset_string in DATASET_VALUES:
 
         pickle.dump(all_minimum_distances, open(f'{new_folder_path}/_minimum_distances', 'wb'))
 
-
-# ls -1 | grep 2019.05 | xargs rm -rf
