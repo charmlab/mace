@@ -67,7 +67,7 @@ def generateExplanations(
 
   if approach_string == 'SAT': # 'sat_counterfactual':
 
-    epsilon = 1e-3
+    epsilon = 1e-5
     return generateSATExplanations.genExp(
       explanation_file_name,
       model_trained,

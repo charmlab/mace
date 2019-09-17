@@ -8,6 +8,8 @@ import matplotlib.pyplot as plt
 
 from pprint import pprint
 
+from debug import ipsh
+
 parent_folders = [
   # '/Volumes/amir/dev/mace/_experiments/_may_20_all_results',
   # '/Volumes/amir/dev/mace/_experiments/_may_22_restricted_results_no_age_change',
@@ -15,7 +17,8 @@ parent_folders = [
   # '/Volumes/amir/dev/mace/_experiments/__merged'
   # '/Volumes/amir/dev/mace/_experiments/__merged_all_unconstrained_tests_epsilon_1e-1_2019.07.30'
   # '/Users/a6karimi/dev/mace/_results/__merged_all_unconstrained_tests_epsilon_1e-1_2019.07.30'
-  '/Users/a6karimi/dev/mace/_experiments/'
+  # '/Users/a6karimi/dev/mace/_experiments/'
+  '/Users/a6karimi/dev/mace/_results/__merged'
 ]
 
 all_child_folders = []
@@ -24,6 +27,11 @@ for parent_folder in parent_folders:
   child_folders = [x for x in child_folders if '2019' in x and x[0] != '.'] # remove .DS_Store, etc.
   child_folders = [os.path.join(parent_folder, x) for x in child_folders]
   all_child_folders.extend(child_folders) # happens in place
+
+DATASET_VALUES = ['adult', 'credit', 'compass']
+MODEL_CLASS_VALUES = ['tree', 'forest', 'lr'] # MLP
+NORM_VALUES = ['zero_norm', 'one_norm', 'infty_norm']
+APPROACHES_VALUES = ['SAT']
 
 # 48 tests (54 tests - PFT x Adult x {tree, forest})
 # DATASET_VALUES = ['adult', 'credit', 'compass']
@@ -64,6 +72,8 @@ def gatherAndSaveDistances():
     'counterfactual plausible': [], \
     'counterfactual distance': [], \
     'counterfactual time': [], \
+    'all counterfactual distances': [], \
+    'all counterfactual times': [], \
     'changed age': [], \
     'changed gender': [], \
     'changed race': [], \
@@ -178,6 +188,14 @@ def gatherAndSaveDistances():
             #     age_decreased = True
 
             # append rows
+
+            if approach_string == 'SAT':
+              all_counterfactual_distances = list(map(lambda x: x['distance'], minimum_distance_file[key]['all_counterfactuals']))
+              all_counterfactual_times = list(map(lambda x: x['time'], minimum_distance_file[key]['all_counterfactuals']))
+            else:
+              all_counterfactual_distances = []
+              all_counterfactual_times = []
+
             df_all_distances = df_all_distances.append({
               'dataset': dataset_string,
               'model': model_class_string,
@@ -188,6 +206,8 @@ def gatherAndSaveDistances():
               'counterfactual plausible': minimum_distance_file[key]['counterfactual_plausible'],
               'counterfactual distance': minimum_distance_file[key]['counterfactual_distance'],
               'counterfactual time': minimum_distance_file[key]['counterfactual_time'],
+              'all counterfactual distances': all_counterfactual_distances,
+              'all counterfactual times': all_counterfactual_times,
               'changed age': changed_age,
               'changed gender': changed_gender,
               'changed race': changed_race,
@@ -196,6 +216,7 @@ def gatherAndSaveDistances():
               'age increased': age_increased,
               'age decreased': age_decreased,
             }, ignore_index =  True)
+  # ipsh()
           # except:
           #   print(f'Problem with adding row in data frame.')
 
@@ -862,6 +883,64 @@ def analyzeAverageDistanceRunTimeCoverage():
             print(f'\tCoverage: %{coverage}')
 
 
+def plotDistanceTimeTradeofAgainstIterations():
+
+  DATASET_VALUES = ['credit']
+  MODEL_CLASS_VALUES = ['tree', 'forest', 'lr', 'mlp']
+  NORM_VALUES = ['one_norm']
+  APPROACHES_VALUES = ['SAT']
+  # Remove FeatureTweaking / ActionableRecourse distances that were unsuccessful or non-plausible
+  df_all_distances = pickle.load(open(f'_results/df_all_distances', 'rb'))
+  # DO NOT INCLUDE THE LINES BELOW!!!!!!!!!!!!!!!!!!!! WHY???
+  # df_all_distances = df_all_distances.where(
+  #   (df_all_distances['counterfactual found'] == True) &
+  #   (df_all_distances['counterfactual plausible'] == True)
+  # ).dropna()
+  for model_class_string in MODEL_CLASS_VALUES:
+    for approach_string in APPROACHES_VALUES:
+      for dataset_string in DATASET_VALUES:
+        for norm_type_string in NORM_VALUES:
+          df = df_all_distances.where(
+            (df_all_distances['dataset'] == dataset_string) &
+            (df_all_distances['model'] == model_class_string) &
+            (df_all_distances['norm'] == norm_type_string) &
+            (df_all_distances['approach'] == approach_string),
+          ).dropna()
+          # ipsh()
+          if df.shape[0]: # if any tests exist for this setup
+            # max_iterations = max(list(map(lambda x : len(x), df_all_distances['all counterfactual times'])))
+            # for elem in df_all_distances['all counterfactual times'].count()
+            tmp_df = pd.DataFrame({ \
+              'factual_sample_index': [], \
+              'iteration': [], \
+              'distance': [], \
+              'time': [], \
+            })
+            for index, row in df.iterrows():
+              all_counterfactual_distances = row['all counterfactual distances'][1:] # remove the first elem (np.infty)
+              all_counterfactual_times = row['all counterfactual times'][1:] # remove the first elem (np.infty)
+              cum_counterfactual_times = np.cumsum(all_counterfactual_times)
+              assert len(all_counterfactual_distances) == len(all_counterfactual_times)
+              for iteration_counter in range(len(all_counterfactual_distances)):
+                tmp_df = tmp_df.append({
+                  'factual_sample_index': row['factual sample index'],
+                  'iteration': int(iteration_counter),
+                  'distance': all_counterfactual_distances[iteration_counter],
+                  # 'time': all_counterfactual_times[iteration_counter],
+                  'time': cum_counterfactual_times[iteration_counter],
+                }, ignore_index =  True)
+            fig, (ax1, ax2) = plt.subplots(ncols=2, sharey=False)
+            sns.lineplot(x="iteration", y="time", data=tmp_df, ax=ax1)
+            sns.lineplot(x="iteration", y="distance", data=tmp_df, ax=ax2)
+            # fig.set_title('model_class_string')
+            fig.savefig(f'_results/distance_vs_time_{model_class_string}.png', dpi = 400)
+            # ax.get_figure().savefig(f'_results/time_{model_class_string}.png', dpi = 400)
+            # ax.clf()
+            # ax.get_figure().savefig(f'_results/distance_vs_time_{model_class_string}.png', dpi = 400)
+            # ax.clf()
+
+
+
 if __name__ == '__main__':
   gatherAndSaveDistances()
   # measureEffectOfRaceCompass()
@@ -870,10 +949,11 @@ if __name__ == '__main__':
   # measureEffectOfAgeAdultPart1()
   # measureEffectOfAgeAdultPart2()
   # measureEffectOfAgeAdultPart3()
-  analyzeAverageDistanceRunTimeCoverage()
+  # analyzeAverageDistanceRunTimeCoverage()
   # plotDistancesMainBody()
   # plotDistancesAppendix()
   # DONE # analyzeDistances()
+  plotDistanceTimeTradeofAgainstIterations()
 
 
 

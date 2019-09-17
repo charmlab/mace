@@ -5,6 +5,8 @@ import numpy as np
 import pandas as pd
 import normalizedDistance
 
+from debug import ipsh
+
 from modelConversion import *
 from pysmt.shortcuts import *
 from pysmt.typing import *
@@ -346,7 +348,7 @@ def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, f
   iters = 1
   max_iters = 100
   counterfactuals = [] # list of tuples (samples, distances)
-  counterfactuals.append({'sample': {}, 'distance': np.infty, 'norm_type': None}) # in case no countefactuals are found.
+  counterfactuals.append({'sample': {}, 'distance': np.infty, 'time': np.infty, 'norm_type': None}) # in case no counterfactuals are found.
   explanation_counter = 0
 
   print('Solving (not searching) for closest counterfactual using various distance thresholds...', file=log_file)
@@ -363,7 +365,9 @@ def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, f
       distance_formula,
       diversity_formula,
     )
+    iteration_start_time = time.time()
     model = get_model(formula)
+    iteration_end_time = time.time()
 
     if model: # joint formula is satisfiable
 
@@ -380,13 +384,24 @@ def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, f
       assertPrediction(counterfactual_sample, model_trained, dataset_obj)
 
       counterfactual_distance = normalizedDistance.getDistanceBetweenSamples(factual_sample, counterfactual_sample, norm_type, dataset_obj)
-      counterfactuals.append({'sample': counterfactual_sample, 'distance': counterfactual_distance, 'norm_type': norm_type})
+      counterfactual_time = iteration_end_time - iteration_start_time
+      counterfactuals.append({
+        'sample': counterfactual_sample,
+        'distance': counterfactual_distance,
+        'time': counterfactual_time,
+        'norm_type': norm_type})
 
       # Update diversity and distance formulas now that we have found a solution
       diversity_formula = And(diversity_formula, getDiversityFormulaUpdate(model))
 
+      # ipsh()
       norm_lower_bound = norm_lower_bound
-      norm_upper_bound = curr_norm_threshold
+      # IMPORTANT something odd happens somtimes if use vanilla binary search;
+      # On the first iteration, with [0, 1] bounds, we may see a CF at d = 0.22.
+      # When we update the bounds to [0, 0.5] bounds, surprisingly we sometimes
+      # see a new CF at distance 0.24. We optimize the binary search to solve this.
+      # norm_upper_bound = curr_norm_threshold
+      norm_upper_bound = float(counterfactual_distance + epsilon / 100) # not float64
       curr_norm_threshold = getCenterNormThresholdInRange(norm_lower_bound, norm_upper_bound)
       distance_formula = getDistanceFormula(model_symbols, dataset_obj, factual_pysmt_sample, norm_type, curr_norm_threshold)
 
@@ -396,6 +411,7 @@ def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, f
       neg_model = get_model(neg_formula)
       if neg_model:
         print('no solution exists.', file=log_file)
+        # ipsh()
         norm_lower_bound = curr_norm_threshold
         norm_upper_bound = norm_upper_bound
         curr_norm_threshold = getCenterNormThresholdInRange(norm_lower_bound, norm_upper_bound)
@@ -408,7 +424,7 @@ def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, f
   sorted_counterfactuals = sorted(counterfactuals, key = lambda x: x['distance'])
   closest_counterfactual_sample = sorted_counterfactuals[0] # IMPORTANT: there may be many more at this same distance! OR NONE!
 
-  return closest_counterfactual_sample
+  return counterfactuals, closest_counterfactual_sample
 
 
 def getPrettyStringForSampleDictionary(sample, dataset_obj):
@@ -508,7 +524,7 @@ def genExp(
   factual_sample['y'] = False
 
   # find closest counterfactual sample from this negative sample
-  closest_counterfactual_sample = findClosestCounterfactualSample(
+  all_counterfactuals, closest_counterfactual_sample = findClosestCounterfactualSample(
     model_trained,
     model_symbols,
     dataset_obj,
@@ -533,6 +549,7 @@ def genExp(
     'counterfactual_plausible': True,
     'counterfactual_distance': closest_counterfactual_sample['distance'],
     'counterfactual_time': end_time - start_time,
+    'all_counterfactuals': all_counterfactuals
   }
 
 

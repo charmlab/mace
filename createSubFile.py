@@ -4,14 +4,15 @@
 
 # for f in $(ls | grep SAT); do echo $f; ls $f/__explanation_log/ | wc -l; done
 # ls -1 | grep 2019.05 | xargs rm -rf
+# scp -r amir@login.cluster.is.localnet:~/dev/mace/_experiments/__merged _results/
 
 DATASET_VALUES = ['adult', 'credit', 'compass']
-MODEL_CLASS_VALUES = ['tree', 'forest', 'lr', 'mlp']
+MODEL_CLASS_VALUES = ['tree', 'forest', 'lr'] # MLP
 NORM_VALUES = ['zero_norm', 'one_norm', 'infty_norm']
 APPROACHES_VALUES = ['SAT']
 
-NUM_BATCHES = 100
-NUM_NEG_SAMPLES_PER_BATCH = 5
+NUM_BATCHES = 50
+NUM_NEG_SAMPLES_PER_BATCH = 10
 
 sub_file = open('test.sub','w')
 
