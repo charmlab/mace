@@ -5,8 +5,6 @@ import numpy as np
 import pandas as pd
 import normalizedDistance
 
-from debug import ipsh
-
 from modelConversion import *
 from pysmt.shortcuts import *
 from pysmt.typing import *

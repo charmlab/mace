@@ -11,8 +11,8 @@ MODEL_CLASS_VALUES = ['tree', 'forest', 'lr'] # MLP
 NORM_VALUES = ['zero_norm', 'one_norm', 'infty_norm']
 APPROACHES_VALUES = ['SAT']
 
-NUM_BATCHES = 50
-NUM_NEG_SAMPLES_PER_BATCH = 10
+NUM_BATCHES = 10
+NUM_NEG_SAMPLES_PER_BATCH = 50
 
 sub_file = open('test.sub','w')
 
