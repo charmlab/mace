@@ -5,9 +5,10 @@ from tqdm import tqdm
 from shutil import copyfile
 
 DATASET_VALUES = ['adult', 'credit', 'compass']
-MODEL_CLASS_VALUES = ['tree', 'forest', 'lr'] # MLP
+# MODEL_CLASS_VALUES = ['tree', 'forest', 'lr'] # MLP
+MODEL_CLASS_VALUES = ['mlp']
 NORM_VALUES = ['zero_norm', 'one_norm', 'infty_norm']
-APPROACHES_VALUES = ['SAT']
+APPROACHES_VALUES = ['MACE_eps_1e-3', 'MACE_eps_1e-5']
 
 
 experiments_folder_path = '/Volumes/amir/dev/mace/_experiments/'
@@ -26,7 +27,7 @@ for dataset_string in DATASET_VALUES:
         counter = counter + 1
 
         specific_experiment_path = f'{dataset_string}__{model_class_string}__{norm_type_string}__{approach_string}'
-        # specific_experiment_path = 'adult__mlp__zero_norm__SAT'
+        # specific_experiment_path = 'adult__mlp__zero_norm__MACE_eps_1e-5'
 
         print(f'\n[{counter} / {all_counter}] Merging together folders for {specific_experiment_path}')
 

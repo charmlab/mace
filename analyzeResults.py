@@ -14,7 +14,10 @@ parent_folders = [
   # '/Volumes/amir/dev/mace/_experiments/_may_20_all_results',
   # '/Volumes/amir/dev/mace/_experiments/_may_22_restricted_results_no_age_change',
   # '/Users/a6karimi/dev/mace/_results/_may_20_all_results_backup'
-  '/Volumes/amir/dev/mace/_experiments/__merged'
+  '/Volumes/amir/dev/mace/_experiments/__2019.07.30__merged_unconstrained_MO_PFT_AR',
+  '/Volumes/amir/dev/mace/_experiments/__2019.07.30__merged_unconstrained_MACE_eps_1e-1',
+  '/Volumes/amir/dev/mace/_experiments/__2019.09.19__merged_unconstrained_MACE_eps_1e-3__tree_forest_lr',
+  '/Volumes/amir/dev/mace/_experiments/__2019.09.19__merged_unconstrained_MACE_eps_1e-5__tree_forest_lr'
   # '/Volumes/amir/dev/mace/_experiments/__merged_all_unconstrained_tests_epsilon_1e-1_2019.07.30'
   # '/Users/a6karimi/dev/mace/_results/__merged_all_unconstrained_tests_epsilon_1e-1_2019.07.30'
   # '/Users/a6karimi/dev/mace/_experiments/'
@@ -28,22 +31,35 @@ for parent_folder in parent_folders:
   child_folders = [os.path.join(parent_folder, x) for x in child_folders]
   all_child_folders.extend(child_folders) # happens in place
 
+# DATASET_VALUES = ['adult', 'credit', 'compass']
+# MODEL_CLASS_VALUES = ['tree', 'forest', 'lr'] # MLP
+# NORM_VALUES = ['zero_norm', 'one_norm', 'infty_norm']
+# APPROACHES_VALUES = ['MACE_eps_1e-5']
+
 DATASET_VALUES = ['adult', 'credit', 'compass']
-MODEL_CLASS_VALUES = ['tree', 'forest', 'lr'] # MLP
+MODEL_CLASS_VALUES = ['tree', 'forest', 'lr', 'mlp']
 NORM_VALUES = ['zero_norm', 'one_norm', 'infty_norm']
-APPROACHES_VALUES = ['SAT']
+APPROACHES_VALUES = ['MACE_eps_1e-1', 'MACE_eps_1e-3', 'MACE_eps_1e-5', 'MO', 'PFT', 'AR']
+
+
+
+
+
+
+
+
 
 # 48 tests (54 tests - PFT x Adult x {tree, forest})
 # DATASET_VALUES = ['adult', 'credit', 'compass']
 # MODEL_CLASS_VALUES = ['tree', 'forest']
 # NORM_VALUES = ['zero_norm', 'one_norm', 'infty_norm']
-# APPROACHES_VALUES = ['SAT', 'MO', 'PFT']
+# APPROACHES_VALUES = ['MACE_eps_1e-5', 'MO', 'PFT']
 
 # 18 tests
 # DATASET_VALUES = ['adult', 'credit', 'compass']
 # MODEL_CLASS_VALUES = ['lr']
 # NORM_VALUES = ['zero_norm', 'one_norm', 'infty_norm']
-# APPROACHES_VALUES = ['SAT', 'MO']
+# APPROACHES_VALUES = ['MACE_eps_1e-5', 'MO']
 
 # 6 tests
 # DATASET_VALUES = ['adult', 'credit', 'compass']
@@ -55,11 +71,12 @@ APPROACHES_VALUES = ['SAT']
 # DATASET_VALUES = ['adult', 'credit', 'compass']
 # MODEL_CLASS_VALUES = ['mlp']
 # NORM_VALUES = ['zero_norm', 'one_norm', 'infty_norm']
-# APPROACHES_VALUES = ['SAT', 'MO']
+# APPROACHES_VALUES = ['MACE_eps_1e-5', 'MO']
 
 
-all_counter = 72 + 18  + 6 # (without the unneccessary FT folders for LR and MLP)
+# all_counter = 72 + 18 + 6 # (without the unneccessary FT folders for LR and MLP)
 # assert len(all_child_folders) == all_counter, 'missing, or too many experiment folders'
+all_counter = len(DATASET_VALUES) * len(MODEL_CLASS_VALUES) * len(NORM_VALUES) * len(APPROACHES_VALUES)
 
 def gatherAndSaveDistances():
   df_all_distances = pd.DataFrame({ \
@@ -67,6 +84,7 @@ def gatherAndSaveDistances():
     'model': [], \
     'norm': [], \
     'approach': [], \
+    # 'approach_param': [], \
     'factual sample index': [], \
     'counterfactual found': [], \
     'counterfactual plausible': [], \
@@ -112,22 +130,32 @@ def gatherAndSaveDistances():
             f'__{approach_string}' in x.split('/')[-1]
           ]
 
+          # if approach_string == 'MACE_eps_1e-5':
+          #   tmp_index = minimum_distance_file_path.find('eps')
+          #   epsilon_string = minimum_distance_file_path[tmp_index + 4 : tmp_index + 8]
+          #   approach_param = float(epsilon_string)
+          # else:
+          #   approach_param = -1
+
+          # Find results folder
           try:
             assert len(matching_child_folders) == 1, f'Expecting only 1 folder, but we found {len(matching_child_folders)}.'
             matching_child_folder = matching_child_folders[0]
             minimum_distance_file_path = os.path.join(matching_child_folder, '_minimum_distances')
           except:
-            print(f'\t[{counter} / {all_counter}] Cannot find folder for {dataset_string}-{model_class_string}-{norm_type_string}-{approach_string}')
+            print(f'\t[{counter} / (max {all_counter})] Cannot find folder for {dataset_string}-{model_class_string}-{norm_type_string}-{approach_string}')
             continue
 
+          # Find results file
           try:
             assert os.path.isfile(minimum_distance_file_path)
-            print(f'\t[{counter} / {all_counter}] Successfully found folder {matching_child_folder.split("/")[-1]}, found min dist file, ', end = '')
+            print(f'\t[{counter} / (max {all_counter})] Successfully found folder {matching_child_folder.split("/")[-1]}, found min dist file, ', end = '')
             minimum_distance_file = pickle.load(open(minimum_distance_file_path, 'rb'))
             print(f'adding {len(minimum_distance_file.keys())} distances.')
           except:
             print(f'Cannot find file {minimum_distance_file_path}')
 
+          # Add results to global results data frame
           # try:
           for key in minimum_distance_file.keys():
             factual_sample = minimum_distance_file[key]['factual_sample']
@@ -189,7 +217,7 @@ def gatherAndSaveDistances():
 
             # append rows
 
-            if approach_string == 'SAT':
+            if approach_string == 'MACE_eps_1e-5':
               all_counterfactual_distances = list(map(lambda x: x['distance'], minimum_distance_file[key]['all_counterfactuals']))
               all_counterfactual_times = list(map(lambda x: x['time'], minimum_distance_file[key]['all_counterfactuals']))
             else:
@@ -201,6 +229,7 @@ def gatherAndSaveDistances():
               'model': model_class_string,
               'norm': norm_type_string,
               'approach': approach_string,
+              # 'approach_param': approach_param,
               'factual sample index': key,
               'counterfactual found': minimum_distance_file[key]['counterfactual_found'],
               'counterfactual plausible': minimum_distance_file[key]['counterfactual_plausible'],
@@ -222,31 +251,6 @@ def gatherAndSaveDistances():
 
 
   print('Processing merged distance files.')
-
-
-  # TODO: Maybe move this to after saving so you can implement coverage here....
-  # TODO: Also, all methods (except ours which seg-faults) should have 500 rows
-  #       and each model-dataset pair should have identical indices.
-  # for dataset_string in DATASET_VALUES:
-  #   for model_class_string in MODEL_CLASS_VALUES:
-  #     for norm_type_string in NORM_VALUES:
-  #       for approach_string in APPROACHES_VALUES:
-  #         df = df_all_distances.where(
-  #           (df_all_distances['dataset'] == dataset_string) &
-  #           (df_all_distances['model'] == model_class_string) &
-  #           (df_all_distances['norm'] == norm_type_string) &
-  #           (df_all_distances['approach'] == approach_string),
-  #         ).dropna()
-  #         # ipsh()
-  #         found_and_plausible = df.where((df['counterfactual found'] == True) & (df['counterfactual plausible'] == True)).dropna().shape[0]
-  #         found_and_not_plausible = df.where((df['counterfactual found'] == True) & (df['counterfactual plausible'] == False)).dropna().shape[0]
-  #         not_found = df.where(df['counterfactual found'] == False).dropna().shape[0]
-  #         assert df.shape[0] == \
-  #           found_and_plausible + \
-  #           found_and_not_plausible + \
-  #           not_found
-  #         print(f'{dataset_string}-{model_class_string}-{norm_type_string}-{approach_string}:'.ljust(40), end = '')
-  #         print(f'found_and_plausible: {found_and_plausible}, found_and_not_plausible: {found_and_not_plausible}, not_found: {not_found}')
 
   print('Saving merged distance files.')
 
@@ -315,7 +319,7 @@ def plotDistancesMainBody():
   DATASET_VALUES = ['adult', 'credit', 'compass']
   MODEL_CLASS_VALUES = ['lr']
   NORM_VALUES = ['one_norm', 'infty_norm']
-  APPROACHES_VALUES = ['SAT', 'MO', 'AR']
+  APPROACHES_VALUES = ['MACE_eps_1e-1', 'MACE_eps_1e-3', 'MACE_eps_1e-5', 'MO', 'AR']
   # Remove FeatureTweaking / ActionableRecourse distances that were unsuccessful or non-plausible
   df_all_distances = pickle.load(open(f'_results/df_all_distances', 'rb'))
   df_all_distances = df_all_distances.where(
@@ -338,6 +342,15 @@ def plotDistancesMainBody():
     'compass': 'COMPAS',
   })
 
+  df_all_distances['approach'] = df_all_distances['approach'].map({
+    'MACE_eps_1e-1': r'MACE ($\epsilon = 10^{-1}$)',
+    'MACE_eps_1e-3': r'MACE ($\epsilon = 10^{-3}$)',
+    'MACE_eps_1e-5': r'MACE ($\epsilon = 10^{-5}$)',
+  })
+  # df_all_distances.loc[(df_all_distances['approach_param'] == 1e-1) & (df_all_distances['approach'] == 'MACE_eps_1e-5'), 'approach'] = r'MACE ($\epsilon = 10^{-1}$)'
+  # df_all_distances.loc[(df_all_distances['approach_param'] == 1e-3) & (df_all_distances['approach'] == 'MACE_eps_1e-5'), 'approach'] = r'MACE ($\epsilon = 10^{-3}$)'
+  # df_all_distances.loc[(df_all_distances['approach_param'] == 1e-5) & (df_all_distances['approach'] == 'MACE_eps_1e-5'), 'approach'] = r'MACE ($\epsilon = 10^{-5}$)'
+
   print('Plotting merged distance files.')
 
   for model_string in MODEL_CLASS_VALUES:
@@ -345,11 +358,11 @@ def plotDistancesMainBody():
     model_specific_df = df_all_distances.where(df_all_distances['model'] == model_string).dropna()
 
     if model_string == 'tree' or model_string == 'forest':
-      hue_order = ['SAT', 'MO', 'PFT']
+      hue_order = [r'MACE ($\epsilon = 10^{-1}$)', r'MACE ($\epsilon = 10^{-3}$)', r'MACE ($\epsilon = 10^{-5}$)', 'MO', 'PFT']
     elif model_string == 'lr':
-      hue_order = ['SAT', 'MO', 'AR']
-    else:
-      hue_order = ['SAT', 'MO']
+      hue_order = [r'MACE ($\epsilon = 10^{-1}$)', r'MACE ($\epsilon = 10^{-3}$)', r'MACE ($\epsilon = 10^{-5}$)', 'MO', 'AR']
+    elif model_string == 'mlp':
+      hue_order = [r'MACE ($\epsilon = 10^{-1}$)', r'MACE ($\epsilon = 10^{-3}$)', r'MACE ($\epsilon = 10^{-5}$)', 'MO']
 
     latexify(1.5 * 6, 6, font_scale = 1.2)
     ax = sns.catplot(
@@ -377,7 +390,7 @@ def plotDistancesAppendix():
   DATASET_VALUES = ['adult', 'credit', 'compass']
   MODEL_CLASS_VALUES = ['tree', 'forest', 'lr', 'mlp']
   NORM_VALUES = ['zero_norm', 'one_norm', 'infty_norm']
-  APPROACHES_VALUES = ['SAT', 'MO', 'PFT', 'AR']
+  APPROACHES_VALUES = ['MACE_eps_1e-1', 'MACE_eps_1e-3', 'MACE_eps_1e-5', 'MO', 'PFT', 'AR']
   # Remove FeatureTweaking / ActionableRecourse distances that were unsuccessful or non-plausible
   df_all_distances = pickle.load(open(f'_results/df_all_distances', 'rb'))
   df_all_distances = df_all_distances.where(
@@ -400,6 +413,15 @@ def plotDistancesAppendix():
     'compass': 'COMPAS',
   })
 
+  df_all_distances['approach'] = df_all_distances['approach'].map({
+    'MACE_eps_1e-1': r'MACE ($\epsilon = 10^{-1}$)',
+    'MACE_eps_1e-3': r'MACE ($\epsilon = 10^{-3}$)',
+    'MACE_eps_1e-5': r'MACE ($\epsilon = 10^{-5}$)',
+  })
+  # df_all_distances.loc[(df_all_distances['approach_param'] == 1e-1) & (df_all_distances['approach'] == 'MACE_eps_1e-5'), 'approach'] = r'MACE ($\epsilon = 10^{-1}$)'
+  # df_all_distances.loc[(df_all_distances['approach_param'] == 1e-3) & (df_all_distances['approach'] == 'MACE_eps_1e-5'), 'approach'] = r'MACE ($\epsilon = 10^{-3}$)'
+  # df_all_distances.loc[(df_all_distances['approach_param'] == 1e-5) & (df_all_distances['approach'] == 'MACE_eps_1e-5'), 'approach'] = r'MACE ($\epsilon = 10^{-5}$)'
+
   print('Plotting merged distance files.')
 
   for model_string in MODEL_CLASS_VALUES:
@@ -407,11 +429,11 @@ def plotDistancesAppendix():
     model_specific_df = df_all_distances.where(df_all_distances['model'] == model_string).dropna()
 
     if model_string == 'tree' or model_string == 'forest':
-      hue_order = ['SAT', 'MO', 'PFT']
+      hue_order = [r'MACE ($\epsilon = 10^{-1}$)', r'MACE ($\epsilon = 10^{-3}$)', r'MACE ($\epsilon = 10^{-5}$)', 'MO', 'PFT']
     elif model_string == 'lr':
-      hue_order = ['SAT', 'MO', 'AR']
-    else:
-      hue_order = ['SAT', 'MO']
+      hue_order = [r'MACE ($\epsilon = 10^{-1}$)', r'MACE ($\epsilon = 10^{-3}$)', r'MACE ($\epsilon = 10^{-5}$)', 'MO', 'AR']
+    elif model_string == 'mlp':
+      hue_order = [r'MACE ($\epsilon = 10^{-1}$)', r'MACE ($\epsilon = 10^{-3}$)', r'MACE ($\epsilon = 10^{-5}$)', 'MO']
 
     latexify(1.5 * 6, 6, font_scale = 1.2)
     ax = sns.catplot(
@@ -492,7 +514,7 @@ def measureEffectOfAgeCompass():
   model_class_string = 'lr'
   dataset_string = 'compass'
   norm_type_string = 'zero_norm'
-  for approach_string in ['SAT', 'MO']:
+  for approach_string in ['MACE_eps_1e-5', 'MO']:
 
     df = df_all_distances.where(
       (df_all_distances['dataset'] == dataset_string) &
@@ -603,7 +625,7 @@ def measureEffectOfAgeAdultPart1():
 
   model_class_string = 'forest'
   dataset_string = 'adult'
-  for approach_string in ['SAT', 'MO', 'PFT']:
+  for approach_string in ['MACE_eps_1e-5', 'MO', 'PFT']:
     for norm_type_string in ['zero_norm', 'one_norm', 'infty_norm']:
 
       df = df_all_distances.where(
@@ -777,10 +799,10 @@ def analyzeDistances():
             factual_sample_index_per_approach[approach_string] = \
               np.unique(df.where(df['approach'] == approach_string).dropna()['factual sample index'])
 
-          # # SAT works in all scenarios
+          # # MACE works in all scenarios
           # assert \
-          #   len(factual_sample_index_per_approach['SAT']) >= MIN_SAMPLES_REQUIRED, \
-          #   f'Expecting at least {MIN_SAMPLES_REQUIRED} samples for SAT, got {len(factual_sample_index_per_approach["SAT"])} ({tmp_string})'
+          #   len(factual_sample_index_per_approach['MACE_eps_1e-5']) >= MIN_SAMPLES_REQUIRED, \
+          #   f'Expecting at least {MIN_SAMPLES_REQUIRED} samples for MACE, got {len(factual_sample_index_per_approach["MACE"])} ({tmp_string})'
 
           # # MO works in all scenarios
           # assert \
@@ -807,43 +829,43 @@ def analyzeDistances():
           # for key in factual_sample_index_per_approach.keys():
           #   print(f'key: {key}, num factual samples: {len(factual_sample_index_per_approach[key])}')
 
-          # compute 1 - d_SAT / d_{MO, FT, ...}
-          all_but_sat_approaches = list(np.setdiff1d(
+          # compute 1 - d_MACE / d_{MO, FT, ...}
+          all_but_mace_approaches = list(np.setdiff1d(
             np.array(list(factual_sample_index_per_approach.keys())),
-            np.array('SAT')
+            np.array('MACE_eps_1e-5')
           ))
           factual_sample_index_intersect = []
-          for approach_string in all_but_sat_approaches:
+          for approach_string in all_but_mace_approaches:
             factual_sample_index_intersect = np.intersect1d(
-              factual_sample_index_per_approach['SAT'],
+              factual_sample_index_per_approach['MACE_eps_1e-5'],
               factual_sample_index_per_approach[approach_string]
             )
-            assert len(factual_sample_index_intersect) >= MIN_SAMPLES_REQUIRED, f'Expecting at least {MIN_SAMPLES_REQUIRED} intersecting samples between SAT and {approach_string}'
+            assert len(factual_sample_index_intersect) >= MIN_SAMPLES_REQUIRED, f'Expecting at least {MIN_SAMPLES_REQUIRED} intersecting samples between MACE and {approach_string}'
             distance_reduction_list = []
             for factual_sample_index in factual_sample_index_intersect:
-              sample_sat = df.where(
-                (df['approach'] == 'SAT') &
+              sample_mace = df.where(
+                (df['approach'] == 'MACE_eps_1e-5') &
                 (df['factual sample index'] == factual_sample_index)
               ).dropna().T.to_dict()
-              assert len(sample_sat.keys()) == 1, f'Expecting only 1 sample with index {factual_sample_index} for approach {approach_string}'
+              assert len(sample_mace.keys()) == 1, f'Expecting only 1 sample with index {factual_sample_index} for approach {approach_string}'
               sample_other = df.where(
                 (df['approach'] == approach_string) &
                 (df['factual sample index'] == factual_sample_index)
               ).dropna().T.to_dict()
               assert len(sample_other.keys()) == 1, f'Expecting only 1 sample with index {factual_sample_index} for approach {approach_string}'
-              minimum_distance_sat = sample_sat[list(sample_sat.keys())[0]]['counterfactual distance']
+              minimum_distance_mace = sample_mace[list(sample_mace.keys())[0]]['counterfactual distance']
               minimum_distance_other = sample_other[list(sample_other.keys())[0]]['counterfactual distance']
-              distance_reduction_list.append(1 - minimum_distance_sat / minimum_distance_other)
+              distance_reduction_list.append(1 - minimum_distance_mace / minimum_distance_other)
             tmp_mean = np.mean(np.array(distance_reduction_list)) * 100
             tmp_std = np.std(np.array(distance_reduction_list)) * 100
-            print(f'\t Distance reduction for {dataset_string} {model_class_string} {norm_type_string} (1 - d_SAT / d_{approach_string}) = \t {tmp_mean:.2f} +/- {tmp_std:.2f} \t (N = {len(distance_reduction_list)})')
+            print(f'\t Distance reduction for {dataset_string} {model_class_string} {norm_type_string} (1 - d_MACE / d_{approach_string}) = \t {tmp_mean:.2f} +/- {tmp_std:.2f} \t (N = {len(distance_reduction_list)})')
 
 
 def analyzeAverageDistanceRunTimeCoverage():
   DATASET_VALUES = ['adult', 'credit', 'compass']
   MODEL_CLASS_VALUES = ['tree', 'forest', 'lr', 'mlp']
   NORM_VALUES = ['zero_norm', 'one_norm', 'infty_norm']
-  APPROACHES_VALUES = ['SAT', 'MO', 'PFT', 'AR']
+  APPROACHES_VALUES = ['MACE_eps_1e-5', 'MO', 'PFT', 'AR']
   # Remove FeatureTweaking / ActionableRecourse distances that were unsuccessful or non-plausible
   df_all_distances = pickle.load(open(f'_results/df_all_distances', 'rb'))
   # DO NOT INCLUDE THE LINES BELOW!!!!!!!!!!!!!!!!!!!! WHY???
@@ -888,7 +910,7 @@ def plotDistanceTimeTradeofAgainstIterations():
   DATASET_VALUES = ['adult', 'credit', 'compass']
   MODEL_CLASS_VALUES = ['tree', 'forest', 'lr'] # MLP
   NORM_VALUES = ['zero_norm', 'one_norm', 'infty_norm']
-  APPROACHES_VALUES = ['SAT']
+  APPROACHES_VALUES = ['MACE_eps_1e-5']
   # Remove FeatureTweaking / ActionableRecourse distances that were unsuccessful or non-plausible
   df_all_distances = pickle.load(open(f'_results/df_all_distances', 'rb'))
   # DO NOT INCLUDE THE LINES BELOW!!!!!!!!!!!!!!!!!!!! WHY???
@@ -1007,48 +1029,47 @@ def plotDistanceTimeTradeofAgainstIterations():
 
       for dataset_string in DATASET_VALUES:
 
-        # for norm_type_string in NORM_VALUES:
-        norm_type_string = 'one_norm'
-        df = df_all_distances.where(
-          (df_all_distances['dataset'] == dataset_string) &
-          (df_all_distances['model'] == model_class_string) &
-          (df_all_distances['norm'] == norm_type_string) &
-          (df_all_distances['approach'] == approach_string),
-        ).dropna()
+        for norm_type_string in NORM_VALUES:
+          df = df_all_distances.where(
+            (df_all_distances['dataset'] == dataset_string) &
+            (df_all_distances['model'] == model_class_string) &
+            (df_all_distances['norm'] == norm_type_string) &
+            (df_all_distances['approach'] == approach_string),
+          ).dropna()
 
-        if df.shape[0]: # if any tests exist for this setup
-          # max_iterations = max(list(map(lambda x : len(x), df_all_distances['all counterfactual times'])))
-          # for elem in df_all_distances['all counterfactual times'].count()
+          if df.shape[0]: # if any tests exist for this setup
+            max_iterations = max(list(map(lambda x : len(x), df_all_distances['all counterfactual times'])))
+            print(f'max_iterations: {max_iterations}')
+            # for elem in df_all_distances['all counterfactual times'].count()
 
-          for index, row in df.iterrows():
-            all_counterfactual_distances = row['all counterfactual distances'][1:] # remove the first elem (np.infty)
-            all_counterfactual_times = row['all counterfactual times'][1:] # remove the first elem (np.infty)
-            cum_counterfactual_times = np.cumsum(all_counterfactual_times)
-            assert len(all_counterfactual_distances) == len(all_counterfactual_times)
-            for iteration_counter in range(len(all_counterfactual_distances)):
-              tmp_df = tmp_df.append({
-                'factual_sample_index': row['factual sample index'],
-                'dataset': dataset_string,
-                'model': model_class_string,
-                'norm': norm_type_string,
-                'approach': approach_string,
-                'iteration': int(iteration_counter),
-                'distance': all_counterfactual_distances[iteration_counter],
-                # 'time': all_counterfactual_times[iteration_counter],
-                'time': cum_counterfactual_times[iteration_counter],
-              }, ignore_index =  True)
-      fig, (ax1, ax2) = plt.subplots(ncols=2, sharey=False)
-      sns.lineplot(x="iteration", y="time", hue='dataset', data=tmp_df, ax=ax1)
-      sns.lineplot(x="iteration", y="distance", hue='dataset', data=tmp_df, ax=ax2)
-      ax1.set(ylim=(0, 60))
-      ax2.set(ylim=(0, 1))
-      # fig.savefig(f'_results/distance_vs_time___{model_class_string}_{dataset_string}_{norm_type_string}.png', dpi = 400)
-      fig.savefig(f'_results/distance_vs_time___{model_class_string}.png', dpi = 400)
-
+            for index, row in df.iterrows():
+              all_counterfactual_distances = row['all counterfactual distances'][1:] # remove the first elem (np.infty)
+              all_counterfactual_times = row['all counterfactual times'][1:] # remove the first elem (np.infty)
+              cum_counterfactual_times = np.cumsum(all_counterfactual_times)
+              assert len(all_counterfactual_distances) == len(all_counterfactual_times)
+              for iteration_counter in range(len(all_counterfactual_distances)):
+                tmp_df = tmp_df.append({
+                  'factual_sample_index': row['factual sample index'],
+                  'dataset': dataset_string,
+                  'model': model_class_string,
+                  'norm': norm_type_string,
+                  'approach': approach_string,
+                  'iteration': int(iteration_counter),
+                  'distance': all_counterfactual_distances[iteration_counter],
+                  # 'time': all_counterfactual_times[iteration_counter],
+                  'time': cum_counterfactual_times[iteration_counter],
+                }, ignore_index =  True)
+        fig, (ax1, ax2) = plt.subplots(ncols=2, sharey=False)
+        sns.lineplot(x="iteration", y="time", hue='dataset', data=tmp_df, ax=ax1)
+        sns.lineplot(x="iteration", y="distance", hue='dataset', data=tmp_df, ax=ax2)
+        # ax1.set(ylim=(0, 60))
+        ax2.set(ylim=(0, 1))
+        # fig.savefig(f'_results/distance_vs_time___{model_class_string}_{dataset_string}_{norm_type_string}.png', dpi = 400)
+        fig.savefig(f'_results/distance_vs_time___{model_class_string}_{norm_type_string}.png', dpi = 400)
 
 
 if __name__ == '__main__':
-  # gatherAndSaveDistances()
+  gatherAndSaveDistances()
   # measureEffectOfRaceCompass()
   # measureSensitiveAttributeChange()
   # DEPRECATED # measureEffectOfAgeCompass()
@@ -1057,9 +1078,9 @@ if __name__ == '__main__':
   # measureEffectOfAgeAdultPart3()
   # analyzeAverageDistanceRunTimeCoverage()
   # plotDistancesMainBody()
-  # plotDistancesAppendix()
+  plotDistancesAppendix()
   # DONE # analyzeDistances()
-  plotDistanceTimeTradeofAgainstIterations()
+  # plotDistanceTimeTradeofAgainstIterations()
 
 
 

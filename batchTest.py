@@ -13,9 +13,9 @@ import loadData
 import modelTraining
 
 try:
-  import generateSATExplanations
+  import generateMACEExplanations
 except:
-  print('[ENV WARNING] activate virtualenv to allow for testing SAT')
+  print('[ENV WARNING] activate virtualenv to allow for testing MACE')
 import generateMOExplanations
 import generateFTExplanations
 try:
@@ -65,10 +65,12 @@ def generateExplanations(
   potential_observable_samples,
   standard_deviations):
 
-  if approach_string == 'SAT': # 'sat_counterfactual':
+  if 'MACE' in approach_string: # 'MACE_counterfactual':
 
-    epsilon = 1e-3
-    return generateSATExplanations.genExp(
+    tmp_index = approach_string.find('eps')
+    epsilon_string = approach_string[tmp_index + 4 : tmp_index + 8]
+    epsilon = float(epsilon_string)
+    return generateMACEExplanations.genExp(
       explanation_file_name,
       model_trained,
       dataset_obj,
@@ -285,8 +287,8 @@ if __name__ == '__main__':
       '-a', '--approach',
       nargs = '+',
       type = str,
-      default = 'SAT',
-      help = 'Approach used to generate counterfactual: SAT, MO, FT, ES, AR.')
+      default = 'MACE_eps_1e-5',
+      help = 'Approach used to generate counterfactual: MACE_eps_1e-5, MO, FT, ES, AR.')
 
   parser.add_argument(
       '-b', '--batch_number',

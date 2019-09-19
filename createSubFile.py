@@ -1,24 +1,25 @@
-# python3 batchTest.py -d compass -m lr -n one_norm -a SAT -s 5
+# python3 batchTest.py -d compass -m lr -n one_norm -a MACE_eps_1e-5 -s 5
 # python3 batchTest.py -d compass -m lr -n one_norm -a MO -s 5
-# python3 batchTest.py -d compass -m lr -n one_norm -a SAT MO -s 5
+# python3 batchTest.py -d compass -m lr -n one_norm -a MACE_eps_1e-5 MO -s 5
 
-# for f in $(ls | grep SAT); do echo $f; ls $f/__explanation_log/ | wc -l; done
+# for f in $(ls | grep MACE_eps_1e-5); do echo $f; ls $f/__explanation_log/ | wc -l; done
 # ls -1 | grep 2019.05 | xargs rm -rf
 # scp -r amir@login.cluster.is.localnet:~/dev/mace/_experiments/__merged _results/
 
 DATASET_VALUES = ['adult', 'credit', 'compass']
-MODEL_CLASS_VALUES = ['tree', 'forest', 'lr'] # MLP
+# MODEL_CLASS_VALUES = ['tree', 'forest', 'lr'] # MLP
+MODEL_CLASS_VALUES = ['mlp']
 NORM_VALUES = ['zero_norm', 'one_norm', 'infty_norm']
-APPROACHES_VALUES = ['SAT']
+APPROACHES_VALUES = ['MACE_eps_1e-3', 'MACE_eps_1e-5']
 
-NUM_BATCHES = 10
-NUM_NEG_SAMPLES_PER_BATCH = 50
+NUM_BATCHES = 100
+NUM_NEG_SAMPLES_PER_BATCH = 5
 
 # DATASET_VALUES = ['adult', 'credit', 'compass']
 # # MODEL_CLASS_VALUES = ['tree', 'forest', 'lr'] # MLP
 # MODEL_CLASS_VALUES = ['mlp'] # MLP
 # NORM_VALUES = ['zero_norm', 'one_norm', 'infty_norm']
-# APPROACHES_VALUES = ['SAT']
+# APPROACHES_VALUES = ['MACE_eps_1e-5']
 
 # NUM_BATCHES = 100
 # NUM_NEG_SAMPLES_PER_BATCH = 5
@@ -78,9 +79,9 @@ for dataset_string in DATASET_VALUES:
 # python batchTest.py -d compass -m lr -n infty_norm -a MO -b 0 -s 500
 
 
-# python batchTest.py -d adult -m lr -n one_norm -a SAT -b 0 -s 500
-# python batchTest.py -d adult -m lr -n infty_norm -a SAT -b 0 -s 500
-# python batchTest.py -d credit -m lr -n one_norm -a SAT -b 0 -s 500
-# python batchTest.py -d credit -m lr -n infty_norm -a SAT -b 0 -s 500
-# python batchTest.py -d compass -m lr -n one_norm -a SAT -b 0 -s 500
-# python batchTest.py -d compass -m lr -n infty_norm -a SAT -b 0 -s 500
+# python batchTest.py -d adult -m lr -n one_norm -a MACE_eps_1e-5 -b 0 -s 500
+# python batchTest.py -d adult -m lr -n infty_norm -a MACE_eps_1e-5 -b 0 -s 500
+# python batchTest.py -d credit -m lr -n one_norm -a MACE_eps_1e-5 -b 0 -s 500
+# python batchTest.py -d credit -m lr -n infty_norm -a MACE_eps_1e-5 -b 0 -s 500
+# python batchTest.py -d compass -m lr -n one_norm -a MACE_eps_1e-5 -b 0 -s 500
+# python batchTest.py -d compass -m lr -n infty_norm -a MACE_eps_1e-5 -b 0 -s 500
