@@ -14,6 +14,15 @@ APPROACHES_VALUES = ['SAT']
 NUM_BATCHES = 10
 NUM_NEG_SAMPLES_PER_BATCH = 50
 
+# DATASET_VALUES = ['adult', 'credit', 'compass']
+# # MODEL_CLASS_VALUES = ['tree', 'forest', 'lr'] # MLP
+# MODEL_CLASS_VALUES = ['mlp'] # MLP
+# NORM_VALUES = ['zero_norm', 'one_norm', 'infty_norm']
+# APPROACHES_VALUES = ['SAT']
+
+# NUM_BATCHES = 100
+# NUM_NEG_SAMPLES_PER_BATCH = 5
+
 sub_file = open('test.sub','w')
 
 for dataset_string in DATASET_VALUES:
