@@ -5,10 +5,11 @@ from tqdm import tqdm
 from shutil import copyfile
 
 DATASET_VALUES = ['adult', 'credit', 'compass']
-# MODEL_CLASS_VALUES = ['tree', 'forest', 'lr'] # MLP
-MODEL_CLASS_VALUES = ['mlp']
+MODEL_CLASS_VALUES = ['tree', 'forest', 'lr'] # MLP
+# MODEL_CLASS_VALUES = ['mlp']
 NORM_VALUES = ['zero_norm', 'one_norm', 'infty_norm']
-APPROACHES_VALUES = ['MACE_eps_1e-3', 'MACE_eps_1e-5']
+# APPROACHES_VALUES = ['MACE_eps_1e-3', 'MACE_eps_1e-5']
+APPROACHES_VALUES = ['MACE_eps_1e-3']
 
 
 experiments_folder_path = '/Volumes/amir/dev/mace/_experiments/'
