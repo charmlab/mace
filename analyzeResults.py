@@ -6,7 +6,9 @@ import seaborn as sns
 import matplotlib
 import matplotlib.pyplot as plt
 
-sns.set(style="darkgrid")
+# sns.set(style="darkgrid")
+sns.set_context("paper")
+
 
 
 from pprint import pprint
@@ -42,24 +44,24 @@ from debug import ipsh
 
 def gatherAndSaveDistances():
 
-  # parent_folders = [
-  #   # '/Volumes/amir/dev/mace/_experiments/_may_20_all_results',
-  #   # '/Volumes/amir/dev/mace/_experiments/_may_22_restricted_results_no_age_change',
-  #   # '/Users/a6karimi/dev/mace/_results/_may_20_all_results_backup'
-  #   '/Volumes/amir/dev/mace/_experiments/__2019.07.30__merged_unconstrained_MO_PFT_AR',
-  #   '/Volumes/amir/dev/mace/_experiments/__2019.07.30__merged_unconstrained_MACE_eps_1e-1',
-  #   '/Volumes/amir/dev/mace/_experiments/__2019.09.19__merged_unconstrained_MACE_eps_1e-3__tree_forest_lr',
-  #   '/Volumes/amir/dev/mace/_experiments/__2019.09.19__merged_unconstrained_MACE_eps_1e-5__tree_forest_lr'
-  #   # '/Volumes/amir/dev/mace/_experiments/__merged_all_unconstrained_tests_epsilon_1e-1_2019.07.30'
-  #   # '/Users/a6karimi/dev/mace/_results/__merged_all_unconstrained_tests_epsilon_1e-1_2019.07.30'
-  #   # '/Users/a6karimi/dev/mace/_experiments/'
-  #   # '/Users/a6karimi/dev/mace/_results/__merged'
-  # ]
-
   parent_folders = [
-    '/Volumes/amir/dev/mace/_experiments/__2019.07.30__merged_constrained_MO_AR__lr',
-    '/Volumes/amir/dev/mace/_experiments/__2019.09.20__merged_constrained_MACE_eps_1e-3__tree_forest_lr'
+    # '/Volumes/amir/dev/mace/_experiments/_may_20_all_results',
+    # '/Volumes/amir/dev/mace/_experiments/_may_22_restricted_results_no_age_change',
+    # '/Users/a6karimi/dev/mace/_results/_may_20_all_results_backup'
+    '/Volumes/amir/dev/mace/_experiments/__2019.07.30__merged_unconstrained_MO_PFT_AR',
+    '/Volumes/amir/dev/mace/_experiments/__2019.07.30__merged_unconstrained_MACE_eps_1e-1',
+    '/Volumes/amir/dev/mace/_experiments/__2019.09.19__merged_unconstrained_MACE_eps_1e-3',
+    '/Volumes/amir/dev/mace/_experiments/__2019.09.19__merged_unconstrained_MACE_eps_1e-5'
+    # '/Volumes/amir/dev/mace/_experiments/__merged_all_unconstrained_tests_epsilon_1e-1_2019.07.30'
+    # '/Users/a6karimi/dev/mace/_results/__merged_all_unconstrained_tests_epsilon_1e-1_2019.07.30'
+    # '/Users/a6karimi/dev/mace/_experiments/'
+    # '/Users/a6karimi/dev/mace/_results/__merged'
   ]
+
+  # parent_folders = [
+  #   '/Volumes/amir/dev/mace/_experiments/__2019.07.30__merged_constrained_MO_AR__lr',
+  #   '/Volumes/amir/dev/mace/_experiments/__2019.09.20__merged_constrained_MACE_eps_1e-3__tree_forest_lr'
+  # ]
 
   all_child_folders = []
   for parent_folder in parent_folders:
@@ -74,12 +76,12 @@ def gatherAndSaveDistances():
   # APPROACHES_VALUES = ['MACE_eps_1e-5']
 
   DATASET_VALUES = ['adult', 'credit', 'compass']
-  # MODEL_CLASS_VALUES = ['tree', 'forest', 'lr', 'mlp']
-  MODEL_CLASS_VALUES = ['lr']
+  MODEL_CLASS_VALUES = ['tree', 'forest', 'lr', 'mlp']
+  # MODEL_CLASS_VALUES = ['lr']
   NORM_VALUES = ['zero_norm', 'one_norm', 'infty_norm']
   # APPROACHES_VALUES = ['MACE_eps_1e-1', 'MACE_eps_1e-3', 'MACE_eps_1e-5', 'MO', 'PFT', 'AR']
-  # APPROACHES_VALUES = ['MACE_eps_1e-3', 'MACE_eps_1e-5', 'MO', 'PFT', 'AR']
-  APPROACHES_VALUES = ['MACE_eps_1e-3', 'MO', 'AR']
+  APPROACHES_VALUES = ['MACE_eps_1e-3', 'MACE_eps_1e-5', 'MO', 'PFT', 'AR']
+  # APPROACHES_VALUES = ['MACE_eps_1e-3', 'MO', 'AR']
 
 
   # all_counter = 72 + 18 + 6 # (without the unneccessary FT folders for LR and MLP)
@@ -667,7 +669,6 @@ def plotAllDistancesAppendix():
   tmp_constrained = 'unconstrained'
   # Remove FeatureTweaking / ActionableRecourse distances that were unsuccessful or non-plausible
   df_all_distances = pickle.load(open(f'_results/_bu_df_all_distances_{tmp_constrained}', 'rb'))
-  df_all_distance_vs_time = pickle.load(open(f'_results/_bu_df_all_distance_vs_time_{tmp_constrained}', 'rb'))
 
   # Remove FeatureTweaking / ActionableRecourse distances that were unsuccessful or non-plausible
   df_all_distances = df_all_distances.where(
@@ -693,7 +694,7 @@ def plotAllDistancesAppendix():
   df_all_distances['approach'] = df_all_distances['approach'].map({
     # 'MACE_eps_1e-1': r'MACE ($\epsilon = 10^{-1}$)',
     'MACE_eps_1e-3': r'MACE ($\epsilon = 10^{-3}$)',
-    # 'MACE_eps_1e-5': r'MACE ($\epsilon = 10^{-5}$)',
+    'MACE_eps_1e-5': r'MACE ($\epsilon = 10^{-5}$)',
     'MO': 'MO',
     'PFT': 'PFT',
     'AR': 'AR',
@@ -706,8 +707,8 @@ def plotAllDistancesAppendix():
     model_specific_df = df_all_distances.where(df_all_distances['model'] == model_string).dropna()
 
     # hue_order = [r'MACE ($\epsilon = 10^{-1}$)', r'MACE ($\epsilon = 10^{-3}$)', r'MACE ($\epsilon = 10^{-5}$)']
-    # hue_order = [r'MACE ($\epsilon = 10^{-3}$)', r'MACE ($\epsilon = 10^{-5}$)']
-    hue_order = [r'MACE ($\epsilon = 10^{-3}$)']
+    hue_order = [r'MACE ($\epsilon = 10^{-3}$)', r'MACE ($\epsilon = 10^{-5}$)']
+    # hue_order = [r'MACE ($\epsilon = 10^{-3}$)']
     if model_string == 'tree' or model_string == 'forest':
       hue_order.extend(['MO', 'PFT'])
     elif model_string == 'lr':
@@ -716,6 +717,7 @@ def plotAllDistancesAppendix():
       hue_order.extend(['MO'])
 
     latexify(1.5 * 6, 6, font_scale = 1.2)
+    sns.set_style("whitegrid")
     ax = sns.catplot(
       x = 'dataset',
       y = 'counterfactual distance',
@@ -741,16 +743,14 @@ def plotAllDistancesAppendix():
 
 def plotAvgDistanceRunTimeCoverageTradeoffAgainstIterations():
 
-  MODEL_CLASS_VALUES = ['tree', 'forest', 'lr'] # MLP
-  # MODEL_CLASS_VALUES = ['lr'] # MLP
-  # NORM_VALUES = ['zero_norm', 'one_norm', 'infty_norm']
+  MODEL_CLASS_VALUES = ['tree', 'forest', 'lr', 'mlp']
   NORM_VALUES = ['one_norm']
 
   # tmp_constrained = 'constrained'
   tmp_constrained = 'unconstrained'
   # Remove FeatureTweaking / ActionableRecourse distances that were unsuccessful or non-plausible
   df_all_distances = pickle.load(open(f'_results/_bu_df_all_distances_{tmp_constrained}', 'rb'))
-  df_all_distance_vs_time = pickle.load(open(f'_results/_bu_df_all_distance_vs_time_{tmp_constrained}', 'rb'))
+  df_all_distance_vs_time = pickle.load(open(f'_results/_bu_df_all_distance_vs_time_{tmp_constrained}_wonky', 'rb'))
 
   # df_all_distance_vs_time = df_all_distance_vs_time.where(df_all_distance_vs_time['iteration'] <= 10).dropna()
 
@@ -827,9 +827,10 @@ def plotAvgDistanceRunTimeCoverageTradeoffAgainstIterations():
         (df_all_distances['norm'] == norm_type_string), # &
       ).dropna()
 
-      # latexify(1.5 * 2, 6, font_scale = 1.2)
-      # fig, (ax1, ax2) = plt.subplots(ncols=2, sharey=False)
-      fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(20, 6))
+      # fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(20, 6))
+      sns.set_style("whitegrid")
+      fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 4))
+
       ax1.set(yscale="log")
       ax2.set(yscale="log")
       sns.lineplot(
@@ -839,8 +840,8 @@ def plotAvgDistanceRunTimeCoverageTradeoffAgainstIterations():
         style_order = dataset_order,
         hue = "approach",
         hue_order = approach_order,
-        markers = True,
-        dashes = False,
+        markers = False,
+        dashes = True,
         data = tmp_df,
         legend = False,
         ax = ax1)
@@ -851,33 +852,37 @@ def plotAvgDistanceRunTimeCoverageTradeoffAgainstIterations():
         style_order = dataset_order,
         hue = "approach",
         hue_order = approach_order,
-        markers = True,
-        dashes = False,
+        markers = False,
+        dashes = True,
         data = tmp_df,
+        legend = 'full',
         ax = ax2)
-      sns.barplot(
-        x = 'dataset',
-        y = 'counterfactual found and plausible',
-        hue = 'approach',
-        hue_order = approach_order,
-        data = tmp_df_2,
-        ax = ax3)
+      # sns.barplot(
+      #   x = 'dataset',
+      #   y = 'counterfactual found and plausible',
+      #   hue = 'approach',
+      #   hue_order = approach_order,
+      #   data = tmp_df_2,
+      #   ax = ax3)
 
       # ax1.set(ylim = (0, 60))
       # ax2.set(ylim = (0, 0.5))
-      # ax2.legend(loc = 'upper center', bbox_to_anchor = (-.1, 1.15), ncol = 2, fancybox = True, shadow = True)
-      ax2.legend(loc = 'upper right', ncol = 2, fancybox = True, shadow = True)
-      ax3.legend(loc = 'lower center', ncol = 1, fancybox = True, shadow = True)
+      # ax2.legend(loc = 'upper center', bbox_to_anchor = (-.1, 1.15), ncol = 5, fancybox = True, shadow = True)
       # ax2.legend(loc = 'center left', bbox_to_anchor = (1, 0.5))
+      # ax1.legend(loc = 'lower right', ncol = 2, fancybox = True, shadow = True, fontsize = 'small')
+      # ax2.legend(loc = 'upper right', ncol = 2, fancybox = True, shadow = True, fontsize = 'small')
+      ax2.legend(loc = 'lower left', ncol = 2, fancybox = True, shadow = True, fontsize = 'small')
+      # ax3.legend(loc = 'lower center', ncol = 1, fancybox = True, shadow = True, fontsize = 'small')
+
 
       ax1.set_xlabel(r"# Calls to SAT Solver - $O(\log(1 / \epsilon))$")
-      ax1.set_ylabel(r"Time $\tau$ to compute Nearest Counterfactual" + "\n(averaged over plausible counterfactuals)")
+      ax1.set_ylabel(r"Time $\tau$ to compute" + "\nNearest Counterfactual")
       ax2.set_xlabel(r"# Calls to SAT Solver - $O(\log(1 / \epsilon))$")
-      ax2.set_ylabel(r"Distance $\delta$ to Nearest Counterfactual" + "\n(averaged over plausible counterfactuals)")
-      ax3.set_xlabel('') # remove "dataset" on the x-axis
-      ax3.set_ylabel(r"Coverage $\Omega$")
+      ax2.set_ylabel(r"Distance $\delta$ to" + "\nNearest Counterfactual")
+      # ax3.set_xlabel('') # remove "dataset" on the x-axis
+      # ax3.set_ylabel(r"Coverage $\Omega$")
 
-
+      fig.tight_layout()
       fig.savefig(f'_results/{tmp_constrained}__avg_tradeoff__{model_class_string}_{norm_type_string}.png', dpi = 300)
 
       # tmp_df = tmp_df.sample(10000)
@@ -937,13 +942,13 @@ def plotAvgDistanceRunTimeCoverageTradeoffAgainstIterations():
 
 if __name__ == '__main__':
   # gatherAndSaveDistances()
-  gatherAndSaveDistanceTimeTradeoffData()
+  # gatherAndSaveDistanceTimeTradeoffData()
 
   # analyzeRelativeDistances()
   # analyzeAverageDistanceRunTimeCoverage()
 
   # plotDistancesMainBody()
-  # plotAllDistancesAppendix()
+  plotAllDistancesAppendix()
   plotAvgDistanceRunTimeCoverageTradeoffAgainstIterations()
 
 
