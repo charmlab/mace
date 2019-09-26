@@ -271,7 +271,7 @@ def gatherAndSaveDistanceTimeTradeoffData():
 
   # unconstrained
   DATASET_VALUES = ['adult', 'credit', 'compass']
-  MODEL_CLASS_VALUES = ['tree', 'forest', 'lr'] # MLP
+  MODEL_CLASS_VALUES = ['tree', 'forest', 'lr', 'mlp']
   NORM_VALUES = ['one_norm']
   APPROACHES_VALUES = ['MO', 'PFT', 'AR', 'MACE_eps_1e-3', 'MACE_eps_1e-5']
 
@@ -544,10 +544,16 @@ def analyzeRelativeDistances():
 
 
 def analyzeAverageDistanceRunTimeCoverage():
+  # DATASET_VALUES = ['adult', 'credit', 'compass']
+  # MODEL_CLASS_VALUES = ['tree', 'forest', 'lr', 'mlp']
+  # NORM_VALUES = ['zero_norm', 'one_norm', 'infty_norm']
+  # APPROACHES_VALUES = ['MACE_eps_1e-3', 'MACE_eps_1e-5', 'MO', 'PFT', 'AR']
+
   DATASET_VALUES = ['adult', 'credit', 'compass']
-  MODEL_CLASS_VALUES = ['tree', 'forest', 'lr', 'mlp']
+  MODEL_CLASS_VALUES = ['mlp']
   NORM_VALUES = ['zero_norm', 'one_norm', 'infty_norm']
-  APPROACHES_VALUES = ['MACE_eps_1e-3', 'MACE_eps_1e-5', 'MO', 'PFT', 'AR']
+  APPROACHES_VALUES = ['MACE_eps_1e-3', 'MACE_eps_1e-5']
+
   # APPROACHES_VALUES = ['MACE_eps_1e-3', 'MACE_eps_1e-5', 'MO'] # COVERAGE = %100 ALWAYS
   # APPROACHES_VALUES = ['PFT', 'AR']
   # Remove FeatureTweaking / ActionableRecourse distances that were unsuccessful or non-plausible
@@ -750,7 +756,7 @@ def plotAvgDistanceRunTimeCoverageTradeoffAgainstIterations():
   tmp_constrained = 'unconstrained'
   # Remove FeatureTweaking / ActionableRecourse distances that were unsuccessful or non-plausible
   df_all_distances = pickle.load(open(f'_results/_bu_df_all_distances_{tmp_constrained}', 'rb'))
-  df_all_distance_vs_time = pickle.load(open(f'_results/_bu_df_all_distance_vs_time_{tmp_constrained}_wonky', 'rb'))
+  df_all_distance_vs_time = pickle.load(open(f'_results/_bu_df_all_distance_vs_time_{tmp_constrained}', 'rb'))
 
   # df_all_distance_vs_time = df_all_distance_vs_time.where(df_all_distance_vs_time['iteration'] <= 10).dropna()
 
@@ -945,11 +951,11 @@ if __name__ == '__main__':
   # gatherAndSaveDistanceTimeTradeoffData()
 
   # analyzeRelativeDistances()
-  # analyzeAverageDistanceRunTimeCoverage()
+  analyzeAverageDistanceRunTimeCoverage()
 
   # plotDistancesMainBody()
-  plotAllDistancesAppendix()
-  plotAvgDistanceRunTimeCoverageTradeoffAgainstIterations()
+  # plotAllDistancesAppendix()
+  # plotAvgDistanceRunTimeCoverageTradeoffAgainstIterations()
 
 
   # measureEffectOfRaceCompass()

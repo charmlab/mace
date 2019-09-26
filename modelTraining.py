@@ -31,22 +31,22 @@ SIMPLIFY_TREES = False
 ##                                                     Printing-related Methods
 ################################################################################
 
-def assertMatchingPredictionsOnTestData(model, model_class, X_test):
-    list_predictions = []
-    for a in range(20):
-        sample = X_test.iloc[a].tolist()
-        if model_class == 'tree':
-            print(model.predict_proba([sample]))
-            # list_predictions.append(abs(int(model.predict([sample])[0]) - predict_tree(*sample)))
-        elif model_class == 'forest':
-            list_predictions.append(abs(int(model.predict([sample])[0]) - predict_forest(*sample)))
-        elif model_class == 'lr':
-            print(model.predict_proba([sample]))
-            # list_predictions.append(abs(int(model.predict([sample])[0]) - predict_lr(sample)))
-        elif model_class == 'mlp':
-            list_predictions.append(abs(int(model.predict([sample])[0]) - predict_mlp(model, sample)))
+# def assertMatchingPredictionsOnTestData(model, model_class, X_test):
+#     list_predictions = []
+#     for a in range(20):
+#         sample = X_test.iloc[a].tolist()
+#         if model_class == 'tree':
+#             print(model.predict_proba([sample]))
+#             # list_predictions.append(abs(int(model.predict([sample])[0]) - predict_tree(*sample)))
+#         elif model_class == 'forest':
+#             list_predictions.append(abs(int(model.predict([sample])[0]) - predict_forest(*sample)))
+#         elif model_class == 'lr':
+#             print(model.predict_proba([sample]))
+#             # list_predictions.append(abs(int(model.predict([sample])[0]) - predict_lr(sample)))
+#         elif model_class == 'mlp':
+#             list_predictions.append(abs(int(model.predict([sample])[0]) - predict_mlp(model, sample)))
 
-    assert(not any(list_predictions))
+#     assert(not any(list_predictions))
 
 def trainAndSaveModels(experiment_folder_name, model_class, X_train, X_test, y_train, y_test, feature_names):
 
@@ -96,7 +96,6 @@ def trainAndSaveModels(experiment_folder_name, model_class, X_train, X_test, y_t
         # exec(modelConversion.mlp2py(model_trained))
 
     pickle.dump(model_trained, open(f'{experiment_folder_name}/_model_trained', 'wb'))
-    assertMatchingPredictionsOnTestData(model_trained, model_class, X_test)
     return model_trained
 
     # TODO: the line below will not run outside of if __name__ == '__main__'
