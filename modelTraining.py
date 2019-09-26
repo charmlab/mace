@@ -33,14 +33,16 @@ SIMPLIFY_TREES = False
 
 def assertMatchingPredictionsOnTestData(model, model_class, X_test):
     list_predictions = []
-    for a in range(round(X_test.shape[0])):
+    for a in range(20):
         sample = X_test.iloc[a].tolist()
         if model_class == 'tree':
-            list_predictions.append(abs(int(model.predict([sample])[0]) - predict_tree(*sample)))
+            print(model.predict_proba([sample]))
+            # list_predictions.append(abs(int(model.predict([sample])[0]) - predict_tree(*sample)))
         elif model_class == 'forest':
             list_predictions.append(abs(int(model.predict([sample])[0]) - predict_forest(*sample)))
         elif model_class == 'lr':
-            list_predictions.append(abs(int(model.predict([sample])[0]) - predict_lr(sample)))
+            print(model.predict_proba([sample]))
+            # list_predictions.append(abs(int(model.predict([sample])[0]) - predict_lr(sample)))
         elif model_class == 'mlp':
             list_predictions.append(abs(int(model.predict([sample])[0]) - predict_mlp(model, sample)))
 
@@ -94,6 +96,7 @@ def trainAndSaveModels(experiment_folder_name, model_class, X_train, X_test, y_t
         # exec(modelConversion.mlp2py(model_trained))
 
     pickle.dump(model_trained, open(f'{experiment_folder_name}/_model_trained', 'wb'))
+    assertMatchingPredictionsOnTestData(model_trained, model_class, X_test)
     return model_trained
 
     # TODO: the line below will not run outside of if __name__ == '__main__'

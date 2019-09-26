@@ -390,7 +390,9 @@ def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, f
         'norm_type': norm_type})
 
       # Update diversity and distance formulas now that we have found a solution
-      diversity_formula = And(diversity_formula, getDiversityFormulaUpdate(model))
+      # TODO: I think the line below should be removed, because in successive
+      #       reductions of delta, we should be able to re-use previous CFs
+      # diversity_formula = And(diversity_formula, getDiversityFormulaUpdate(model))
 
       # ipsh()
       norm_lower_bound = norm_lower_bound
