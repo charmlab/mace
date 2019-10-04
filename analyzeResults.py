@@ -44,18 +44,18 @@ from debug import ipsh
 
 def gatherAndSaveDistances():
 
+  # parent_folders = [
+  #   '/Volumes/amir/dev/mace/_experiments/__2019.07.30__merged_unconstrained_MO_PFT_AR',
+  #   '/Volumes/amir/dev/mace/_experiments/__2019.07.30__merged_unconstrained_MACE_eps_1e-1',
+  #   '/Volumes/amir/dev/mace/_experiments/__2019.09.19__merged_unconstrained_MACE_eps_1e-3',
+  #   '/Volumes/amir/dev/mace/_experiments/__2019.09.19__merged_unconstrained_MACE_eps_1e-5'
+  # ]
+
   parent_folders = [
-    # '/Volumes/amir/dev/mace/_experiments/_may_20_all_results',
-    # '/Volumes/amir/dev/mace/_experiments/_may_22_restricted_results_no_age_change',
-    # '/Users/a6karimi/dev/mace/_results/_may_20_all_results_backup'
     '/Volumes/amir/dev/mace/_experiments/__2019.07.30__merged_unconstrained_MO_PFT_AR',
-    '/Volumes/amir/dev/mace/_experiments/__2019.07.30__merged_unconstrained_MACE_eps_1e-1',
-    '/Volumes/amir/dev/mace/_experiments/__2019.09.19__merged_unconstrained_MACE_eps_1e-3',
-    '/Volumes/amir/dev/mace/_experiments/__2019.09.19__merged_unconstrained_MACE_eps_1e-5'
-    # '/Volumes/amir/dev/mace/_experiments/__merged_all_unconstrained_tests_epsilon_1e-1_2019.07.30'
-    # '/Users/a6karimi/dev/mace/_results/__merged_all_unconstrained_tests_epsilon_1e-1_2019.07.30'
-    # '/Users/a6karimi/dev/mace/_experiments/'
-    # '/Users/a6karimi/dev/mace/_results/__merged'
+    '/Volumes/amir/dev/mace/_experiments/__2019.09.29__merged_unconstrained_MACE_eps_1e-2__tree_forest_lr',
+    '/Volumes/amir/dev/mace/_experiments/__2019.09.29__merged_unconstrained_MACE_eps_1e-3__tree_forest_lr',
+    '/Volumes/amir/dev/mace/_experiments/__2019.09.29__merged_unconstrained_MACE_eps_1e-5__tree_forest_lr'
   ]
 
   # parent_folders = [
@@ -70,18 +70,10 @@ def gatherAndSaveDistances():
     child_folders = [os.path.join(parent_folder, x) for x in child_folders]
     all_child_folders.extend(child_folders) # happens in place
 
-  # DATASET_VALUES = ['adult', 'credit', 'compass']
-  # MODEL_CLASS_VALUES = ['tree', 'forest', 'lr'] # MLP
-  # NORM_VALUES = ['zero_norm', 'one_norm', 'infty_norm']
-  # APPROACHES_VALUES = ['MACE_eps_1e-5']
-
   DATASET_VALUES = ['adult', 'credit', 'compass']
-  MODEL_CLASS_VALUES = ['tree', 'forest', 'lr', 'mlp']
-  # MODEL_CLASS_VALUES = ['lr']
+  MODEL_CLASS_VALUES = ['tree', 'forest', 'lr'] # , 'mlp']
   NORM_VALUES = ['zero_norm', 'one_norm', 'infty_norm']
-  # APPROACHES_VALUES = ['MACE_eps_1e-1', 'MACE_eps_1e-3', 'MACE_eps_1e-5', 'MO', 'PFT', 'AR']
-  APPROACHES_VALUES = ['MACE_eps_1e-3', 'MACE_eps_1e-5', 'MO', 'PFT', 'AR']
-  # APPROACHES_VALUES = ['MACE_eps_1e-3', 'MO', 'AR']
+  APPROACHES_VALUES = ['MACE_eps_1e-2', 'MACE_eps_1e-3', 'MACE_eps_1e-5', 'MO', 'PFT', 'AR']
 
 
   # all_counter = 72 + 18 + 6 # (without the unneccessary FT folders for LR and MLP)
@@ -271,15 +263,9 @@ def gatherAndSaveDistanceTimeTradeoffData():
 
   # unconstrained
   DATASET_VALUES = ['adult', 'credit', 'compass']
-  MODEL_CLASS_VALUES = ['tree', 'forest', 'lr', 'mlp']
+  MODEL_CLASS_VALUES = ['tree', 'forest', 'lr'] # , 'mlp']
   NORM_VALUES = ['one_norm']
-  APPROACHES_VALUES = ['MO', 'PFT', 'AR', 'MACE_eps_1e-3', 'MACE_eps_1e-5']
-
-  # # unconstrained
-  # DATASET_VALUES = ['adult', 'credit', 'compass']
-  # MODEL_CLASS_VALUES = ['lr']
-  # NORM_VALUES = ['one_norm']
-  # APPROACHES_VALUES = ['MACE_eps_1e-3', 'MO', 'AR']
+  APPROACHES_VALUES = ['MO', 'PFT', 'AR', 'MACE_eps_1e-2', 'MACE_eps_1e-3', 'MACE_eps_1e-5']
 
   # Remove FeatureTweaking / ActionableRecourse distances that were unsuccessful or non-plausible
   df_all_distances = pickle.load(open(f'_results/df_all_distances', 'rb'))
@@ -442,9 +428,9 @@ def analyzeRelativeDistances():
   # APPROACHES_VALUES = ['MACE_eps_1e-1', 'MACE_eps_1e-3', 'MACE_eps_1e-5', 'MO', 'PFT', 'AR']
   # APPROACHES_VALUES = ['MACE_eps_1e-3', 'MACE_eps_1e-5', 'MO', 'PFT', 'AR']
   # APPROACHES_VALUES = ['MACE_eps_1e-5', 'MO', 'PFT', 'AR']
-  APPROACHES_VALUES = ['MACE_eps_1e-3', 'MO', 'PFT', 'AR']
+  APPROACHES_VALUES = ['MACE_eps_1e-2', 'MO', 'PFT', 'AR']
   # mace_baseline = 'MACE_eps_1e-5'
-  mace_baseline = 'MACE_eps_1e-3'
+  mace_baseline = 'MACE_eps_1e-2'
 
   # Remove FeatureTweaking / ActionableRecourse distances that were unsuccessful or non-plausible
   df_all_distances = pickle.load(open(f'_results/df_all_distances', 'rb'))
@@ -544,15 +530,16 @@ def analyzeRelativeDistances():
 
 
 def analyzeAverageDistanceRunTimeCoverage():
-  # DATASET_VALUES = ['adult', 'credit', 'compass']
-  # MODEL_CLASS_VALUES = ['tree', 'forest', 'lr', 'mlp']
-  # NORM_VALUES = ['zero_norm', 'one_norm', 'infty_norm']
-  # APPROACHES_VALUES = ['MACE_eps_1e-3', 'MACE_eps_1e-5', 'MO', 'PFT', 'AR']
-
   DATASET_VALUES = ['adult', 'credit', 'compass']
-  MODEL_CLASS_VALUES = ['mlp']
+  MODEL_CLASS_VALUES = ['tree', 'forest', 'lr'] # , 'mlp']
   NORM_VALUES = ['zero_norm', 'one_norm', 'infty_norm']
-  APPROACHES_VALUES = ['MACE_eps_1e-3', 'MACE_eps_1e-5']
+  # APPROACHES_VALUES = ['MACE_eps_1e-3', 'MACE_eps_1e-5', 'MO', 'PFT', 'AR']
+  APPROACHES_VALUES = ['MACE_eps_1e-2', 'MACE_eps_1e-3', 'MACE_eps_1e-5']
+
+  # DATASET_VALUES = ['adult', 'credit', 'compass']
+  # MODEL_CLASS_VALUES = ['mlp']
+  # NORM_VALUES = ['zero_norm', 'one_norm', 'infty_norm']
+  # APPROACHES_VALUES = ['MACE_eps_1e-3', 'MACE_eps_1e-5']
 
   # APPROACHES_VALUES = ['MACE_eps_1e-3', 'MACE_eps_1e-5', 'MO'] # COVERAGE = %100 ALWAYS
   # APPROACHES_VALUES = ['PFT', 'AR']
@@ -674,7 +661,7 @@ def plotAllDistancesAppendix():
   # tmp_constrained = 'constrained'
   tmp_constrained = 'unconstrained'
   # Remove FeatureTweaking / ActionableRecourse distances that were unsuccessful or non-plausible
-  df_all_distances = pickle.load(open(f'_results/_bu_df_all_distances_{tmp_constrained}', 'rb'))
+  df_all_distances = pickle.load(open(f'_results/_bu_df_all_distances_{tmp_constrained}_old', 'rb'))
 
   # Remove FeatureTweaking / ActionableRecourse distances that were unsuccessful or non-plausible
   df_all_distances = df_all_distances.where(
@@ -699,6 +686,7 @@ def plotAllDistancesAppendix():
 
   df_all_distances['approach'] = df_all_distances['approach'].map({
     # 'MACE_eps_1e-1': r'MACE ($\epsilon = 10^{-1}$)',
+    # 'MACE_eps_1e-2': r'MACE ($\epsilon = 10^{-2}$)',
     'MACE_eps_1e-3': r'MACE ($\epsilon = 10^{-3}$)',
     'MACE_eps_1e-5': r'MACE ($\epsilon = 10^{-5}$)',
     'MO': 'MO',
@@ -713,6 +701,7 @@ def plotAllDistancesAppendix():
     model_specific_df = df_all_distances.where(df_all_distances['model'] == model_string).dropna()
 
     # hue_order = [r'MACE ($\epsilon = 10^{-1}$)', r'MACE ($\epsilon = 10^{-3}$)', r'MACE ($\epsilon = 10^{-5}$)']
+    # hue_order = [r'MACE ($\epsilon = 10^{-2}$)', r'MACE ($\epsilon = 10^{-3}$)', r'MACE ($\epsilon = 10^{-5}$)']
     hue_order = [r'MACE ($\epsilon = 10^{-3}$)', r'MACE ($\epsilon = 10^{-5}$)']
     # hue_order = [r'MACE ($\epsilon = 10^{-3}$)']
     if model_string == 'tree' or model_string == 'forest':
@@ -739,7 +728,12 @@ def plotAllDistancesAppendix():
       palette = sns.color_palette("muted", 5),
       sharey = False,
       whis = np.inf,
+      legend_out = False,
     )
+    # ax.legend(loc = 'lower left', ncol = 1, fancybox = True, shadow = True, fontsize = 'small')
+    # ax.fig.get_children()[-1].set_bbox_to_anchor((1.1, 0.5, 0, 0))
+    ax.fig.get_axes()[0].legend().remove()
+    ax.fig.get_axes()[2].legend(loc='upper left', fancybox = True, shadow = True, fontsize = 'small')
     ax.set(ylim=(0,None))
     ax.set_axis_labels("", r"Distance $\delta$ to" + "\nNearest Counterfactual")
     ax.set_titles('{col_name}')
@@ -755,8 +749,8 @@ def plotAvgDistanceRunTimeCoverageTradeoffAgainstIterations():
   # tmp_constrained = 'constrained'
   tmp_constrained = 'unconstrained'
   # Remove FeatureTweaking / ActionableRecourse distances that were unsuccessful or non-plausible
-  df_all_distances = pickle.load(open(f'_results/_bu_df_all_distances_{tmp_constrained}', 'rb'))
-  df_all_distance_vs_time = pickle.load(open(f'_results/_bu_df_all_distance_vs_time_{tmp_constrained}', 'rb'))
+  df_all_distances = pickle.load(open(f'_results/_bu_df_all_distances_{tmp_constrained}_old', 'rb'))
+  df_all_distance_vs_time = pickle.load(open(f'_results/_bu_df_all_distance_vs_time_{tmp_constrained}_old', 'rb'))
 
   # df_all_distance_vs_time = df_all_distance_vs_time.where(df_all_distance_vs_time['iteration'] <= 10).dropna()
 
@@ -786,6 +780,7 @@ def plotAvgDistanceRunTimeCoverageTradeoffAgainstIterations():
 
   df_all_distances['approach'] = df_all_distances['approach'].map({
     # 'MACE_eps_1e-1': r'MACE ($\epsilon = 10^{-1}$)',
+    'MACE_eps_1e-2': r'MACE ($\epsilon = 10^{-2}$)',
     'MACE_eps_1e-3': r'MACE ($\epsilon = 10^{-3}$)',
     'MACE_eps_1e-5': r'MACE ($\epsilon = 10^{-5}$)',
     'MO': 'MO',
@@ -795,6 +790,7 @@ def plotAvgDistanceRunTimeCoverageTradeoffAgainstIterations():
 
   df_all_distance_vs_time['approach'] = df_all_distance_vs_time['approach'].map({
     # 'MACE_eps_1e-1': r'MACE ($\epsilon = 10^{-1}$)',
+    'MACE_eps_1e-2': r'MACE ($\epsilon = 10^{-2}$)',
     'MACE_eps_1e-3': r'MACE ($\epsilon = 10^{-3}$)',
     'MACE_eps_1e-5': r'MACE ($\epsilon = 10^{-5}$)',
     'MO': 'MO',
@@ -806,7 +802,8 @@ def plotAvgDistanceRunTimeCoverageTradeoffAgainstIterations():
 
     dataset_order = ['Adult', 'Credit', 'COMPAS']
 
-    approach_order = [r'MACE ($\epsilon = 10^{-3}$)', r'MACE ($\epsilon = 10^{-5}$)']
+    approach_order = [r'MACE ($\epsilon = 10^{-2}$)', r'MACE ($\epsilon = 10^{-3}$)', r'MACE ($\epsilon = 10^{-5}$)']
+    # approach_order = [r'MACE ($\epsilon = 10^{-3}$)', r'MACE ($\epsilon = 10^{-5}$)']
     # approach_order = [r'MACE ($\epsilon = 10^{-3}$)']
     if model_class_string == 'tree' or model_class_string == 'forest':
       approach_order.extend(['MO', 'PFT'])
@@ -951,10 +948,10 @@ if __name__ == '__main__':
   # gatherAndSaveDistanceTimeTradeoffData()
 
   # analyzeRelativeDistances()
-  analyzeAverageDistanceRunTimeCoverage()
+  # analyzeAverageDistanceRunTimeCoverage()
 
   # plotDistancesMainBody()
-  # plotAllDistancesAppendix()
+  plotAllDistancesAppendix()
   # plotAvgDistanceRunTimeCoverageTradeoffAgainstIterations()
 
 
