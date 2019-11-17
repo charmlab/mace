@@ -254,7 +254,13 @@ def lr2c(model, feature_names):
 
 def lr2formula(model, model_symbols):
     return Ite(
-        GE(
+        # it turns out that sklearn's model.predict() classifies the following
+        # as class -1, not +1: np.dot(coef_, sample) + intercept_ = 0
+        # Therefore, below we should use GT, and not GE. We didn't encounter
+        # this bug before, becuase of another bug in genMACEExplanations where
+        # numeric-real variables were not being set to REAL. Therefore, it never
+        # happened that np.dot(coef_, sample) + intercept_ would be exactly 0 lol!
+        GT(
             Plus(
                 Real(float(model.intercept_[0])),
                 Plus([

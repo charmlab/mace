@@ -148,6 +148,7 @@ def getDistanceFormula(model_symbols, dataset_obj, factual_sample, norm_type, no
       already_considered.extend(siblings_kurz)
 
   # 3. compute normalized squared distances
+  # pysmt.exceptions.SolverReturnedUnknownResultError
   normalized_squared_distances = [
     # Times(distance, distance)
     Pow(distance, Real(2))
@@ -474,7 +475,7 @@ def getDictSampleFromPySMTSample(pysmt_sample, dataset_obj):
     if not attr_obj.is_input:
       dict_sample[attr_name_kurz] = bool(str(pysmt_sample[attr_name_kurz]))
     elif attr_obj.attr_type == 'numeric-real':
-      dict_sample[attr_name_kurz] = float(str(pysmt_sample[attr_name_kurz]))
+      dict_sample[attr_name_kurz] = float(eval(str(pysmt_sample[attr_name_kurz])))
     else: # refer to loadData.VALID_ATTRIBUTE_TYPES
       dict_sample[attr_name_kurz] = int(str(pysmt_sample[attr_name_kurz]))
   return dict_sample
@@ -505,7 +506,7 @@ def genExp(
     upper_bound = attr_obj.upper_bound
     if not attr_obj.is_input:
       continue # do not overwrite the output
-    if attr_obj.attr_type == {'numeric-real'}:
+    if attr_obj.attr_type == 'numeric-real':
       model_symbols['input'][attr_name_kurz] = {
         'symbol': Symbol(attr_name_kurz, REAL),
         'lower_bound': Real(float(lower_bound)),
