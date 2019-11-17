@@ -35,13 +35,14 @@ def getBalancedDataFrame(dataset_obj):
 
   # get input and output columns
   all_data_frame_cols = balanced_data_frame.columns.values
+
   input_cols = [x for x in all_data_frame_cols if 'y' not in x.lower()]
   output_col = [x for x in all_data_frame_cols if 'y' in x.lower()][0]
 
   # assert only two classes in label (maybe relax later??)
   assert np.array_equal(
     np.unique(balanced_data_frame[output_col]),
-    np.array([0,1]) # only allowing {0, 1} labels
+    np.array([0, 1]) # only allowing {0, 1} labels
   )
 
   # get balanced dataframe (take minimum of the count, then round down to nearest 250)
@@ -50,7 +51,7 @@ def getBalancedDataFrame(dataset_obj):
   balanced_data_frame = pd.concat([
       balanced_data_frame[balanced_data_frame.loc[:,output_col] == 0].sample(number_of_subsamples_in_each_class, random_state = RANDOM_SEED),
       balanced_data_frame[balanced_data_frame.loc[:,output_col] == 1].sample(number_of_subsamples_in_each_class, random_state = RANDOM_SEED),
-  ]).sample(frac=1, random_state = RANDOM_SEED)
+  ]).sample(frac = 1, random_state = RANDOM_SEED)
 
   return balanced_data_frame, input_cols, output_col
 
@@ -156,9 +157,12 @@ def runExperiments(dataset_values, model_class_values, norm_values, approaches_v
           print(f'\t\t\tExperimenting with approach_string = `{approach_string}`')
 
           if model_class_string in {'tree', 'forest'}:
-            onehot = False
+            one_hot = False
           elif model_class_string in {'lr', 'mlp'}:
-            onehot = True
+            if dataset_string != 'random':
+              one_hot = True
+            else:
+              one_hot = False
           else:
             raise Exception(f'{model_class_string} not recognized as a valid `model_class_string`.')
 
@@ -173,18 +177,30 @@ def runExperiments(dataset_values, model_class_values, norm_values, approaches_v
           log_file = open(f'{experiment_folder_name}/log_experiment.txt','w')
 
           # save some files
-          dataset_obj = loadData.loadDataset(dataset_string, return_one_hot = onehot)
+          dataset_obj = loadData.loadDataset(dataset_string, return_one_hot = one_hot)
           pickle.dump(dataset_obj, open(f'{experiment_folder_name}/_dataset_obj', 'wb'))
 
-          # construct a balanced dataframe;
-          #     training portion used to train model
-          #     training & testing portions used to compute counterfactuals
-          balanced_data_frame, input_cols, output_col = getBalancedDataFrame(dataset_obj)
+          if dataset_string == 'random':
 
-          # get train / test splits
-          all_data = balanced_data_frame.loc[:,input_cols]
-          all_true_labels = balanced_data_frame.loc[:,output_col]
-          X_train, X_test, y_train, y_test = train_test_split(all_data, all_true_labels, train_size=.7, random_state = RANDOM_SEED)
+            data_train = dataset_obj.data_frame_kurz.iloc[0:1000]
+            data_test = dataset_obj.data_frame_kurz.iloc[1000:2000]
+
+            X_train = data_train[['x0', 'x1', 'x2']]
+            y_train = data_train[['y']]
+            X_test = data_test[['x0', 'x1', 'x2']]
+            y_test = data_test[['y']]
+
+          else:
+            # construct a balanced dataframe;
+            #     training portion used to train model
+            #     training & testing portions used to compute counterfactuals
+            balanced_data_frame, input_cols, output_col = getBalancedDataFrame(dataset_obj)
+
+            # get train / test splits
+            all_data = balanced_data_frame.loc[:,input_cols]
+            all_true_labels = balanced_data_frame.loc[:,output_col]
+            X_train, X_test, y_train, y_test = train_test_split(all_data, all_true_labels, train_size=.7, random_state = RANDOM_SEED)
+
           feature_names = dataset_obj.getInputAttributeNames('kurz') # easier to read (nothing to do with one-hot vs non-hit!)
           standard_deviations = list(X_train.std())
 

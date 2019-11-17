@@ -11,6 +11,7 @@ sys.path.insert(0, '_data_main')
 from _data_main.fair_adult_data import *
 from _data_main.fair_compas_data import *
 from _data_main.process_credit_data import *
+import experimentSetup
 
 # import sys
 # sys.path.insert(0, '_data_main')
@@ -67,11 +68,13 @@ class Dataset(object):
       np.array(self.getInputOutputAttributeNames('long'))
     )) == 0
 
-    # assert attributes and is_one_hot agree on one-hot-ness
+    # assert attributes and is_one_hot agree on one-hot-ness (i.e., if is_one_hot,
+    # then at least one attribute should be encoded as one-hot (w/ parent reference))
     tmp_is_one_hot = False
     for attr_name in attributes.keys():
       attr_obj = attributes[attr_name]
-      if attr_obj.parent_name_long != -1 or attr_obj.parent_name_kurz != -1 :
+      # this simply checks to make sure that at least one elem is one-hot encoded
+      if attr_obj.parent_name_long != -1 or attr_obj.parent_name_kurz != -1:
         tmp_is_one_hot = True
     assert is_one_hot == tmp_is_one_hot, "Dataset object and actual attributes don't agree on one-hot"
 
@@ -606,6 +609,74 @@ def loadDataset(dataset_name, return_one_hot, load_from_cache = True, debug_flag
         lower_bound = data_frame_non_hot[col_name].min(),
         upper_bound = data_frame_non_hot[col_name].max())
 
+  elif dataset_name == 'random':
+
+    w, X_train, y_train, X_test, y_test = experimentSetup.getExperimentParams()
+    print('w:\n', w)
+    print('X_test[0:5]:\n', X_test[0:5])
+    data_frame_non_hot = pd.DataFrame(
+        np.concatenate((
+          np.concatenate((y_train, X_train), axis = 1), # importantly, labels have to go first, else Dataset.__init__ messes up kurz column names
+          np.concatenate((y_test, X_test), axis = 1), # importantly, labels have to go first, else Dataset.__init__ messes up kurz column names
+        ),
+        axis = 0,
+      ),
+      columns=[
+        'label',
+        'x0',
+        'x1',
+        'x2',
+        # 'x3',
+        # 'x4',
+      ]
+    )
+    data_frame_non_hot = data_frame_non_hot.astype('float64')
+    data_frame_non_hot = data_frame_non_hot.reset_index(drop=True)
+    attributes_non_hot = {}
+
+    input_cols, output_col = getInputOutputColumns(data_frame_non_hot)
+
+    col_name = output_col
+    attributes_non_hot[col_name] = DatasetAttribute(
+      attr_name_long = col_name,
+      attr_name_kurz = 'y',
+      attr_type = 'binary',
+      is_input = False,
+      actionability = 'none',
+      parent_name_long = -1,
+      parent_name_kurz = -1,
+      lower_bound = data_frame_non_hot[col_name].min(),
+      upper_bound = data_frame_non_hot[col_name].max())
+
+    for col_idx, col_name in enumerate(input_cols):
+
+      if col_name == 'x0':
+        attr_type = 'numeric-real'
+        actionability = 'any' # 'none'
+      elif col_name == 'x1':
+        attr_type = 'numeric-real'
+        actionability = 'any' # 'none'
+      elif col_name == 'x2':
+        attr_type = 'numeric-real'
+        actionability = 'any' # 'none'
+      elif col_name == 'x3':
+        attr_type = 'numeric-real'
+        actionability = 'any' # 'none'
+      elif col_name == 'x4':
+        attr_type = 'numeric-real'
+        actionability = 'any' # 'none'
+
+      attributes_non_hot[col_name] = DatasetAttribute(
+        attr_name_long = col_name,
+        attr_name_kurz = f'x{col_idx}',
+        attr_type = attr_type,
+        is_input = True,
+        actionability = actionability,
+        parent_name_long = -1,
+        parent_name_kurz = -1,
+        lower_bound = data_frame_non_hot[col_name].min(),
+        upper_bound = data_frame_non_hot[col_name].max())
+
   else:
 
     raise Exception(f'{dataset_name} not recognized as a valid dataset.')
@@ -614,7 +685,6 @@ def loadDataset(dataset_name, return_one_hot, load_from_cache = True, debug_flag
     data_frame, attributes = getOneHotEquivalent(data_frame_non_hot, attributes_non_hot)
   else:
     data_frame, attributes = data_frame_non_hot, attributes_non_hot
-  print(data_frame.shape)
 
   # save then return
   dataset_obj = Dataset(data_frame, attributes, return_one_hot)
