@@ -10,6 +10,8 @@ from pysmt.shortcuts import *
 from pysmt.typing import *
 from pprint import pprint
 
+from debug import ipsh
+
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
@@ -74,14 +76,14 @@ def getDistanceFormula(model_symbols, dataset_obj, factual_sample, norm_type, no
       Div(
         ToReal(
           getAbsoluteDifference(
-            model_symbols['input'][attr_name_kurz]['symbol'],
+            model_symbols['interventional'][attr_name_kurz]['symbol'],
             factual_sample[attr_name_kurz]
           )
         ),
         Real(1)
         # ToReal(
-        #   model_symbols['input'][attr_name_kurz]['upper_bound'] -
-        #   model_symbols['input'][attr_name_kurz]['lower_bound']
+        #   model_symbols['interventional'][attr_name_kurz]['upper_bound'] -
+        #   model_symbols['interventional'][attr_name_kurz]['lower_bound']
         # )
       )
     )
@@ -98,7 +100,7 @@ def getDistanceFormula(model_symbols, dataset_obj, factual_sample, norm_type, no
           Ite(
             And([
               EqualsOrIff(
-                model_symbols['input'][attr_name_kurz]['symbol'],
+                model_symbols['interventional'][attr_name_kurz]['symbol'],
                 factual_sample[attr_name_kurz]
               )
               for attr_name_kurz in siblings_kurz
@@ -113,7 +115,7 @@ def getDistanceFormula(model_symbols, dataset_obj, factual_sample, norm_type, no
             ToReal(
               getAbsoluteDifference(
                 Plus([
-                  model_symbols['input'][attr_name_kurz]['symbol']
+                  model_symbols['interventional'][attr_name_kurz]['symbol']
                   for attr_name_kurz in siblings_kurz
                 ]),
                 Plus([
@@ -132,7 +134,7 @@ def getDistanceFormula(model_symbols, dataset_obj, factual_sample, norm_type, no
         #       Plus([
         #         Ite(
         #           EqualsOrIff(
-        #             model_symbols['input'][attr_name_kurz]['symbol'],
+        #             model_symbols['interventional'][attr_name_kurz]['symbol'],
         #             factual_sample[attr_name_kurz]
         #           ),
         #           Real(0),
@@ -207,100 +209,204 @@ def getDistanceFormula(model_symbols, dataset_obj, factual_sample, norm_type, no
   return distance_formula
 
 
+def getCausalConsistencyConstraints(model_symbols, factual_sample):
+  a = Ite(
+    Not( # if YES intervened
+      EqualsOrIff(
+        model_symbols['interventional']['x0']['symbol'],
+        factual_sample['x0'],
+      )
+    ),
+    EqualsOrIff( # set value of X^CF to the intervened value
+      model_symbols['counterfactual']['x0']['symbol'],
+      model_symbols['interventional']['x0']['symbol'],
+    ),
+    EqualsOrIff( # else, set value of X^CF to (8) from paper
+      model_symbols['counterfactual']['x0']['symbol'],
+      factual_sample['x0'],
+    ),
+  )
+
+  b = Ite(
+    Not( # if YES intervened
+      EqualsOrIff(
+        model_symbols['interventional']['x1']['symbol'],
+        factual_sample['x1'],
+      )
+    ),
+    EqualsOrIff( # set value of X^CF to the intervened value
+      model_symbols['counterfactual']['x1']['symbol'],
+      model_symbols['interventional']['x1']['symbol'],
+    ),
+    EqualsOrIff( # else, set value of X^CF to (8) from paper
+      model_symbols['counterfactual']['x1']['symbol'],
+      Plus(
+        factual_sample['x1'],
+        Minus(
+          model_symbols['counterfactual']['x0']['symbol'],
+          factual_sample['x0'],
+        )
+      )
+    ),
+  )
+
+  c = Ite(
+    Not( # if YES intervened
+      EqualsOrIff(
+        model_symbols['interventional']['x2']['symbol'],
+        factual_sample['x2'],
+      )
+    ),
+    EqualsOrIff( # set value of X^CF to the intervened value
+      model_symbols['counterfactual']['x2']['symbol'],
+      model_symbols['interventional']['x2']['symbol'],
+    ),
+    EqualsOrIff( # else, set value of X^CF to (8) from paper
+      model_symbols['counterfactual']['x2']['symbol'],
+      Plus(
+        factual_sample['x2'],
+        Minus(
+          Plus(
+            Times(
+              Minus(
+                model_symbols['counterfactual']['x0']['symbol'],
+                Real(1)
+              ),
+              Real(0.25)
+            ),
+            Times(
+              model_symbols['counterfactual']['x1']['symbol'],
+              Real(float(np.sqrt(3)))
+            )
+          ),
+          Plus(
+            Times(
+              Minus(
+                factual_sample['x0'],
+                Real(1)
+              ),
+              Real(0.25)
+            ),
+            Times(
+              factual_sample['x1'],
+              Real(float(np.sqrt(3)))
+            )
+          ),
+        )
+      )
+    ),
+  )
+
+  return And([a,b,c])
+
+
 def getPlausibilityFormula(model_symbols, dataset_obj, factual_sample):
   # here is where the user specifies the range of variables, and which
   # variables are actionable or not, etc.
-  range_plausibility = And([
+  range_plausibility_1 = And([
     And(
-      GE(model_symbols['input'][attr_name_kurz]['symbol'], model_symbols['input'][attr_name_kurz]['lower_bound']),
-      LE(model_symbols['input'][attr_name_kurz]['symbol'], model_symbols['input'][attr_name_kurz]['upper_bound'])
+      GE(model_symbols['counterfactual'][attr_name_kurz]['symbol'], model_symbols['counterfactual'][attr_name_kurz]['lower_bound']),
+      LE(model_symbols['counterfactual'][attr_name_kurz]['symbol'], model_symbols['counterfactual'][attr_name_kurz]['upper_bound'])
     )
     for attr_name_kurz in dataset_obj.getInputAttributeNames('kurz')
   ])
+  range_plausibility_2 = And([
+    And(
+      GE(model_symbols['interventional'][attr_name_kurz]['symbol'], model_symbols['interventional'][attr_name_kurz]['lower_bound']),
+      LE(model_symbols['interventional'][attr_name_kurz]['symbol'], model_symbols['interventional'][attr_name_kurz]['upper_bound'])
+    )
+    for attr_name_kurz in dataset_obj.getInputAttributeNames('kurz')
+  ])
+  range_plausibility = And([range_plausibility_1, range_plausibility_2])
 
-  onehot_categorical_plausibility = TRUE() # plausibility of categorical (sum = 1)
-  onehot_ordinal_plausibility = TRUE() # plausibility ordinal (x3 >= x2 & x2 >= x1)
+  # onehot_categorical_plausibility = TRUE() # plausibility of categorical (sum = 1)
+  # onehot_ordinal_plausibility = TRUE() # plausibility ordinal (x3 >= x2 & x2 >= x1)
 
-  if dataset_obj.is_one_hot:
+  # if dataset_obj.is_one_hot:
 
-    dict_of_siblings_kurz = dataset_obj.getDictOfSiblings('kurz')
+  #   dict_of_siblings_kurz = dataset_obj.getDictOfSiblings('kurz')
 
-    for parent_name_kurz in dict_of_siblings_kurz['cat'].keys():
+  #   for parent_name_kurz in dict_of_siblings_kurz['cat'].keys():
 
-      onehot_categorical_plausibility = And(
-        onehot_categorical_plausibility,
-        And(
-          EqualsOrIff(
-            Plus([
-              model_symbols['input'][attr_name_kurz]['symbol']
-              for attr_name_kurz in dict_of_siblings_kurz['cat'][parent_name_kurz]
-            ]),
-            Int(1)
-          )
-        )
-      )
+  #     onehot_categorical_plausibility = And(
+  #       onehot_categorical_plausibility,
+  #       And(
+  #         EqualsOrIff(
+  #           Plus([
+  #             model_symbols['counterfactual'][attr_name_kurz]['symbol']
+  #             for attr_name_kurz in dict_of_siblings_kurz['cat'][parent_name_kurz]
+  #           ]),
+  #           Int(1)
+  #         )
+  #       )
+  #     )
 
-    for parent_name_kurz in dict_of_siblings_kurz['ord'].keys():
+  #   for parent_name_kurz in dict_of_siblings_kurz['ord'].keys():
 
-      onehot_ordinal_plausibility = And(
-        onehot_ordinal_plausibility,
-        And([
-          GE(
-            ToReal(model_symbols['input'][dict_of_siblings_kurz['ord'][parent_name_kurz][symbol_idx]]['symbol']),
-            ToReal(model_symbols['input'][dict_of_siblings_kurz['ord'][parent_name_kurz][symbol_idx + 1]]['symbol'])
-          )
-          for symbol_idx in range(len(dict_of_siblings_kurz['ord'][parent_name_kurz]) - 1) # already sorted
-        ])
-      )
+  #     onehot_ordinal_plausibility = And(
+  #       onehot_ordinal_plausibility,
+  #       And([
+  #         GE(
+  #           ToReal(model_symbols['counterfactual'][dict_of_siblings_kurz['ord'][parent_name_kurz][symbol_idx]]['symbol']),
+  #           ToReal(model_symbols['counterfactual'][dict_of_siblings_kurz['ord'][parent_name_kurz][symbol_idx + 1]]['symbol'])
+  #         )
+  #         for symbol_idx in range(len(dict_of_siblings_kurz['ord'][parent_name_kurz]) - 1) # already sorted
+  #       ])
+  #     )
 
-      # # Also implemented as the following logic, stating that
-      # # if x_j == 1, all x_i == 1 for i < j
-      # # Friendly reminder that for ordinal variables, x_0 is always 1
-      # onehot_ordinal_plausibility = And([
-      #   Ite(
-      #     EqualsOrIff(
-      #       ToReal(model_symbols['input'][dict_of_siblings_kurz['ord'][parent_name_kurz][symbol_idx_ahead]]['symbol']),
-      #       Real(1)
-      #     ),
-      #     And([
-      #       EqualsOrIff(
-      #         ToReal(model_symbols['input'][dict_of_siblings_kurz['ord'][parent_name_kurz][symbol_idx_behind]]['symbol']),
-      #         Real(1)
-      #       )
-      #       for symbol_idx_behind in range(symbol_idx_ahead)
-      #     ]),
-      #     TRUE()
-      #   )
-      #   for symbol_idx_ahead in range(1, len(dict_of_siblings_kurz['ord'][parent_name_kurz])) # already sorted
-      # ])
+  #     # # Also implemented as the following logic, stating that
+  #     # # if x_j == 1, all x_i == 1 for i < j
+  #     # # Friendly reminder that for ordinal variables, x_0 is always 1
+  #     # onehot_ordinal_plausibility = And([
+  #     #   Ite(
+  #     #     EqualsOrIff(
+  #     #       ToReal(model_symbols['counterfactual'][dict_of_siblings_kurz['ord'][parent_name_kurz][symbol_idx_ahead]]['symbol']),
+  #     #       Real(1)
+  #     #     ),
+  #     #     And([
+  #     #       EqualsOrIff(
+  #     #         ToReal(model_symbols['counterfactual'][dict_of_siblings_kurz['ord'][parent_name_kurz][symbol_idx_behind]]['symbol']),
+  #     #         Real(1)
+  #     #       )
+  #     #       for symbol_idx_behind in range(symbol_idx_ahead)
+  #     #     ]),
+  #     #     TRUE()
+  #     #   )
+  #     #   for symbol_idx_ahead in range(1, len(dict_of_siblings_kurz['ord'][parent_name_kurz])) # already sorted
+  #     # ])
 
-  # plausibility of non-actionable values
-  actionability_plausibility = []
-  for attr_name_kurz in dataset_obj.getInputAttributeNames('kurz'):
-    attr_obj = dataset_obj.attributes_kurz[attr_name_kurz]
-    if attr_obj.actionability == 'none':
-      actionability_plausibility.append(EqualsOrIff(
-        model_symbols['input'][attr_name_kurz]['symbol'],
-        factual_sample[attr_name_kurz]
-      ))
-    elif attr_obj.actionability == 'same-or-increase':
-      actionability_plausibility.append(GE(
-        model_symbols['input'][attr_name_kurz]['symbol'],
-        factual_sample[attr_name_kurz]
-      ))
-    elif attr_obj.actionability == 'same-or-decrease':
-      actionability_plausibility.append(LE(
-        model_symbols['input'][attr_name_kurz]['symbol'],
-        factual_sample[attr_name_kurz]
-      ))
-  actionability_plausibility = And(actionability_plausibility)
+  # causal consistency constriants
+  # ipsh()
+  causal_consistency = getCausalConsistencyConstraints(model_symbols, factual_sample)
+
+  # # plausibility of non-actionable values (TODO: differentiate between non-actionable/immuutable variables)
+  # actionability_plausibility = []
+  # for attr_name_kurz in dataset_obj.getInputAttributeNames('kurz'):
+  #   attr_obj = dataset_obj.attributes_kurz[attr_name_kurz]
+  #   if attr_obj.actionability == 'none':
+  #     actionability_plausibility.append(EqualsOrIff(
+  #       model_symbols['counterfactual'][attr_name_kurz]['symbol'],
+  #       factual_sample[attr_name_kurz]
+  #     ))
+  #   elif attr_obj.actionability == 'same-or-increase':
+  #     actionability_plausibility.append(GE(
+  #       model_symbols['counterfactual'][attr_name_kurz]['symbol'],
+  #       factual_sample[attr_name_kurz]
+  #     ))
+  #   elif attr_obj.actionability == 'same-or-decrease':
+  #     actionability_plausibility.append(LE(
+  #       model_symbols['counterfactual'][attr_name_kurz]['symbol'],
+  #       factual_sample[attr_name_kurz]
+  #     ))
+  # actionability_plausibility = And(actionability_plausibility)
 
 
   return And(
     # range_plausibility,
-    onehot_categorical_plausibility,
-    onehot_ordinal_plausibility,
-    actionability_plausibility
+    # onehot_categorical_plausibility,
+    # onehot_ordinal_plausibility,
+    # actionability_plausibility
+    causal_consistency
   )
 
 
@@ -348,8 +454,15 @@ def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, f
   iters = 1
   max_iters = 100
   counterfactuals = [] # list of tuples (samples, distances)
-  counterfactuals.append({'sample': {}, 'distance': np.infty, 'time': np.infty, 'norm_type': None}) # in case no counterfactuals are found.
-  explanation_counter = 0
+  # In case no counterfactuals are found (this could happen for a variety of
+  # reasons, perhaps due to non-plausibility), return a template counterfactual
+  counterfactuals.append({
+    'counterfactual_sample': {},
+    'counterfactual_distance': np.infty,
+    'interventional_sample': {},
+    'interventional_distance': np.infty,
+    'time': np.infty,
+    'norm_type': norm_type})
 
   print('Solving (not searching) for closest counterfactual using various distance thresholds...', file=log_file)
 
@@ -372,22 +485,53 @@ def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, f
     if model: # joint formula is satisfiable
 
       print('solution exists & found.', file=log_file)
-      explanation_counter = explanation_counter + 1
       counterfactual_pysmt_sample = {}
+      interventional_pysmt_sample = {}
+      # ipsh()
       for (symbol_key, symbol_value) in model:
-        if str(symbol_key) in dataset_obj.getInputOutputAttributeNames('kurz'): # symbol_key may be 'x#', {'p0#', 'p1#'}, 'w#', or 'y'
-          counterfactual_pysmt_sample[str(symbol_key)] = symbol_value
-      # IMPORTANT TODO: Convert back to dict_sample
-      counterfactual_sample  = getDictSampleFromPySMTSample(counterfactual_pysmt_sample, dataset_obj)
+        # symbol_key may be 'x#', {'p0#', 'p1#'}, 'w#', or 'y'
+        tmp = str(symbol_key)
+        if 'counterfactual' in str(symbol_key):
+          tmp = tmp[:-15]
+          if tmp in dataset_obj.getInputOutputAttributeNames('kurz'):
+            counterfactual_pysmt_sample[tmp] = symbol_value
+        elif 'interventional' in str(symbol_key):
+          tmp = tmp[:-15]
+          if tmp in dataset_obj.getInputOutputAttributeNames('kurz'):
+            interventional_pysmt_sample[tmp] = symbol_value
+        elif tmp in dataset_obj.getInputOutputAttributeNames('kurz'): # for y variable
+          counterfactual_pysmt_sample[tmp] = symbol_value
+          interventional_pysmt_sample[tmp] = symbol_value
+
+
+      # IMPORTANT: Convert back from pysmt_sample to dict_sample to compute distance and savae
+      counterfactual_sample  = getDictSampleFromPySMTSample(
+        counterfactual_pysmt_sample,
+        dataset_obj)
+      interventional_sample  = getDictSampleFromPySMTSample(
+        interventional_pysmt_sample,
+        dataset_obj)
 
       # assert samples have correct prediction label according to sklearn model
       assertPrediction(counterfactual_sample, model_trained, dataset_obj)
+      # of course, there is no need to assertPrediction on the interventional_sample
 
-      counterfactual_distance = normalizedDistance.getDistanceBetweenSamples(factual_sample, counterfactual_sample, norm_type, dataset_obj)
+      counterfactual_distance = normalizedDistance.getDistanceBetweenSamples(
+        factual_sample,
+        counterfactual_sample,
+        norm_type,
+        dataset_obj)
+      interventional_distance = normalizedDistance.getDistanceBetweenSamples(
+        factual_sample,
+        interventional_sample,
+        norm_type,
+        dataset_obj)
       counterfactual_time = iteration_end_time - iteration_start_time
       counterfactuals.append({
-        'sample': counterfactual_sample,
-        'distance': counterfactual_distance,
+        'counterfactual_sample': counterfactual_sample,
+        'counterfactual_distance': counterfactual_distance,
+        'interventional_sample': interventional_sample,
+        'interventional_distance': interventional_distance,
         'time': counterfactual_time,
         'norm_type': norm_type})
 
@@ -396,14 +540,13 @@ def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, f
       #       reductions of delta, we should be able to re-use previous CFs
       # diversity_formula = And(diversity_formula, getDiversityFormulaUpdate(model))
 
-      # ipsh()
       norm_lower_bound = norm_lower_bound
       # IMPORTANT something odd happens somtimes if use vanilla binary search;
       # On the first iteration, with [0, 1] bounds, we may see a CF at d = 0.22.
       # When we update the bounds to [0, 0.5] bounds, surprisingly we sometimes
       # see a new CF at distance 0.24. We optimize the binary search to solve this.
       # norm_upper_bound = curr_norm_threshold
-      norm_upper_bound = float(counterfactual_distance + epsilon / 100) # not float64
+      norm_upper_bound = float(interventional_distance + epsilon / 100) # not float64
       curr_norm_threshold = getCenterNormThresholdInRange(norm_lower_bound, norm_upper_bound)
       distance_formula = getDistanceFormula(model_symbols, dataset_obj, factual_pysmt_sample, norm_type, curr_norm_threshold)
 
@@ -413,7 +556,6 @@ def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, f
       neg_model = get_model(neg_formula)
       if neg_model:
         print('no solution exists.', file=log_file)
-        # ipsh()
         norm_lower_bound = curr_norm_threshold
         norm_upper_bound = norm_upper_bound
         curr_norm_threshold = getCenterNormThresholdInRange(norm_lower_bound, norm_upper_bound)
@@ -423,10 +565,11 @@ def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, f
         quit()
         break
 
-  sorted_counterfactuals = sorted(counterfactuals, key = lambda x: x['distance'])
-  closest_counterfactual_sample = sorted_counterfactuals[0] # IMPORTANT: there may be many more at this same distance! OR NONE!
+  # IMPORTANT: there may be many more at this same distance! OR NONE!
+  closest_counterfactual_sample = sorted(counterfactuals, key = lambda x: x['counterfactual_distance'])[0]
+  closest_interventional_sample = sorted(counterfactuals, key = lambda x: x['interventional_distance'])[0]
 
-  return counterfactuals, closest_counterfactual_sample
+  return counterfactuals, closest_counterfactual_sample, closest_interventional_sample
 
 
 def getPrettyStringForSampleDictionary(sample, dataset_obj):
@@ -474,9 +617,15 @@ def getDictSampleFromPySMTSample(pysmt_sample, dataset_obj):
   for attr_name_kurz in dataset_obj.getInputOutputAttributeNames('kurz'):
     attr_obj = dataset_obj.attributes_kurz[attr_name_kurz]
     if not attr_obj.is_input:
-      dict_sample[attr_name_kurz] = bool(str(pysmt_sample[attr_name_kurz]))
+      try:
+        dict_sample[attr_name_kurz] = bool(str(pysmt_sample[attr_name_kurz]))
+      except:
+        ipsh()
     elif attr_obj.attr_type == 'numeric-real':
-      dict_sample[attr_name_kurz] = float(eval(str(pysmt_sample[attr_name_kurz])))
+      try:
+        dict_sample[attr_name_kurz] = float(eval(str(pysmt_sample[attr_name_kurz])))
+      except:
+        ipsh()
     else: # refer to loadData.VALID_ATTRIBUTE_TYPES
       dict_sample[attr_name_kurz] = int(str(pysmt_sample[attr_name_kurz]))
   return dict_sample
@@ -496,11 +645,13 @@ def genExp(
 
   # Initial params
   model_symbols = {
-    'input': {},
+    'counterfactual': {},
+    'interventional': {},
     'output': {'y': {'symbol': Symbol('y', BOOL)}}
   }
 
-  # Populate model_symbols['input'] using the parameters saved during training
+  # Populate model_symbols['counterfactual'/'interventional'] using the
+  # parameters saved during training
   for attr_name_kurz in dataset_obj.getInputAttributeNames('kurz'):
     attr_obj = dataset_obj.attributes_kurz[attr_name_kurz]
     lower_bound = attr_obj.lower_bound
@@ -508,25 +659,35 @@ def genExp(
     if not attr_obj.is_input:
       continue # do not overwrite the output
     if attr_obj.attr_type == 'numeric-real':
-      model_symbols['input'][attr_name_kurz] = {
-        'symbol': Symbol(attr_name_kurz, REAL),
+      model_symbols['counterfactual'][attr_name_kurz] = {
+        'symbol': Symbol(attr_name_kurz + '_counterfactual', REAL),
+        'lower_bound': Real(float(lower_bound)),
+        'upper_bound': Real(float(upper_bound))
+      }
+      model_symbols['interventional'][attr_name_kurz] = {
+        'symbol': Symbol(attr_name_kurz + '_interventional', REAL),
         'lower_bound': Real(float(lower_bound)),
         'upper_bound': Real(float(upper_bound))
       }
     else: # refer to loadData.VALID_ATTRIBUTE_TYPES
-      model_symbols['input'][attr_name_kurz] = {
-        'symbol': Symbol(attr_name_kurz, INT),
+      model_symbols['counterfactual'][attr_name_kurz] = {
+        'symbol': Symbol(attr_name_kurz + '_counterfactual', INT),
         'lower_bound': Int(int(lower_bound)),
         'upper_bound': Int(int(upper_bound))
       }
-  print('\n\n====================================================================================================================\n\n', file=log_file)
+      model_symbols['interventional'][attr_name_kurz] = {
+        'symbol': Symbol(attr_name_kurz + '_interventional', INT),
+        'lower_bound': Int(int(lower_bound)),
+        'upper_bound': Int(int(upper_bound))
+      }
+  print('\n\n==============================================\n\n', file=log_file)
   print('Model Symbols:', file=log_file)
   pprint(model_symbols, log_file)
 
   factual_sample['y'] = False
 
-  # find closest counterfactual sample from this negative sample
-  all_counterfactuals, closest_counterfactual_sample = findClosestCounterfactualSample(
+  # # find closest counterfactual sample from this negative sample
+  all_counterfactuals, closest_counterfactual_sample, closest_interventional_sample = findClosestCounterfactualSample(
     model_trained,
     model_symbols,
     dataset_obj,
@@ -538,18 +699,20 @@ def genExp(
 
   print('\n', file=log_file)
   print(f"Factual sample: \t\t {getPrettyStringForSampleDictionary(factual_sample, dataset_obj)}", file=log_file)
-  print(f"Best counterfactual sample: \t {getPrettyStringForSampleDictionary(closest_counterfactual_sample['sample'], dataset_obj)} (verified)", file=log_file)
+  print(f"Best counterfactual sample: \t {getPrettyStringForSampleDictionary(closest_counterfactual_sample['counterfactual_sample'], dataset_obj)} (verified)", file=log_file) # TODO add text for INT
   print('', file=log_file)
-  print(f"Minimum counterfactual distance (by solving the formula):\t {closest_counterfactual_sample['distance']:.6f}", file=log_file)
+  print(f"Minimum counterfactual distance (by solving the formula):\t {closest_counterfactual_sample['counterfactual_distance']:.6f}", file=log_file) # TODO add text for INT
 
   end_time = time.time()
 
-  return {
+  return { # TODO sort based on which distance? CF or INT?
     'factual_sample': factual_sample,
-    'counterfactual_sample': closest_counterfactual_sample['sample'],
+    'counterfactual_sample': closest_counterfactual_sample['counterfactual_sample'],
+    'interventional_sample': closest_interventional_sample['interventional_sample'],
     'counterfactual_found': True,
     'counterfactual_plausible': True,
-    'counterfactual_distance': closest_counterfactual_sample['distance'],
+    'counterfactual_distance': closest_counterfactual_sample['counterfactual_distance'],
+    'interventional_distance': closest_interventional_sample['interventional_distance'],
     'counterfactual_time': end_time - start_time,
     'all_counterfactuals': all_counterfactuals
   }

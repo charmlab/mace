@@ -90,7 +90,7 @@ def tree2c(tree, feature_names, return_value = 'class_idx_max', tree_idx = ''):
 
 def tree2formula(tree, model_symbols, return_value = 'class_idx_max', tree_idx = ''):
     tree_ = tree.tree_
-    feature_names = list(model_symbols['input'].keys())
+    feature_names = list(model_symbols['counterfactual'].keys())
     feature_name = [
         feature_names[i] if i != _tree.TREE_UNDEFINED else 'undefined!'
         for i in tree_.feature
@@ -102,11 +102,11 @@ def tree2formula(tree, model_symbols, return_value = 'class_idx_max', tree_idx =
             threshold = float(tree_.threshold[node])
             return Or(
                 And(
-                    LE(ToReal(model_symbols['input'][name]['symbol']), Real(threshold)),
+                    LE(ToReal(model_symbols['counterfactual'][name]['symbol']), Real(threshold)),
                     recurse(tree_.children_left[node])
                 ),
                 And(
-                    Not(LE(ToReal(model_symbols['input'][name]['symbol']), Real(threshold))),
+                    Not(LE(ToReal(model_symbols['counterfactual'][name]['symbol']), Real(threshold))),
                     recurse(tree_.children_right[node])
                 )
             )
@@ -265,10 +265,10 @@ def lr2formula(model, model_symbols):
                 Real(float(model.intercept_[0])),
                 Plus([
                     Times(
-                        ToReal(model_symbols['input'][symbol_key]['symbol']),
+                        ToReal(model_symbols['counterfactual'][symbol_key]['symbol']),
                         Real(float(model.coef_[0][idx]))
                         )
-                    for idx, symbol_key in enumerate(model_symbols['input'].keys())
+                    for idx, symbol_key in enumerate(model_symbols['counterfactual'].keys())
                 ])
             ),
             Real(0)),
@@ -433,11 +433,11 @@ def mlp2formula(model, model_symbols):
             for prev_layer_feature_idx in range(layer_widths[layer_idx - 1]):
 
                 if layer_idx == 1:
-                    input_layer_feature_string = list(model_symbols['input'].keys())[prev_layer_feature_idx]
+                    input_layer_feature_string = list(model_symbols['counterfactual'].keys())[prev_layer_feature_idx]
                     weight_string = 'w_{}_{}_{}'.format(layer_idx - 1, prev_layer_feature_idx, curr_layer_feature_idx)
                     inputs_to_curr_layer_feature.append(
                         Times(
-                            ToReal(model_symbols['input'][input_layer_feature_string]['symbol']),
+                            ToReal(model_symbols['counterfactual'][input_layer_feature_string]['symbol']),
                             Real(float(interlayer_weight_matrix[prev_layer_feature_idx, curr_layer_feature_idx]))
                         )
                     )

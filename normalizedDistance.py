@@ -12,6 +12,7 @@ np.random.seed(RANDOM_SEED)
 def getDistanceBetweenSamples(sample_1, sample_2, norm_type, dataset_obj):
 
   # IMPORTANT: sample1 and sample2 are dict_samples, not pysmt_samples
+  # (of course, this is by design, otherwise it would break abstraction)
   assert(sample_1.keys() == sample_2.keys())
   assert(sorted(sample_1.keys()) == sorted(dataset_obj.getInputOutputAttributeNames('kurz')))
 
