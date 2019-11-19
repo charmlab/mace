@@ -78,10 +78,11 @@ def getDistanceFormula(model_symbols, dataset_obj, factual_sample, norm_type, no
             factual_sample[attr_name_kurz]
           )
         ),
-        ToReal(
-          model_symbols['input'][attr_name_kurz]['upper_bound'] -
-          model_symbols['input'][attr_name_kurz]['lower_bound']
-        )
+        Real(1)
+        # ToReal(
+        #   model_symbols['input'][attr_name_kurz]['upper_bound'] -
+        #   model_symbols['input'][attr_name_kurz]['lower_bound']
+        # )
       )
     )
 
@@ -296,7 +297,7 @@ def getPlausibilityFormula(model_symbols, dataset_obj, factual_sample):
 
 
   return And(
-    range_plausibility,
+    # range_plausibility,
     onehot_categorical_plausibility,
     onehot_ordinal_plausibility,
     actionability_plausibility

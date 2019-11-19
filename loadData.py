@@ -626,8 +626,6 @@ def loadDataset(dataset_name, return_one_hot, load_from_cache = True, debug_flag
         'x0',
         'x1',
         'x2',
-        # 'x3',
-        # 'x4',
       ]
     )
     data_frame_non_hot = data_frame_non_hot.astype('float64')
@@ -657,12 +655,6 @@ def loadDataset(dataset_name, return_one_hot, load_from_cache = True, debug_flag
         attr_type = 'numeric-real'
         actionability = 'any' # 'none'
       elif col_name == 'x2':
-        attr_type = 'numeric-real'
-        actionability = 'any' # 'none'
-      elif col_name == 'x3':
-        attr_type = 'numeric-real'
-        actionability = 'any' # 'none'
-      elif col_name == 'x4':
         attr_type = 'numeric-real'
         actionability = 'any' # 'none'
 
