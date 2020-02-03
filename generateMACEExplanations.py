@@ -47,6 +47,9 @@ def getCounterfactualFormula(model_symbols, factual_sample):
 
 def getDistanceFormula(model_symbols, dataset_obj, factual_sample, norm_type, norm_threshold):
 
+  variable_to_compute_distance_on = 'interventional'
+  # variable_to_compute_distance_on = 'counterfactual'
+
   def getAbsoluteDifference(symbol_1, symbol_2):
     return Ite(
       GE(Minus(ToReal(symbol_1), ToReal(symbol_2)), Real(0)),
@@ -76,15 +79,15 @@ def getDistanceFormula(model_symbols, dataset_obj, factual_sample, norm_type, no
       Div(
         ToReal(
           getAbsoluteDifference(
-            model_symbols['interventional'][attr_name_kurz]['symbol'],
+            model_symbols[variable_to_compute_distance_on][attr_name_kurz]['symbol'],
             factual_sample[attr_name_kurz]
           )
         ),
-        Real(1)
-        # ToReal(
-        #   model_symbols['interventional'][attr_name_kurz]['upper_bound'] -
-        #   model_symbols['interventional'][attr_name_kurz]['lower_bound']
-        # )
+        # Real(1)
+        ToReal(
+          model_symbols[variable_to_compute_distance_on][attr_name_kurz]['upper_bound'] -
+          model_symbols[variable_to_compute_distance_on][attr_name_kurz]['lower_bound']
+        )
       )
     )
 
@@ -100,7 +103,7 @@ def getDistanceFormula(model_symbols, dataset_obj, factual_sample, norm_type, no
           Ite(
             And([
               EqualsOrIff(
-                model_symbols['interventional'][attr_name_kurz]['symbol'],
+                model_symbols[variable_to_compute_distance_on][attr_name_kurz]['symbol'],
                 factual_sample[attr_name_kurz]
               )
               for attr_name_kurz in siblings_kurz
@@ -115,7 +118,7 @@ def getDistanceFormula(model_symbols, dataset_obj, factual_sample, norm_type, no
             ToReal(
               getAbsoluteDifference(
                 Plus([
-                  model_symbols['interventional'][attr_name_kurz]['symbol']
+                  model_symbols[variable_to_compute_distance_on][attr_name_kurz]['symbol']
                   for attr_name_kurz in siblings_kurz
                 ]),
                 Plus([
@@ -134,7 +137,7 @@ def getDistanceFormula(model_symbols, dataset_obj, factual_sample, norm_type, no
         #       Plus([
         #         Ite(
         #           EqualsOrIff(
-        #             model_symbols['interventional'][attr_name_kurz]['symbol'],
+        #             model_symbols[variable_to_compute_distance_on][attr_name_kurz]['symbol'],
         #             factual_sample[attr_name_kurz]
         #           ),
         #           Real(0),
@@ -209,6 +212,97 @@ def getDistanceFormula(model_symbols, dataset_obj, factual_sample, norm_type, no
   return distance_formula
 
 
+# def getCausalConsistencyConstraints(model_symbols, factual_sample):
+#   a = Ite(
+#     Not( # if YES intervened
+#       EqualsOrIff(
+#         model_symbols['interventional']['x0']['symbol'],
+#         factual_sample['x0'],
+#       )
+#     ),
+#     EqualsOrIff( # set value of X^CF to the intervened value
+#       model_symbols['counterfactual']['x0']['symbol'],
+#       model_symbols['interventional']['x0']['symbol'],
+#     ),
+#     EqualsOrIff( # else, set value of X^CF to (8) from paper
+#       model_symbols['counterfactual']['x0']['symbol'],
+#       factual_sample['x0'],
+#     ),
+#   )
+
+#   b = Ite(
+#     Not( # if YES intervened
+#       EqualsOrIff(
+#         model_symbols['interventional']['x1']['symbol'],
+#         factual_sample['x1'],
+#       )
+#     ),
+#     EqualsOrIff( # set value of X^CF to the intervened value
+#       model_symbols['counterfactual']['x1']['symbol'],
+#       model_symbols['interventional']['x1']['symbol'],
+#     ),
+#     EqualsOrIff( # else, set value of X^CF to (8) from paper
+#       model_symbols['counterfactual']['x1']['symbol'],
+#       Plus(
+#         factual_sample['x1'],
+#         Minus(
+#           model_symbols['counterfactual']['x0']['symbol'],
+#           factual_sample['x0'],
+#         )
+#       )
+#     ),
+#   )
+
+#   c = Ite(
+#     Not( # if YES intervened
+#       EqualsOrIff(
+#         model_symbols['interventional']['x2']['symbol'],
+#         factual_sample['x2'],
+#       )
+#     ),
+#     EqualsOrIff( # set value of X^CF to the intervened value
+#       model_symbols['counterfactual']['x2']['symbol'],
+#       model_symbols['interventional']['x2']['symbol'],
+#     ),
+#     EqualsOrIff( # else, set value of X^CF to (8) from paper
+#       model_symbols['counterfactual']['x2']['symbol'],
+#       Plus(
+#         factual_sample['x2'],
+#         Minus(
+#           Plus(
+#             Times(
+#               Minus(
+#                 model_symbols['counterfactual']['x0']['symbol'],
+#                 Real(1)
+#               ),
+#               Real(0.25)
+#             ),
+#             Times(
+#               model_symbols['counterfactual']['x1']['symbol'],
+#               Real(float(np.sqrt(3)))
+#             )
+#           ),
+#           Plus(
+#             Times(
+#               Minus(
+#                 factual_sample['x0'],
+#                 Real(1)
+#               ),
+#               Real(0.25)
+#             ),
+#             Times(
+#               factual_sample['x1'],
+#               Real(float(np.sqrt(3)))
+#             )
+#           ),
+#         )
+#       )
+#     ),
+#   )
+
+#   return And([a,b,c])
+
+
 def getCausalConsistencyConstraints(model_symbols, factual_sample):
   a = Ite(
     Not( # if YES intervened
@@ -243,61 +337,52 @@ def getCausalConsistencyConstraints(model_symbols, factual_sample):
       Plus(
         factual_sample['x1'],
         Minus(
-          model_symbols['counterfactual']['x0']['symbol'],
-          factual_sample['x0'],
+          Times(
+            model_symbols['counterfactual']['x0']['symbol'],
+            Real(0.2)
+          ),
+          Times(
+            factual_sample['x0'],
+            Real(0.2)
+          )
         )
       )
     ),
   )
 
-  c = Ite(
-    Not( # if YES intervened
-      EqualsOrIff(
-        model_symbols['interventional']['x2']['symbol'],
-        factual_sample['x2'],
-      )
-    ),
-    EqualsOrIff( # set value of X^CF to the intervened value
-      model_symbols['counterfactual']['x2']['symbol'],
-      model_symbols['interventional']['x2']['symbol'],
-    ),
-    EqualsOrIff( # else, set value of X^CF to (8) from paper
-      model_symbols['counterfactual']['x2']['symbol'],
-      Plus(
-        factual_sample['x2'],
-        Minus(
-          Plus(
-            Times(
-              Minus(
-                model_symbols['counterfactual']['x0']['symbol'],
-                Real(1)
-              ),
-              Real(0.25)
-            ),
-            Times(
-              model_symbols['counterfactual']['x1']['symbol'],
-              Real(float(np.sqrt(3)))
-            )
-          ),
-          Plus(
-            Times(
-              Minus(
-                factual_sample['x0'],
-                Real(1)
-              ),
-              Real(0.25)
-            ),
-            Times(
-              factual_sample['x1'],
-              Real(float(np.sqrt(3)))
-            )
-          ),
-        )
-      )
-    ),
-  )
+  return And([a,b])
 
-  return And([a,b,c])
+
+# def getCausalConsistencyConstraints(model_symbols, factual_sample):
+#   a = EqualsOrIff( # else, set value of X^CF to (8) from paper
+#     model_symbols['counterfactual']['x0']['symbol'],
+#     Plus(
+#       model_symbols['interventional']['x0']['symbol'],
+#       factual_sample['x0'],
+#     )
+#   )
+
+#   b = EqualsOrIff( # else, set value of X^CF to (8) from paper
+#     model_symbols['counterfactual']['x1']['symbol'],
+#     Plus(
+#       model_symbols['interventional']['x1']['symbol'],
+#       Plus(
+#         factual_sample['x1'],
+#         Minus(
+#           Times(
+#             model_symbols['counterfactual']['x0']['symbol'],
+#             Real(0.2)
+#           ),
+#           Times(
+#             factual_sample['x0'],
+#             Real(0.2)
+#           )
+#         )
+#       )
+#     )
+#   )
+
+#   return And([a,b])
 
 
 def getPlausibilityFormula(model_symbols, dataset_obj, factual_sample):
@@ -400,7 +485,7 @@ def getPlausibilityFormula(model_symbols, dataset_obj, factual_sample):
   #     ))
   # actionability_plausibility = And(actionability_plausibility)
 
-
+  # return TRUE()
   return And(
     # range_plausibility,
     # onehot_categorical_plausibility,
@@ -435,7 +520,7 @@ def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, f
     prediction = int(str(dict_sample['y']) == 'True')
     assert int(model_trained.predict([vectorized_sample])[0]) == prediction, 'Counterfactual prediction does not match sklearn prediction.'
 
-  # IMPORTANT TODO: Convert to pysmt_sample
+  # IMPORTANT: Convert to pysmt_sample so factual symbols can be used in formulae
   factual_pysmt_sample = getPySMTSampleFromDictSample(factual_sample, dataset_obj)
 
   norm_lower_bound = 0
@@ -443,13 +528,13 @@ def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, f
   curr_norm_threshold = getCenterNormThresholdInRange(norm_lower_bound, norm_upper_bound)
 
   # Get and merge all constraints
-  print('Constructing initial formulas: model, counterfactual, distance, plausibility, diversity\t\t', end = '', file=log_file)
+  print('Constructing initial formulas: model, counterfactual, distance, plausibility, diversity\t\t', end = '')
   model_formula = getModelFormula(model_symbols, model_trained)
   counterfactual_formula = getCounterfactualFormula(model_symbols, factual_pysmt_sample)
   plausibility_formula = getPlausibilityFormula(model_symbols, dataset_obj, factual_pysmt_sample)
   distance_formula = getDistanceFormula(model_symbols, dataset_obj, factual_pysmt_sample, norm_type, curr_norm_threshold)
   diversity_formula = TRUE() # simply initialize and modify later as new counterfactuals come in
-  print('done.', file=log_file)
+  print('done.')
 
   iters = 1
   max_iters = 100
@@ -464,11 +549,11 @@ def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, f
     'time': np.infty,
     'norm_type': norm_type})
 
-  print('Solving (not searching) for closest counterfactual using various distance thresholds...', file=log_file)
+  print('Solving (not searching) for closest counterfactual using various distance thresholds...')
 
   while iters < max_iters and norm_upper_bound - norm_lower_bound >= epsilon:
 
-    print(f'\tIteration #{iters:03d}: testing norm threshold {curr_norm_threshold:.6f} in range [{norm_lower_bound:.6f}, {norm_upper_bound:.6f}]...\t', end = '', file=log_file)
+    print(f'\tIteration #{iters:03d}: testing norm threshold {curr_norm_threshold:.6f} in range [{norm_lower_bound:.6f}, {norm_upper_bound:.6f}]...\t', end = '')
     iters = iters + 1
 
     formula = And( # works for both initial iteration and all subsequent iterations
@@ -484,7 +569,7 @@ def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, f
 
     if model: # joint formula is satisfiable
 
-      print('solution exists & found.', file=log_file)
+      print('solution exists & found.')
       counterfactual_pysmt_sample = {}
       interventional_pysmt_sample = {}
       # ipsh()
@@ -545,8 +630,10 @@ def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, f
       # On the first iteration, with [0, 1] bounds, we may see a CF at d = 0.22.
       # When we update the bounds to [0, 0.5] bounds, surprisingly we sometimes
       # see a new CF at distance 0.24. We optimize the binary search to solve this.
-      # norm_upper_bound = curr_norm_threshold
-      norm_upper_bound = float(interventional_distance + epsilon / 100) # not float64
+      norm_upper_bound = curr_norm_threshold
+      # TODO: choose one below
+      # norm_upper_bound = float(counterfactuals_distance + epsilon / 100) # not float64
+      # norm_upper_bound = float(interventional_distance + epsilon / 100) # not float64
       curr_norm_threshold = getCenterNormThresholdInRange(norm_lower_bound, norm_upper_bound)
       distance_formula = getDistanceFormula(model_symbols, dataset_obj, factual_pysmt_sample, norm_type, curr_norm_threshold)
 
@@ -555,13 +642,13 @@ def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, f
       neg_formula = Not(formula)
       neg_model = get_model(neg_formula)
       if neg_model:
-        print('no solution exists.', file=log_file)
+        print('no solution exists.')
         norm_lower_bound = curr_norm_threshold
         norm_upper_bound = norm_upper_bound
         curr_norm_threshold = getCenterNormThresholdInRange(norm_lower_bound, norm_upper_bound)
         distance_formula = getDistanceFormula(model_symbols, dataset_obj, factual_pysmt_sample, norm_type, curr_norm_threshold)
       else:
-        print('no solution found (SMT issue).', file=log_file)
+        print('no solution found (SMT issue).')
         quit()
         break
 
@@ -656,6 +743,7 @@ def genExp(
     attr_obj = dataset_obj.attributes_kurz[attr_name_kurz]
     lower_bound = attr_obj.lower_bound
     upper_bound = attr_obj.upper_bound
+    print(f'\n attr_name_kurz: \t\t lower_bound: {lower_bound} \t upper_bound: {upper_bound}')
     if not attr_obj.is_input:
       continue # do not overwrite the output
     if attr_obj.attr_type == 'numeric-real':
@@ -680,13 +768,13 @@ def genExp(
         'lower_bound': Int(int(lower_bound)),
         'upper_bound': Int(int(upper_bound))
       }
-  print('\n\n==============================================\n\n', file=log_file)
-  print('Model Symbols:', file=log_file)
+  print('\n\n==============================================\n\n')
+  print('Model Symbols:')
   pprint(model_symbols, log_file)
 
   factual_sample['y'] = False
 
-  # # find closest counterfactual sample from this negative sample
+  # find closest counterfactual sample from this negative sample
   all_counterfactuals, closest_counterfactual_sample, closest_interventional_sample = findClosestCounterfactualSample(
     model_trained,
     model_symbols,
@@ -697,11 +785,15 @@ def genExp(
     log_file
   )
 
-  print('\n', file=log_file)
-  print(f"Factual sample: \t\t {getPrettyStringForSampleDictionary(factual_sample, dataset_obj)}", file=log_file)
-  print(f"Best counterfactual sample: \t {getPrettyStringForSampleDictionary(closest_counterfactual_sample['counterfactual_sample'], dataset_obj)} (verified)", file=log_file) # TODO add text for INT
-  print('', file=log_file)
-  print(f"Minimum counterfactual distance (by solving the formula):\t {closest_counterfactual_sample['counterfactual_distance']:.6f}", file=log_file) # TODO add text for INT
+  print('\n')
+  print(f"Factual sample: \t\t {getPrettyStringForSampleDictionary(factual_sample, dataset_obj)}")
+  print(f"Best interventional sample: \t {getPrettyStringForSampleDictionary(closest_interventional_sample['interventional_sample'], dataset_obj)} (verified)") # TODO add text for INT
+  print(f"Best resulting CF sample: \t {getPrettyStringForSampleDictionary(closest_interventional_sample['counterfactual_sample'], dataset_obj)} (verified)") # TODO add text for INT
+  print(f"Best counterfactual sample: \t {getPrettyStringForSampleDictionary(closest_counterfactual_sample['counterfactual_sample'], dataset_obj)} (verified)") # TODO add text for INT
+  print('')
+  print(f"Minimum interventional distance (by solving the formula):\t {closest_interventional_sample['interventional_distance']:.6f}") # TODO add text for INT
+  print(f"Minimum resulting CF distance (by solving the formula):\t {closest_interventional_sample['counterfactual_distance']:.6f}") # TODO add text for INT
+  print(f"Minimum counterfactual distance (by solving the formula):\t {closest_counterfactual_sample['counterfactual_distance']:.6f}") # TODO add text for INT
 
   end_time = time.time()
 
@@ -716,52 +808,6 @@ def genExp(
     'counterfactual_time': end_time - start_time,
     'all_counterfactuals': all_counterfactuals
   }
-
-
-
-
-# TODO:
-# 1. [outer loop] binary search to find the minimum distance
-# 2. [counterfactual constraint] write code / use open-source code to automatically convert a trained program --> SSA form --> WPC form
-# 3. [plausibility constraint] extend to allow for immutable and conditionally immutable variables
-# 4. [distance constraint] extend to combinations of distances (0-norm, 1-norm, inf-norm)
-# 5. [diversity constraint] extend to allow for more complex variants, as described in the overleaf document
-
-# We expect something like the following:
-# model_symbols = {
-#   'input': {
-#     'x0': {'symbol': Symbol('x0', INT), 'lower_bound': Int(0), 'upper_bound': Int(1)},
-#     'x1': {'symbol': Symbol('x1', INT), 'lower_bound': Int(0), 'upper_bound': Int(1)},
-#     'x2': {'symbol': Symbol('x2', INT), 'lower_bound': Int(1), 'upper_bound': Int(4)},
-#     'x3': {'symbol': Symbol('x3', INT), 'lower_bound': Int(0), 'upper_bound': Int(3)},
-#   },
-#   'output': {
-#     'y': {'symbol': Symbol('y', BOOL)},
-#   }
-# }
-# factual_sample = {
-#   'x0': Int(int(neg_row[0])),
-#   'x1': Int(int(neg_row[1])),
-#   'x2': Int(int(neg_row[2])),
-#   'x3': Int(int(neg_row[3])),
-#   'y': FALSE()
-# }
-# observable_sample = {
-#   'x0': Int(int(pos_row[0])),
-#   'x1': Int(int(pos_row[1])),
-#   'x2': Int(int(pos_row[2])),
-#   'x3': Int(int(pos_row[3])),
-#   'y': TRUE()
-# }
-
-
-
-
-
-
-
-
-
 
 
 

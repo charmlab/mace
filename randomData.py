@@ -31,6 +31,3 @@ def processDataAccordingToGraph(data):
   data[:,1] += data[:,0] + np.ones((n))
   data[:,2] += (data[:,0] - 1)/4 + np.sqrt(3) * data[:,1]
   return data
-
-def ell2(a, b):
-  np.linalg.norm(a - b, 2)

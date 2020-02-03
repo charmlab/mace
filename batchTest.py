@@ -159,7 +159,7 @@ def runExperiments(dataset_values, model_class_values, norm_values, approaches_v
           if model_class_string in {'tree', 'forest'}:
             one_hot = False
           elif model_class_string in {'lr', 'mlp'}:
-            if dataset_string != 'random':
+            if dataset_string != 'random' and dataset_string != 'mortgage':
               one_hot = True
             else:
               one_hot = False
@@ -188,6 +188,16 @@ def runExperiments(dataset_values, model_class_values, norm_values, approaches_v
             X_train = data_train[['x0', 'x1', 'x2']]
             y_train = data_train[['y']]
             X_test = data_test[['x0', 'x1', 'x2']]
+            y_test = data_test[['y']]
+
+          elif dataset_string == 'mortgage':
+
+            data_train = dataset_obj.data_frame_kurz.iloc[0:1000]
+            data_test = dataset_obj.data_frame_kurz.iloc[1000:2000]
+
+            X_train = data_train[['x0', 'x1']]
+            y_train = data_train[['y']]
+            X_test = data_test[['x0', 'x1']]
             y_test = data_test[['y']]
 
           else:
