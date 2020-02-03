@@ -212,6 +212,7 @@ def getDistanceFormula(model_symbols, dataset_obj, factual_sample, norm_type, no
   return distance_formula
 
 
+# # For Random dataset
 # def getCausalConsistencyConstraints(model_symbols, factual_sample):
 #   a = Ite(
 #     Not( # if YES intervened
@@ -303,56 +304,58 @@ def getDistanceFormula(model_symbols, dataset_obj, factual_sample, norm_type, no
 #   return And([a,b,c])
 
 
-def getCausalConsistencyConstraints(model_symbols, factual_sample):
-  a = Ite(
-    Not( # if YES intervened
-      EqualsOrIff(
-        model_symbols['interventional']['x0']['symbol'],
-        factual_sample['x0'],
-      )
-    ),
-    EqualsOrIff( # set value of X^CF to the intervened value
-      model_symbols['counterfactual']['x0']['symbol'],
-      model_symbols['interventional']['x0']['symbol'],
-    ),
-    EqualsOrIff( # else, set value of X^CF to (8) from paper
-      model_symbols['counterfactual']['x0']['symbol'],
-      factual_sample['x0'],
-    ),
-  )
+# # For Mortgage dataset
+# def getCausalConsistencyConstraints(model_symbols, factual_sample):
+#   a = Ite(
+#     Not( # if YES intervened
+#       EqualsOrIff(
+#         model_symbols['interventional']['x0']['symbol'],
+#         factual_sample['x0'],
+#       )
+#     ),
+#     EqualsOrIff( # set value of X^CF to the intervened value
+#       model_symbols['counterfactual']['x0']['symbol'],
+#       model_symbols['interventional']['x0']['symbol'],
+#     ),
+#     EqualsOrIff( # else, set value of X^CF to (8) from paper
+#       model_symbols['counterfactual']['x0']['symbol'],
+#       factual_sample['x0'],
+#     ),
+#   )
 
-  b = Ite(
-    Not( # if YES intervened
-      EqualsOrIff(
-        model_symbols['interventional']['x1']['symbol'],
-        factual_sample['x1'],
-      )
-    ),
-    EqualsOrIff( # set value of X^CF to the intervened value
-      model_symbols['counterfactual']['x1']['symbol'],
-      model_symbols['interventional']['x1']['symbol'],
-    ),
-    EqualsOrIff( # else, set value of X^CF to (8) from paper
-      model_symbols['counterfactual']['x1']['symbol'],
-      Plus(
-        factual_sample['x1'],
-        Minus(
-          Times(
-            model_symbols['counterfactual']['x0']['symbol'],
-            Real(0.2)
-          ),
-          Times(
-            factual_sample['x0'],
-            Real(0.2)
-          )
-        )
-      )
-    ),
-  )
+#   b = Ite(
+#     Not( # if YES intervened
+#       EqualsOrIff(
+#         model_symbols['interventional']['x1']['symbol'],
+#         factual_sample['x1'],
+#       )
+#     ),
+#     EqualsOrIff( # set value of X^CF to the intervened value
+#       model_symbols['counterfactual']['x1']['symbol'],
+#       model_symbols['interventional']['x1']['symbol'],
+#     ),
+#     EqualsOrIff( # else, set value of X^CF to (8) from paper
+#       model_symbols['counterfactual']['x1']['symbol'],
+#       Plus(
+#         factual_sample['x1'],
+#         Minus(
+#           Times(
+#             model_symbols['counterfactual']['x0']['symbol'],
+#             Real(0.2)
+#           ),
+#           Times(
+#             factual_sample['x0'],
+#             Real(0.2)
+#           )
+#         )
+#       )
+#     ),
+#   )
 
-  return And([a,b])
+#   return And([a,b])
 
 
+# NOT SURE WHAT THIS IS FOR
 # def getCausalConsistencyConstraints(model_symbols, factual_sample):
 #   a = EqualsOrIff( # else, set value of X^CF to (8) from paper
 #     model_symbols['counterfactual']['x0']['symbol'],
@@ -404,94 +407,95 @@ def getPlausibilityFormula(model_symbols, dataset_obj, factual_sample):
   ])
   range_plausibility = And([range_plausibility_1, range_plausibility_2])
 
-  # onehot_categorical_plausibility = TRUE() # plausibility of categorical (sum = 1)
-  # onehot_ordinal_plausibility = TRUE() # plausibility ordinal (x3 >= x2 & x2 >= x1)
+  onehot_categorical_plausibility = TRUE() # plausibility of categorical (sum = 1)
+  onehot_ordinal_plausibility = TRUE() # plausibility ordinal (x3 >= x2 & x2 >= x1)
 
-  # if dataset_obj.is_one_hot:
+  if dataset_obj.is_one_hot:
 
-  #   dict_of_siblings_kurz = dataset_obj.getDictOfSiblings('kurz')
+    dict_of_siblings_kurz = dataset_obj.getDictOfSiblings('kurz')
 
-  #   for parent_name_kurz in dict_of_siblings_kurz['cat'].keys():
+    for parent_name_kurz in dict_of_siblings_kurz['cat'].keys():
 
-  #     onehot_categorical_plausibility = And(
-  #       onehot_categorical_plausibility,
-  #       And(
-  #         EqualsOrIff(
-  #           Plus([
-  #             model_symbols['counterfactual'][attr_name_kurz]['symbol']
-  #             for attr_name_kurz in dict_of_siblings_kurz['cat'][parent_name_kurz]
-  #           ]),
-  #           Int(1)
-  #         )
-  #       )
-  #     )
+      onehot_categorical_plausibility = And(
+        onehot_categorical_plausibility,
+        And(
+          EqualsOrIff(
+            Plus([
+              model_symbols['counterfactual'][attr_name_kurz]['symbol']
+              for attr_name_kurz in dict_of_siblings_kurz['cat'][parent_name_kurz]
+            ]),
+            Int(1)
+          )
+        )
+      )
 
-  #   for parent_name_kurz in dict_of_siblings_kurz['ord'].keys():
+    for parent_name_kurz in dict_of_siblings_kurz['ord'].keys():
 
-  #     onehot_ordinal_plausibility = And(
-  #       onehot_ordinal_plausibility,
-  #       And([
-  #         GE(
-  #           ToReal(model_symbols['counterfactual'][dict_of_siblings_kurz['ord'][parent_name_kurz][symbol_idx]]['symbol']),
-  #           ToReal(model_symbols['counterfactual'][dict_of_siblings_kurz['ord'][parent_name_kurz][symbol_idx + 1]]['symbol'])
-  #         )
-  #         for symbol_idx in range(len(dict_of_siblings_kurz['ord'][parent_name_kurz]) - 1) # already sorted
-  #       ])
-  #     )
+      onehot_ordinal_plausibility = And(
+        onehot_ordinal_plausibility,
+        And([
+          GE(
+            ToReal(model_symbols['counterfactual'][dict_of_siblings_kurz['ord'][parent_name_kurz][symbol_idx]]['symbol']),
+            ToReal(model_symbols['counterfactual'][dict_of_siblings_kurz['ord'][parent_name_kurz][symbol_idx + 1]]['symbol'])
+          )
+          for symbol_idx in range(len(dict_of_siblings_kurz['ord'][parent_name_kurz]) - 1) # already sorted
+        ])
+      )
 
-  #     # # Also implemented as the following logic, stating that
-  #     # # if x_j == 1, all x_i == 1 for i < j
-  #     # # Friendly reminder that for ordinal variables, x_0 is always 1
-  #     # onehot_ordinal_plausibility = And([
-  #     #   Ite(
-  #     #     EqualsOrIff(
-  #     #       ToReal(model_symbols['counterfactual'][dict_of_siblings_kurz['ord'][parent_name_kurz][symbol_idx_ahead]]['symbol']),
-  #     #       Real(1)
-  #     #     ),
-  #     #     And([
-  #     #       EqualsOrIff(
-  #     #         ToReal(model_symbols['counterfactual'][dict_of_siblings_kurz['ord'][parent_name_kurz][symbol_idx_behind]]['symbol']),
-  #     #         Real(1)
-  #     #       )
-  #     #       for symbol_idx_behind in range(symbol_idx_ahead)
-  #     #     ]),
-  #     #     TRUE()
-  #     #   )
-  #     #   for symbol_idx_ahead in range(1, len(dict_of_siblings_kurz['ord'][parent_name_kurz])) # already sorted
-  #     # ])
+      # # Also implemented as the following logic, stating that
+      # # if x_j == 1, all x_i == 1 for i < j
+      # # Friendly reminder that for ordinal variables, x_0 is always 1
+      # onehot_ordinal_plausibility = And([
+      #   Ite(
+      #     EqualsOrIff(
+      #       ToReal(model_symbols['counterfactual'][dict_of_siblings_kurz['ord'][parent_name_kurz][symbol_idx_ahead]]['symbol']),
+      #       Real(1)
+      #     ),
+      #     And([
+      #       EqualsOrIff(
+      #         ToReal(model_symbols['counterfactual'][dict_of_siblings_kurz['ord'][parent_name_kurz][symbol_idx_behind]]['symbol']),
+      #         Real(1)
+      #       )
+      #       for symbol_idx_behind in range(symbol_idx_ahead)
+      #     ]),
+      #     TRUE()
+      #   )
+      #   for symbol_idx_ahead in range(1, len(dict_of_siblings_kurz['ord'][parent_name_kurz])) # already sorted
+      # ])
 
   # causal consistency constriants
   # ipsh()
-  causal_consistency = getCausalConsistencyConstraints(model_symbols, factual_sample)
+  # causal_consistency = getCausalConsistencyConstraints(model_symbols, factual_sample)
+  # causal_consistency = TRUE()
 
-  # # plausibility of non-actionable values (TODO: differentiate between non-actionable/immuutable variables)
-  # actionability_plausibility = []
-  # for attr_name_kurz in dataset_obj.getInputAttributeNames('kurz'):
-  #   attr_obj = dataset_obj.attributes_kurz[attr_name_kurz]
-  #   if attr_obj.actionability == 'none':
-  #     actionability_plausibility.append(EqualsOrIff(
-  #       model_symbols['counterfactual'][attr_name_kurz]['symbol'],
-  #       factual_sample[attr_name_kurz]
-  #     ))
-  #   elif attr_obj.actionability == 'same-or-increase':
-  #     actionability_plausibility.append(GE(
-  #       model_symbols['counterfactual'][attr_name_kurz]['symbol'],
-  #       factual_sample[attr_name_kurz]
-  #     ))
-  #   elif attr_obj.actionability == 'same-or-decrease':
-  #     actionability_plausibility.append(LE(
-  #       model_symbols['counterfactual'][attr_name_kurz]['symbol'],
-  #       factual_sample[attr_name_kurz]
-  #     ))
-  # actionability_plausibility = And(actionability_plausibility)
+  # plausibility of non-actionable values (TODO: differentiate between non-actionable/immuutable variables)
+  actionability_plausibility = []
+  for attr_name_kurz in dataset_obj.getInputAttributeNames('kurz'):
+    attr_obj = dataset_obj.attributes_kurz[attr_name_kurz]
+    if attr_obj.actionability == 'none':
+      actionability_plausibility.append(EqualsOrIff(
+        model_symbols['counterfactual'][attr_name_kurz]['symbol'],
+        factual_sample[attr_name_kurz]
+      ))
+    elif attr_obj.actionability == 'same-or-increase':
+      actionability_plausibility.append(GE(
+        model_symbols['counterfactual'][attr_name_kurz]['symbol'],
+        factual_sample[attr_name_kurz]
+      ))
+    elif attr_obj.actionability == 'same-or-decrease':
+      actionability_plausibility.append(LE(
+        model_symbols['counterfactual'][attr_name_kurz]['symbol'],
+        factual_sample[attr_name_kurz]
+      ))
+  actionability_plausibility = And(actionability_plausibility)
 
   # return TRUE()
   return And(
-    # range_plausibility,
-    # onehot_categorical_plausibility,
-    # onehot_ordinal_plausibility,
-    # actionability_plausibility
-    causal_consistency
+    range_plausibility,
+    onehot_categorical_plausibility,
+    onehot_ordinal_plausibility,
+    actionability_plausibility
+    # causal_consistency
   )
 
 
@@ -631,7 +635,7 @@ def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, f
       # When we update the bounds to [0, 0.5] bounds, surprisingly we sometimes
       # see a new CF at distance 0.24. We optimize the binary search to solve this.
       norm_upper_bound = curr_norm_threshold
-      # TODO: choose one below
+      # TODO: choose one below for faster / guided bin search?
       # norm_upper_bound = float(counterfactuals_distance + epsilon / 100) # not float64
       # norm_upper_bound = float(interventional_distance + epsilon / 100) # not float64
       curr_norm_threshold = getCenterNormThresholdInRange(norm_lower_bound, norm_upper_bound)
@@ -743,7 +747,7 @@ def genExp(
     attr_obj = dataset_obj.attributes_kurz[attr_name_kurz]
     lower_bound = attr_obj.lower_bound
     upper_bound = attr_obj.upper_bound
-    print(f'\n attr_name_kurz: \t\t lower_bound: {lower_bound} \t upper_bound: {upper_bound}')
+    # print(f'\n attr_name_kurz: {attr_name_kurz} \t\t lower_bound: {lower_bound} \t upper_bound: {upper_bound}')
     if not attr_obj.is_input:
       continue # do not overwrite the output
     if attr_obj.attr_type == 'numeric-real':

@@ -12,6 +12,8 @@ from sklearn.model_selection import train_test_split
 import loadData
 import modelTraining
 
+from debug import ipsh
+
 try:
   import generateMACEExplanations
 except:
@@ -159,7 +161,7 @@ def runExperiments(dataset_values, model_class_values, norm_values, approaches_v
           if model_class_string in {'tree', 'forest'}:
             one_hot = False
           elif model_class_string in {'lr', 'mlp'}:
-            if dataset_string != 'random' and dataset_string != 'mortgage':
+            if dataset_string != 'random' and dataset_string != 'mortgage': # and dataset_string != 'german':
               one_hot = True
             else:
               one_hot = False
@@ -180,6 +182,10 @@ def runExperiments(dataset_values, model_class_values, norm_values, approaches_v
           dataset_obj = loadData.loadDataset(dataset_string, return_one_hot = one_hot)
           pickle.dump(dataset_obj, open(f'{experiment_folder_name}/_dataset_obj', 'wb'))
 
+          # TODO: deprecate this code and make it similar to other datasets; we
+          #       did it this way, specifically for mortgage dataset, as we wanted
+          #       to test a specific test example with salary / bank balance, and
+          #       we had added this specific example to the top of the test set.
           if dataset_string == 'random':
 
             data_train = dataset_obj.data_frame_kurz.iloc[0:1000]
@@ -227,6 +233,7 @@ def runExperiments(dataset_values, model_class_values, norm_values, approaches_v
 
           # get the negatively predicted samples (only test set)
           X_test_pred_labels = model_trained.predict(X_test)
+          # ipsh()
           neg_pred_data_df = X_test.iloc[X_test_pred_labels == 0]
           pos_pred_data_df = X_test.iloc[X_test_pred_labels == 1]
 

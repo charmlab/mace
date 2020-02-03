@@ -11,8 +11,11 @@ sys.path.insert(0, '_data_main')
 from _data_main.fair_adult_data import *
 from _data_main.fair_compas_data import *
 from _data_main.process_credit_data import *
+from _data_main.process_german_data import *
 import randomData
 import mortgageData
+
+from debug import ipsh
 
 # import sys
 # sys.path.insert(0, '_data_main')
@@ -472,6 +475,61 @@ def loadDataset(dataset_name, return_one_hot, load_from_cache = True, debug_flag
         actionability = 'any'
       elif col_name == 'HoursPerWeek':
         attr_type = 'numeric-int'
+        actionability = 'any'
+
+      attributes_non_hot[col_name] = DatasetAttribute(
+        attr_name_long = col_name,
+        attr_name_kurz = f'x{col_idx}',
+        attr_type = attr_type,
+        is_input = True,
+        actionability = actionability,
+        parent_name_long = -1,
+        parent_name_kurz = -1,
+        lower_bound = data_frame_non_hot[col_name].min(),
+        upper_bound = data_frame_non_hot[col_name].max())
+
+  elif dataset_name == 'german':
+
+    data_frame_non_hot = load_german_data()
+    data_frame_non_hot = data_frame_non_hot.reset_index(drop=True)
+    attributes_non_hot = {}
+
+    input_cols, output_col = getInputOutputColumns(data_frame_non_hot)
+
+    col_name = output_col
+    attributes_non_hot[col_name] = DatasetAttribute(
+      attr_name_long = col_name,
+      attr_name_kurz = 'y',
+      attr_type = 'binary',
+      is_input = False,
+      actionability = 'none',
+      parent_name_long = -1,
+      parent_name_kurz = -1,
+      lower_bound = data_frame_non_hot[col_name].min(),
+      upper_bound = data_frame_non_hot[col_name].max())
+
+    for col_idx, col_name in enumerate(input_cols):
+
+      if col_name == 'Sex':
+        attr_type = 'binary'
+        actionability = 'none'
+      elif col_name == 'Age':
+        attr_type = 'numeric-int'
+        actionability = 'same-or-increase'
+      elif col_name == 'Credit':
+        attr_type = 'numeric-int'
+        actionability = 'any'
+      elif col_name == 'LoanDuration':
+        attr_type = 'numeric-int'
+        actionability = 'none'
+      elif col_name == 'CheckingAccountBalance':
+        attr_type = 'ordinal'
+        actionability = 'any'
+      elif col_name == 'SavingsAccountBalance':
+        attr_type = 'ordinal'
+        actionability = 'any'
+      elif col_name == 'HousingStatus':
+        attr_type = 'ordinal'
         actionability = 'any'
 
       attributes_non_hot[col_name] = DatasetAttribute(
