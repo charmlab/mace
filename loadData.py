@@ -565,12 +565,13 @@ def loadDataset(dataset_name, return_one_hot, load_from_cache = True, debug_flag
 
     for col_idx, col_name in enumerate(input_cols):
 
-      if col_name == 'Sex':
+      if col_name == 'Sex': # TODO: make sex and race immutable in all datasets!
         attr_type = 'binary'
-        actionability = 'none'
+        actionability = 'any'
         mutability = True
       elif col_name == 'Age':
         attr_type = 'numeric-int'
+        # attr_type = 'numeric-real'
         actionability = 'same-or-increase'
         mutability = True
       elif col_name == 'Credit':
@@ -578,21 +579,21 @@ def loadDataset(dataset_name, return_one_hot, load_from_cache = True, debug_flag
         actionability = 'any'
         mutability = True
       elif col_name == 'LoanDuration':
-        attr_type = 'numeric-real'
+        attr_type = 'numeric-int'
         actionability = 'any'
         mutability = True
-      elif col_name == 'CheckingAccountBalance':
-        attr_type = 'ordinal'
-        actionability = 'any'
-        mutability = True
-      elif col_name == 'SavingsAccountBalance':
-        attr_type = 'ordinal'
-        actionability = 'any'
-        mutability = True
-      elif col_name == 'HousingStatus':
-        attr_type = 'ordinal'
-        actionability = 'any'
-        mutability = True
+      # elif col_name == 'CheckingAccountBalance':
+      #   attr_type = 'ordinal'
+      #   actionability = 'any'
+      #   mutability = True
+      # elif col_name == 'SavingsAccountBalance':
+      #   attr_type = 'ordinal'
+      #   actionability = 'any'
+      #   mutability = True
+      # elif col_name == 'HousingStatus':
+      #   attr_type = 'ordinal'
+      #   actionability = 'any'
+      #   mutability = True
 
       attributes_non_hot[col_name] = DatasetAttribute(
         attr_name_long = col_name,

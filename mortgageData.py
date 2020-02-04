@@ -39,7 +39,7 @@ def processDataAccordingToGraph(data):
   # U_1 ~ Poisson(balance_lambda) * balance_multiplier
   data = copy.deepcopy(data)
   data[:,0] = data[:,0]
-  data[:,1] += data[:,0] / 5.
+  data[:,1] += data[:,0] * 3 / 10.
   return data
 
 
