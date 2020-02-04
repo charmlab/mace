@@ -20,12 +20,12 @@ def getDistanceBetweenSamples(sample_1, sample_2, norm_type, dataset_obj):
   # range of the variable (only applies for non-hot variables)
   normalized_absolute_distances = []
 
-  actionable_attributes = dataset_obj.getActionableAttributeNames('kurz')
+  mutable_attributes = dataset_obj.getMutableAttributeNames('kurz')
   one_hot_attributes = dataset_obj.getOneHotAttributesNames('kurz')
   non_hot_attributes = dataset_obj.getNonHotAttributesNames('kurz')
 
-  # 1. actionable & non-hot
-  for attr_name_kurz in np.intersect1d(actionable_attributes, non_hot_attributes):
+  # 1. mutable & non-hot
+  for attr_name_kurz in np.intersect1d(mutable_attributes, non_hot_attributes):
     normalized_absolute_distances.append(
       # note: float() works for both integer-based and real-based attributes, no
       # need to separate them out
@@ -40,9 +40,9 @@ def getDistanceBetweenSamples(sample_1, sample_2, norm_type, dataset_obj):
       )
     )
 
-  # 2. actionable & one-hot
+  # 2. mutable & one-hot
   already_considered = []
-  for attr_name_kurz in np.intersect1d(actionable_attributes, one_hot_attributes):
+  for attr_name_kurz in np.intersect1d(mutable_attributes, one_hot_attributes):
     if attr_name_kurz not in already_considered:
       siblings_kurz = dataset_obj.getSiblingsFor(attr_name_kurz)
       if 'cat' in dataset_obj.attributes_kurz[attr_name_kurz].attr_type:
