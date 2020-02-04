@@ -74,14 +74,15 @@ def trainAndSaveModels(experiment_folder_name, model_class, X_train, X_test, y_t
     print('\tTesting accuracy: %{:.2f}'.format(accuracy_score(y_test, model_trained.predict(X_test)) * 100), file=log_file)
     print('[INFO] done.\n', file=log_file)
 
-    # if model_class == 'lr':
-    #     # w = np.array([[ 0.22397889, 0.7445909, -0.33426894]]).T # Hardcoded because haven't cached this value from experimentSetup.py!
-    #     w = np.array([[1, 5]]).T # Hardcoded because haven't cached this value from experimentSetup.py!
-    #     assert w.T.shape == model_trained.coef_.shape, f'Expecting equal size weight vector for new experiments no lr model.'
-    #     model_trained.coef_ = w.T
-    #     # model_trained.intercept_ = np.zeros(1)
-    #     model_trained.intercept_ = np.array([-225000])
+    if model_class == 'lr':
+        # w = np.array([[ 0.22397889, 0.7445909, -0.33426894]]).T # Hardcoded because haven't cached this value from experimentSetup.py!
+        w = np.array([[1, 5]]).T # Hardcoded because haven't cached this value from experimentSetup.py!
+        assert w.T.shape == model_trained.coef_.shape, f'Expecting equal size weight vector for new experiments no lr model.'
+        model_trained.coef_ = w.T
+        # model_trained.intercept_ = np.zeros(1)
+        model_trained.intercept_ = np.array([-225000])
 
+    print('jigar')
     print(model_trained.coef_)
     print(model_trained.intercept_)
     # ipsh()

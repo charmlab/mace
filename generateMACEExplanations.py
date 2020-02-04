@@ -310,61 +310,9 @@ def getDistanceFormula(model_symbols, dataset_obj, factual_sample, norm_type, no
 #   return And([a,b,c])
 
 
-# # For Mortgage dataset
-# def getCausalConsistencyConstraints(model_symbols, factual_sample):
-#   a = Ite(
-#     Not( # if YES intervened
-#       EqualsOrIff(
-#         model_symbols['interventional']['x0']['symbol'],
-#         factual_sample['x0'],
-#       )
-#     ),
-#     EqualsOrIff( # set value of X^CF to the intervened value
-#       model_symbols['counterfactual']['x0']['symbol'],
-#       model_symbols['interventional']['x0']['symbol'],
-#     ),
-#     EqualsOrIff( # else, set value of X^CF to (8) from paper
-#       model_symbols['counterfactual']['x0']['symbol'],
-#       factual_sample['x0'],
-#     ),
-#   )
-
-#   b = Ite(
-#     Not( # if YES intervened
-#       EqualsOrIff(
-#         model_symbols['interventional']['x1']['symbol'],
-#         factual_sample['x1'],
-#       )
-#     ),
-#     EqualsOrIff( # set value of X^CF to the intervened value
-#       model_symbols['counterfactual']['x1']['symbol'],
-#       model_symbols['interventional']['x1']['symbol'],
-#     ),
-#     EqualsOrIff( # else, set value of X^CF to (8) from paper
-#       model_symbols['counterfactual']['x1']['symbol'],
-#       Plus(
-#         factual_sample['x1'],
-#         Minus(
-#           Times(
-#             model_symbols['counterfactual']['x0']['symbol'],
-#             Real(0.2)
-#           ),
-#           Times(
-#             factual_sample['x0'],
-#             Real(0.2)
-#           )
-#         )
-#       )
-#     ),
-#   )
-
-#   return And([a,b])
-
-
-# For German dataset
+# For Mortgage dataset
 def getCausalConsistencyConstraints(model_symbols, factual_sample):
-  # Gender (no parents)
-  g = Ite(
+  a = Ite(
     Not( # if YES intervened
       EqualsOrIff(
         model_symbols['interventional']['x0']['symbol'],
@@ -381,8 +329,7 @@ def getCausalConsistencyConstraints(model_symbols, factual_sample):
     ),
   )
 
-  # Age (no parents)
-  a = Ite(
+  b = Ite(
     Not( # if YES intervened
       EqualsOrIff(
         model_symbols['interventional']['x1']['symbol'],
@@ -395,142 +342,194 @@ def getCausalConsistencyConstraints(model_symbols, factual_sample):
     ),
     EqualsOrIff( # else, set value of X^CF to (8) from paper
       model_symbols['counterfactual']['x1']['symbol'],
-      factual_sample['x1'],
-    ),
-  )
-
-  # c = Ite(
-  #   Not( # if YES intervened
-  #     EqualsOrIff(
-  #       model_symbols['interventional']['x4_ord_1']['symbol'],
-  #       factual_sample['x4_ord_1'],
-  #     )
-  #   ),
-  #   EqualsOrIff( # set value of X^CF to the intervened value
-  #     model_symbols['counterfactual']['x4_ord_1']['symbol'],
-  #     model_symbols['interventional']['x4_ord_1']['symbol'],
-  #   ),
-  #   EqualsOrIff( # else, set value of X^CF to (8) from paper
-  #     model_symbols['counterfactual']['x4_ord_1']['symbol'],
-  #     Plus([
-  #       factual_sample['x4_ord_1'],
-  #       Minus(
-  #         Times(
-  #           ToReal(model_symbols['counterfactual']['x0']['symbol']),
-  #           Real(float(-0.00562051))
-  #         ),
-  #         Times(
-  #           ToReal(factual_sample['x0']),
-  #           Real(float(-0.00562051))
-  #         )
-  #       ),
-  #       Minus(
-  #         Times(
-  #           ToReal(model_symbols['counterfactual']['x1']['symbol']),
-  #           Real(float(-0.00220847))
-  #         ),
-  #         Times(
-  #           ToReal(factual_sample['x1']),
-  #           Real(float(-0.00220847))
-  #         )
-  #       ),
-  #     ])
-  #   ),
-  # )
-  # c = TRUE()
-
-  # Credit (parents: age, sex)
-  c = Ite(
-    Not( # if YES intervened
-      EqualsOrIff(
-        model_symbols['interventional']['x2']['symbol'],
-        factual_sample['x2'],
+      Plus(
+        factual_sample['x1'],
+        Minus(
+          Times(
+            model_symbols['counterfactual']['x0']['symbol'],
+            Real(0.2)
+          ),
+          Times(
+            factual_sample['x0'],
+            Real(0.2)
+          )
+        )
       )
     ),
-    EqualsOrIff( # set value of X^CF to the intervened value
-      model_symbols['counterfactual']['x2']['symbol'],
-      model_symbols['interventional']['x2']['symbol'],
-    ),
-    EqualsOrIff( # else, set value of X^CF to (8) from paper
-      model_symbols['counterfactual']['x2']['symbol'],
-      Plus([
-        factual_sample['x2'],
-        Minus(
-          Times(
-            ToReal(model_symbols['counterfactual']['x0']['symbol']),
-            Real(float(552.43925387))
-          ),
-          Times(
-            ToReal(factual_sample['x0']),
-            Real(float(552.43925387))
-          )
-        ),
-        Minus(
-          Times(
-            ToReal(model_symbols['counterfactual']['x1']['symbol']),
-            Real(float(4.4847736))
-          ),
-          Times(
-            ToReal(factual_sample['x1']),
-            Real(float(4.4847736))
-          )
-        ),
-      ])
-    ),
   )
 
-  # d = Ite(
-  #   Not( # if YES intervened
-  #     EqualsOrIff(
-  #       model_symbols['interventional']['x3']['symbol'],
-  #       factual_sample['x3'],
-  #     )
-  #   ),
-  #   EqualsOrIff( # set value of X^CF to the intervened value
-  #     model_symbols['counterfactual']['x3']['symbol'],
-  #     model_symbols['interventional']['x3']['symbol'],
-  #   ),
-  #   EqualsOrIff( # else, set value of X^CF to (8) from paper
-  #     model_symbols['counterfactual']['x3']['symbol'],
-  #     Plus([
-  #       factual_sample['x3'],
-  #       Minus(
-  #         Times(
-  #           ToReal(model_symbols['counterfactual']['x0']['symbol']),
-  #           Real(float(-6.29931537e-13))
-  #         ),
-  #         Times(
-  #           ToReal(factual_sample['x0']),
-  #           Real(float(-6.29931537e-13))
-  #         )
-  #       ),
-  #       Minus(
-  #         Times(
-  #           ToReal(model_symbols['counterfactual']['x0']['symbol']),
-  #           Real(float(7.44715930e-13))
-  #         ),
-  #         Times(
-  #           ToReal(factual_sample['x0']),
-  #           Real(float(7.44715930e-13))
-  #         )
-  #       ),
-  #       Minus(
-  #         Times(
-  #           ToReal(model_symbols['counterfactual']['x0']['symbol']),
-  #           Real(float(1))
-  #         ),
-  #         Times(
-  #           ToReal(factual_sample['x0']),
-  #           Real(float(1))
-  #         )
-  #       ),
-  #     ])
-  #   ),
-  # )
-  d = TRUE()
+  return And([a,b])
 
-  return And([g,a,c,d])
 
+# # For German dataset
+# def getCausalConsistencyConstraints(model_symbols, factual_sample):
+#   # Gender (no parents)
+#   g = Ite(
+#     Not( # if YES intervened
+#       EqualsOrIff(
+#         model_symbols['interventional']['x0']['symbol'],
+#         factual_sample['x0'],
+#       )
+#     ),
+#     EqualsOrIff( # set value of X^CF to the intervened value
+#       model_symbols['counterfactual']['x0']['symbol'],
+#       model_symbols['interventional']['x0']['symbol'],
+#     ),
+#     EqualsOrIff( # else, set value of X^CF to (8) from paper
+#       model_symbols['counterfactual']['x0']['symbol'],
+#       factual_sample['x0'],
+#     ),
+#   )
+
+#   # Age (no parents)
+#   a = Ite(
+#     Not( # if YES intervened
+#       EqualsOrIff(
+#         model_symbols['interventional']['x1']['symbol'],
+#         factual_sample['x1'],
+#       )
+#     ),
+#     EqualsOrIff( # set value of X^CF to the intervened value
+#       model_symbols['counterfactual']['x1']['symbol'],
+#       model_symbols['interventional']['x1']['symbol'],
+#     ),
+#     EqualsOrIff( # else, set value of X^CF to (8) from paper
+#       model_symbols['counterfactual']['x1']['symbol'],
+#       factual_sample['x1'],
+#     ),
+#   )
+
+#   # c = Ite(
+#   #   Not( # if YES intervened
+#   #     EqualsOrIff(
+#   #       model_symbols['interventional']['x4_ord_1']['symbol'],
+#   #       factual_sample['x4_ord_1'],
+#   #     )
+#   #   ),
+#   #   EqualsOrIff( # set value of X^CF to the intervened value
+#   #     model_symbols['counterfactual']['x4_ord_1']['symbol'],
+#   #     model_symbols['interventional']['x4_ord_1']['symbol'],
+#   #   ),
+#   #   EqualsOrIff( # else, set value of X^CF to (8) from paper
+#   #     model_symbols['counterfactual']['x4_ord_1']['symbol'],
+#   #     Plus([
+#   #       factual_sample['x4_ord_1'],
+#   #       Minus(
+#   #         Times(
+#   #           ToReal(model_symbols['counterfactual']['x0']['symbol']),
+#   #           Real(float(-0.00562051))
+#   #         ),
+#   #         Times(
+#   #           ToReal(factual_sample['x0']),
+#   #           Real(float(-0.00562051))
+#   #         )
+#   #       ),
+#   #       Minus(
+#   #         Times(
+#   #           ToReal(model_symbols['counterfactual']['x1']['symbol']),
+#   #           Real(float(-0.00220847))
+#   #         ),
+#   #         Times(
+#   #           ToReal(factual_sample['x1']),
+#   #           Real(float(-0.00220847))
+#   #         )
+#   #       ),
+#   #     ])
+#   #   ),
+#   # )
+#   # c = TRUE()
+
+#   # Credit (parents: age, sex)
+#   c = Ite(
+#     Not( # if YES intervened
+#       EqualsOrIff(
+#         model_symbols['interventional']['x2']['symbol'],
+#         factual_sample['x2'],
+#       )
+#     ),
+#     EqualsOrIff( # set value of X^CF to the intervened value
+#       model_symbols['counterfactual']['x2']['symbol'],
+#       model_symbols['interventional']['x2']['symbol'],
+#     ),
+#     EqualsOrIff( # else, set value of X^CF to (8) from paper
+#       model_symbols['counterfactual']['x2']['symbol'],
+#       Plus([
+#         factual_sample['x2'],
+#         Minus(
+#           Times(
+#             ToReal(model_symbols['counterfactual']['x0']['symbol']),
+#             Real(float(552.43925387))
+#           ),
+#           Times(
+#             ToReal(factual_sample['x0']),
+#             Real(float(552.43925387))
+#           )
+#         ),
+#         Minus(
+#           Times(
+#             ToReal(model_symbols['counterfactual']['x1']['symbol']),
+#             Real(float(4.4847736))
+#           ),
+#           Times(
+#             ToReal(factual_sample['x1']),
+#             Real(float(4.4847736))
+#           )
+#         ),
+#       ])
+#     ),
+#   )
+
+#   d = Ite(
+#     Not( # if YES intervened
+#       EqualsOrIff(
+#         model_symbols['interventional']['x3']['symbol'],
+#         factual_sample['x3'],
+#       )
+#     ),
+#     EqualsOrIff( # set value of X^CF to the intervened value
+#       model_symbols['counterfactual']['x3']['symbol'],
+#       model_symbols['interventional']['x3']['symbol'],
+#     ),
+#     EqualsOrIff( # else, set value of X^CF to (8) from paper
+#       model_symbols['counterfactual']['x3']['symbol'],
+#       Plus([
+#         factual_sample['x3'],
+#         Minus(
+#           Times(
+#             ToReal(model_symbols['counterfactual']['x0']['symbol']),
+#             Real(float(-6.29931537e-13))
+#           ),
+#           Times(
+#             ToReal(factual_sample['x0']),
+#             Real(float(-6.29931537e-13))
+#           )
+#         ),
+#         Minus(
+#           Times(
+#             ToReal(model_symbols['counterfactual']['x0']['symbol']),
+#             Real(float(7.44715930e-13))
+#           ),
+#           Times(
+#             ToReal(factual_sample['x0']),
+#             Real(float(7.44715930e-13))
+#           )
+#         ),
+#         Minus(
+#           Times(
+#             ToReal(model_symbols['counterfactual']['x0']['symbol']),
+#             Real(float(1))
+#           ),
+#           Times(
+#             ToReal(factual_sample['x0']),
+#             Real(float(1))
+#           )
+#         ),
+#       ])
+#     ),
+#   )
+#   # d = TRUE()
+
+#   return And([g,a,c,d])
 
 
 def getPlausibilityFormula(model_symbols, dataset_obj, factual_sample):
@@ -675,10 +674,9 @@ def getPlausibilityFormula(model_symbols, dataset_obj, factual_sample):
   ##############################################################################
   ## 5. causal consistency
   ##############################################################################
-  # causal_consistency = getCausalConsistencyConstraints(model_symbols, factual_sample)
-  causal_consistency = TRUE()
+  causal_consistency = getCausalConsistencyConstraints(model_symbols, factual_sample)
 
-  # return TRUE()
+
   return And(
     range_plausibility,
     onehot_categorical_plausibility,
