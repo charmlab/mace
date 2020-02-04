@@ -69,12 +69,18 @@ def getDistanceFormula(model_symbols, dataset_obj, factual_sample, norm_type, no
   normalized_absolute_distances = []
   normalized_squared_distances = []
 
-  actionable_attributes = dataset_obj.getActionableAttributeNames('kurz')
+  # IMPORTANT CHANGE IN CODE (Feb 04, 2020): prior to today, actionable/mutable
+  # features overlapped. Now that we have introduced 3 types of variables
+  # (actionable and mutable, non-actionable but mutable, immutable and non-actionable),
+  # we must re-write the distance function to depent on all mutable features only,
+  # while before we wrote distance as a function over actionable/mutable features.
+
+  mutable_attributes = dataset_obj.getMutableAttributeNames('kurz')
   one_hot_attributes = dataset_obj.getOneHotAttributesNames('kurz')
   non_hot_attributes = dataset_obj.getNonHotAttributesNames('kurz')
 
-  # 1. actionable & non-hot
-  for attr_name_kurz in np.intersect1d(actionable_attributes, non_hot_attributes):
+  # 1. mutable & non-hot
+  for attr_name_kurz in np.intersect1d(mutable_attributes, non_hot_attributes):
     normalized_absolute_distances.append(
       Div(
         ToReal(
@@ -91,9 +97,9 @@ def getDistanceFormula(model_symbols, dataset_obj, factual_sample, norm_type, no
       )
     )
 
-  # 2. actionable & integer-based & one-hot
+  # 2. mutable & integer-based & one-hot
   already_considered = []
-  for attr_name_kurz in np.intersect1d(actionable_attributes, one_hot_attributes):
+  for attr_name_kurz in np.intersect1d(mutable_attributes, one_hot_attributes):
     if attr_name_kurz not in already_considered:
       siblings_kurz = dataset_obj.getSiblingsFor(attr_name_kurz)
       if 'cat' in dataset_obj.attributes_kurz[attr_name_kurz].attr_type:
@@ -163,7 +169,7 @@ def getDistanceFormula(model_symbols, dataset_obj, factual_sample, norm_type, no
 
   # 4. sum up over everything allowed...
   # We use 1 / len(normalized_absolute_distances) below because we only consider
-  # those attributes that are actionable, and for each sibling-group (ord, cat)
+  # those attributes that are mutable, and for each sibling-group (ord, cat)
   # we only consider 1 entry in the normalized_absolute_distances
   if norm_type == 'zero_norm':
     distance_formula = LE(
@@ -355,42 +361,189 @@ def getDistanceFormula(model_symbols, dataset_obj, factual_sample, norm_type, no
 #   return And([a,b])
 
 
-# NOT SURE WHAT THIS IS FOR
-# def getCausalConsistencyConstraints(model_symbols, factual_sample):
-#   a = EqualsOrIff( # else, set value of X^CF to (8) from paper
-#     model_symbols['counterfactual']['x0']['symbol'],
-#     Plus(
-#       model_symbols['interventional']['x0']['symbol'],
-#       factual_sample['x0'],
-#     )
-#   )
+# For German dataset
+def getCausalConsistencyConstraints(model_symbols, factual_sample):
+  # Gender (no parents)
+  g = Ite(
+    Not( # if YES intervened
+      EqualsOrIff(
+        model_symbols['interventional']['x0']['symbol'],
+        factual_sample['x0'],
+      )
+    ),
+    EqualsOrIff( # set value of X^CF to the intervened value
+      model_symbols['counterfactual']['x0']['symbol'],
+      model_symbols['interventional']['x0']['symbol'],
+    ),
+    EqualsOrIff( # else, set value of X^CF to (8) from paper
+      model_symbols['counterfactual']['x0']['symbol'],
+      factual_sample['x0'],
+    ),
+  )
 
-#   b = EqualsOrIff( # else, set value of X^CF to (8) from paper
-#     model_symbols['counterfactual']['x1']['symbol'],
-#     Plus(
-#       model_symbols['interventional']['x1']['symbol'],
-#       Plus(
-#         factual_sample['x1'],
-#         Minus(
-#           Times(
-#             model_symbols['counterfactual']['x0']['symbol'],
-#             Real(0.2)
-#           ),
-#           Times(
-#             factual_sample['x0'],
-#             Real(0.2)
-#           )
-#         )
-#       )
-#     )
-#   )
+  # Age (no parents)
+  a = Ite(
+    Not( # if YES intervened
+      EqualsOrIff(
+        model_symbols['interventional']['x1']['symbol'],
+        factual_sample['x1'],
+      )
+    ),
+    EqualsOrIff( # set value of X^CF to the intervened value
+      model_symbols['counterfactual']['x1']['symbol'],
+      model_symbols['interventional']['x1']['symbol'],
+    ),
+    EqualsOrIff( # else, set value of X^CF to (8) from paper
+      model_symbols['counterfactual']['x1']['symbol'],
+      factual_sample['x1'],
+    ),
+  )
 
-#   return And([a,b])
+  # c = Ite(
+  #   Not( # if YES intervened
+  #     EqualsOrIff(
+  #       model_symbols['interventional']['x4_ord_1']['symbol'],
+  #       factual_sample['x4_ord_1'],
+  #     )
+  #   ),
+  #   EqualsOrIff( # set value of X^CF to the intervened value
+  #     model_symbols['counterfactual']['x4_ord_1']['symbol'],
+  #     model_symbols['interventional']['x4_ord_1']['symbol'],
+  #   ),
+  #   EqualsOrIff( # else, set value of X^CF to (8) from paper
+  #     model_symbols['counterfactual']['x4_ord_1']['symbol'],
+  #     Plus([
+  #       factual_sample['x4_ord_1'],
+  #       Minus(
+  #         Times(
+  #           ToReal(model_symbols['counterfactual']['x0']['symbol']),
+  #           Real(float(-0.00562051))
+  #         ),
+  #         Times(
+  #           ToReal(factual_sample['x0']),
+  #           Real(float(-0.00562051))
+  #         )
+  #       ),
+  #       Minus(
+  #         Times(
+  #           ToReal(model_symbols['counterfactual']['x1']['symbol']),
+  #           Real(float(-0.00220847))
+  #         ),
+  #         Times(
+  #           ToReal(factual_sample['x1']),
+  #           Real(float(-0.00220847))
+  #         )
+  #       ),
+  #     ])
+  #   ),
+  # )
+  # c = TRUE()
+
+  # Credit (parents: age, sex)
+  c = Ite(
+    Not( # if YES intervened
+      EqualsOrIff(
+        model_symbols['interventional']['x2']['symbol'],
+        factual_sample['x2'],
+      )
+    ),
+    EqualsOrIff( # set value of X^CF to the intervened value
+      model_symbols['counterfactual']['x2']['symbol'],
+      model_symbols['interventional']['x2']['symbol'],
+    ),
+    EqualsOrIff( # else, set value of X^CF to (8) from paper
+      model_symbols['counterfactual']['x2']['symbol'],
+      Plus([
+        factual_sample['x2'],
+        Minus(
+          Times(
+            ToReal(model_symbols['counterfactual']['x0']['symbol']),
+            Real(float(552.43925387))
+          ),
+          Times(
+            ToReal(factual_sample['x0']),
+            Real(float(552.43925387))
+          )
+        ),
+        Minus(
+          Times(
+            ToReal(model_symbols['counterfactual']['x1']['symbol']),
+            Real(float(4.4847736))
+          ),
+          Times(
+            ToReal(factual_sample['x1']),
+            Real(float(4.4847736))
+          )
+        ),
+      ])
+    ),
+  )
+
+  # d = Ite(
+  #   Not( # if YES intervened
+  #     EqualsOrIff(
+  #       model_symbols['interventional']['x3']['symbol'],
+  #       factual_sample['x3'],
+  #     )
+  #   ),
+  #   EqualsOrIff( # set value of X^CF to the intervened value
+  #     model_symbols['counterfactual']['x3']['symbol'],
+  #     model_symbols['interventional']['x3']['symbol'],
+  #   ),
+  #   EqualsOrIff( # else, set value of X^CF to (8) from paper
+  #     model_symbols['counterfactual']['x3']['symbol'],
+  #     Plus([
+  #       factual_sample['x3'],
+  #       Minus(
+  #         Times(
+  #           ToReal(model_symbols['counterfactual']['x0']['symbol']),
+  #           Real(float(-6.29931537e-13))
+  #         ),
+  #         Times(
+  #           ToReal(factual_sample['x0']),
+  #           Real(float(-6.29931537e-13))
+  #         )
+  #       ),
+  #       Minus(
+  #         Times(
+  #           ToReal(model_symbols['counterfactual']['x0']['symbol']),
+  #           Real(float(7.44715930e-13))
+  #         ),
+  #         Times(
+  #           ToReal(factual_sample['x0']),
+  #           Real(float(7.44715930e-13))
+  #         )
+  #       ),
+  #       Minus(
+  #         Times(
+  #           ToReal(model_symbols['counterfactual']['x0']['symbol']),
+  #           Real(float(1))
+  #         ),
+  #         Times(
+  #           ToReal(factual_sample['x0']),
+  #           Real(float(1))
+  #         )
+  #       ),
+  #     ])
+  #   ),
+  # )
+  d = TRUE()
+
+  return And([g,a,c,d])
+
 
 
 def getPlausibilityFormula(model_symbols, dataset_obj, factual_sample):
-  # here is where the user specifies the range of variables, and which
-  # variables are actionable or not, etc.
+  # here is where the user specifies the following:
+  #  1. range of variables
+  #  2. ordinal/categorical coherence
+  #  3. actionability
+  #  4. mutability
+  #  5. causal consistency
+
+  ##############################################################################
+  ## 1. range of variables
+  ##############################################################################
   range_plausibility_1 = And([
     And(
       GE(model_symbols['counterfactual'][attr_name_kurz]['symbol'], model_symbols['counterfactual'][attr_name_kurz]['lower_bound']),
@@ -407,6 +560,10 @@ def getPlausibilityFormula(model_symbols, dataset_obj, factual_sample):
   ])
   range_plausibility = And([range_plausibility_1, range_plausibility_2])
 
+
+  ##############################################################################
+  ## 2. ordinal/categorical coherence
+  ##############################################################################
   onehot_categorical_plausibility = TRUE() # plausibility of categorical (sum = 1)
   onehot_ordinal_plausibility = TRUE() # plausibility ordinal (x3 >= x2 & x2 >= x1)
 
@@ -463,39 +620,71 @@ def getPlausibilityFormula(model_symbols, dataset_obj, factual_sample):
       #   for symbol_idx_ahead in range(1, len(dict_of_siblings_kurz['ord'][parent_name_kurz])) # already sorted
       # ])
 
-  # causal consistency constriants
-  # ipsh()
-  # causal_consistency = getCausalConsistencyConstraints(model_symbols, factual_sample)
-  # causal_consistency = TRUE()
 
-  # plausibility of non-actionable values (TODO: differentiate between non-actionable/immuutable variables)
-  actionability_plausibility = []
+  ##############################################################################
+  ## 3. actionability + 4. mutability
+  #    a) actionable and mutable: both interventional and counterfactual value can change
+  #    b) non-actionable but mutable: interventional value cannot change, but counterfactual value can
+  #    c) immutable and non-actionable: neither interventional nor counterfactual value can change
+  ##############################################################################
+  actionability_mutability_plausibility = []
   for attr_name_kurz in dataset_obj.getInputAttributeNames('kurz'):
     attr_obj = dataset_obj.attributes_kurz[attr_name_kurz]
-    if attr_obj.actionability == 'none':
-      actionability_plausibility.append(EqualsOrIff(
+
+    if attr_obj.mutability == True:
+       # b) non-actionable but mutable: interventional value cannot change, but counterfactual value can
+      if attr_obj.actionability == 'none':
+        actionability_mutability_plausibility.append(EqualsOrIff(
+          model_symbols['interventional'][attr_name_kurz]['symbol'],
+          factual_sample[attr_name_kurz]
+        ))
+      # a) actionable and mutable: both interventional and counterfactual value can change
+      elif attr_obj.actionability == 'same-or-increase':
+        actionability_mutability_plausibility.append(GE(
+          model_symbols['counterfactual'][attr_name_kurz]['symbol'],
+          factual_sample[attr_name_kurz]
+        ))
+        actionability_mutability_plausibility.append(GE(
+          model_symbols['interventional'][attr_name_kurz]['symbol'],
+          factual_sample[attr_name_kurz]
+        ))
+      # a) actionable and mutable: both interventional and counterfactual value can change
+      elif attr_obj.actionability == 'same-or-decrease':
+        actionability_mutability_plausibility.append(LE(
+          model_symbols['counterfactual'][attr_name_kurz]['symbol'],
+          factual_sample[attr_name_kurz]
+        ))
+        actionability_mutability_plausibility.append(LE(
+          model_symbols['interventional'][attr_name_kurz]['symbol'],
+          factual_sample[attr_name_kurz]
+        ))
+    else:
+      # c) immutable and non-actionable: neither interventional nor counterfactual value can change
+      actionability_mutability_plausibility.append(EqualsOrIff(
         model_symbols['counterfactual'][attr_name_kurz]['symbol'],
         factual_sample[attr_name_kurz]
       ))
-    elif attr_obj.actionability == 'same-or-increase':
-      actionability_plausibility.append(GE(
-        model_symbols['counterfactual'][attr_name_kurz]['symbol'],
+      actionability_mutability_plausibility.append(EqualsOrIff(
+        model_symbols['interventional'][attr_name_kurz]['symbol'],
         factual_sample[attr_name_kurz]
       ))
-    elif attr_obj.actionability == 'same-or-decrease':
-      actionability_plausibility.append(LE(
-        model_symbols['counterfactual'][attr_name_kurz]['symbol'],
-        factual_sample[attr_name_kurz]
-      ))
-  actionability_plausibility = And(actionability_plausibility)
+
+  actionability_mutability_plausibility = And(actionability_mutability_plausibility)
+
+
+  ##############################################################################
+  ## 5. causal consistency
+  ##############################################################################
+  # causal_consistency = getCausalConsistencyConstraints(model_symbols, factual_sample)
+  causal_consistency = TRUE()
 
   # return TRUE()
   return And(
     range_plausibility,
     onehot_categorical_plausibility,
     onehot_ordinal_plausibility,
-    actionability_plausibility
-    # causal_consistency
+    actionability_mutability_plausibility,
+    causal_consistency
   )
 
 

@@ -44,6 +44,10 @@ VALID_ACTIONABILITY_TYPES = { \
   'same-or-increase', \
   'same-or-decrease', \
 }
+VALID_MUTABILITY_TYPES = { \
+  True,
+  False,
+}
 
 
 class Dataset(object):
@@ -159,6 +163,27 @@ class Dataset(object):
     b = self.getActionableAttributeNames(long_or_kurz)
     return np.setdiff1d(a,b)
 
+  def getMutableAttributeNames(self, long_or_kurz = 'kurz'):
+    names = []
+    # We must loop through all attributes and check mutability, doesn't matter
+    # if we loop through self.attributes_long or self.attributes_kurz as they
+    # share the same values.
+    for attr_name_long in self.getInputAttributeNames('long'):
+      attr_obj = self.attributes_long[attr_name_long]
+      if attr_obj.is_input and attr_obj.mutability != False:
+        if long_or_kurz == 'long':
+          names.append(attr_obj.attr_name_long)
+        elif long_or_kurz == 'kurz':
+          names.append(attr_obj.attr_name_kurz)
+        else:
+          raise Exception(f'{long_or_kurz} not recognized as a valid `long_or_kurz`.')
+    return np.array(names)
+
+  def getNonMutableAttributeNames(self, long_or_kurz = 'kurz'):
+    a = self.getInputAttributeNames(long_or_kurz)
+    b = self.getMutableAttributeNames(long_or_kurz)
+    return np.setdiff1d(a,b)
+
   def getIntegerBasedAttributeNames(self, long_or_kurz = 'kurz'):
     names = []
     # We must loop through all attributes and check attr_type, doesn't matter
@@ -192,7 +217,7 @@ class Dataset(object):
     return np.array(names)
 
   def assertSiblingsShareAttributes(self, long_or_kurz = 'kurz'):
-    # assert elems of dictOfSiblings share attr_type, parent, is_input-ness, and actionable-ness
+    # assert elems of dictOfSiblings share attr_type, parent, is_input-ness, actionability, and mutability
     dict_of_siblings = self.getDictOfSiblings(long_or_kurz)
     for parent_name in dict_of_siblings['cat'].keys():
       siblings = dict_of_siblings['cat'][parent_name]
@@ -202,12 +227,14 @@ class Dataset(object):
           self.attributes_long[sibling].attr_type = self.attributes_long[siblings[0]].attr_type
           self.attributes_long[sibling].is_input = self.attributes_long[siblings[0]].is_input
           self.attributes_long[sibling].actionability = self.attributes_long[siblings[0]].actionability
+          self.attributes_long[sibling].mutability = self.attributes_long[siblings[0]].mutability
           self.attributes_long[sibling].parent_name_long = self.attributes_long[siblings[0]].parent_name_long
           self.attributes_long[sibling].parent_name_kurz = self.attributes_long[siblings[0]].parent_name_kurz
         elif long_or_kurz == 'kurz':
           self.attributes_kurz[sibling].attr_type = self.attributes_kurz[siblings[0]].attr_type
           self.attributes_kurz[sibling].is_input = self.attributes_kurz[siblings[0]].is_input
           self.attributes_kurz[sibling].actionability = self.attributes_kurz[siblings[0]].actionability
+          self.attributes_kurz[sibling].mutability = self.attributes_kurz[siblings[0]].mutability
           self.attributes_kurz[sibling].parent_name_long = self.attributes_kurz[siblings[0]].parent_name_long
           self.attributes_kurz[sibling].parent_name_kurz = self.attributes_kurz[siblings[0]].parent_name_kurz
         else:
@@ -334,6 +361,7 @@ class DatasetAttribute(object):
     attr_type,
     is_input,
     actionability,
+    mutability,
     parent_name_long,
     parent_name_kurz,
     lower_bound,
@@ -347,6 +375,9 @@ class DatasetAttribute(object):
 
     if actionability not in VALID_ACTIONABILITY_TYPES:
       raise Exception("`actionability` must be one of %r." % VALID_ACTIONABILITY_TYPES)
+
+    if mutability not in VALID_MUTABILITY_TYPES:
+      raise Exception("`mutability` must be one of %r." % VALID_MUTABILITY_TYPES)
 
     if lower_bound > upper_bound:
       raise Exception("`lower_bound` must be <= `upper_bound`")
@@ -377,6 +408,14 @@ class DatasetAttribute(object):
 
     if not is_input:
       assert actionability == 'none', 'Output attribute is not actionable.'
+      assert mutability == False, 'Output attribute is not mutable.'
+
+    # We have introduced 3 types of variables: (actionable and mutable, non-actionable but mutable, immutable and non-actionable)
+    if actionability != 'none':
+      assert mutability == True
+
+    if mutability == False:
+      assert actionability == 'none'
 
     if parent_name_long == -1 or parent_name_kurz == -1:
       assert parent_name_long == parent_name_kurz == -1
@@ -386,6 +425,7 @@ class DatasetAttribute(object):
     self.attr_type = attr_type
     self.is_input = is_input
     self.actionability = actionability
+    self.mutability = mutability
     self.parent_name_long = parent_name_long
     self.parent_name_kurz = parent_name_kurz
     self.lower_bound = lower_bound
@@ -433,6 +473,7 @@ def loadDataset(dataset_name, return_one_hot, load_from_cache = True, debug_flag
       attr_type = 'binary',
       is_input = False,
       actionability = 'none',
+      mutability = False,
       parent_name_long = -1,
       parent_name_kurz = -1,
       lower_bound = data_frame_non_hot[col_name].min(),
@@ -443,39 +484,51 @@ def loadDataset(dataset_name, return_one_hot, load_from_cache = True, debug_flag
       if col_name == 'Sex':
         attr_type = 'binary'
         actionability = 'any' # 'none'
+        mutability = True
       elif col_name == 'Age':
         attr_type = 'numeric-int'
         actionability = 'any' # 'none'
+        mutability = True
       elif col_name == 'NativeCountry': #~ RACE
         attr_type = 'binary'
         actionability = 'any' # 'none'
+        mutability = True
       elif col_name == 'WorkClass':
         attr_type = 'categorical'
         actionability = 'any'
+        mutability = True
       elif col_name == 'EducationNumber':
         attr_type = 'numeric-int'
         actionability = 'any'
+        mutability = True
       elif col_name == 'EducationLevel':
         attr_type = 'ordinal'
         actionability = 'any'
+        mutability = True
       elif col_name == 'MaritalStatus':
         attr_type = 'categorical'
         actionability = 'any'
+        mutability = True
       elif col_name == 'Occupation':
         attr_type = 'categorical'
         actionability = 'any'
+        mutability = True
       elif col_name == 'Relationship':
         attr_type = 'categorical'
         actionability = 'any'
+        mutability = True
       elif col_name == 'CapitalGain':
         attr_type = 'numeric-real'
         actionability = 'any'
+        mutability = True
       elif col_name == 'CapitalLoss':
         attr_type = 'numeric-real'
         actionability = 'any'
+        mutability = True
       elif col_name == 'HoursPerWeek':
         attr_type = 'numeric-int'
         actionability = 'any'
+        mutability = True
 
       attributes_non_hot[col_name] = DatasetAttribute(
         attr_name_long = col_name,
@@ -483,6 +536,7 @@ def loadDataset(dataset_name, return_one_hot, load_from_cache = True, debug_flag
         attr_type = attr_type,
         is_input = True,
         actionability = actionability,
+        mutability = mutability,
         parent_name_long = -1,
         parent_name_kurz = -1,
         lower_bound = data_frame_non_hot[col_name].min(),
@@ -503,6 +557,7 @@ def loadDataset(dataset_name, return_one_hot, load_from_cache = True, debug_flag
       attr_type = 'binary',
       is_input = False,
       actionability = 'none',
+      mutability = False,
       parent_name_long = -1,
       parent_name_kurz = -1,
       lower_bound = data_frame_non_hot[col_name].min(),
@@ -513,24 +568,31 @@ def loadDataset(dataset_name, return_one_hot, load_from_cache = True, debug_flag
       if col_name == 'Sex':
         attr_type = 'binary'
         actionability = 'none'
+        mutability = True
       elif col_name == 'Age':
         attr_type = 'numeric-int'
         actionability = 'same-or-increase'
+        mutability = True
       elif col_name == 'Credit':
-        attr_type = 'numeric-int'
+        attr_type = 'numeric-real'
         actionability = 'any'
+        mutability = True
       elif col_name == 'LoanDuration':
-        attr_type = 'numeric-int'
-        actionability = 'none'
+        attr_type = 'numeric-real'
+        actionability = 'any'
+        mutability = True
       elif col_name == 'CheckingAccountBalance':
         attr_type = 'ordinal'
         actionability = 'any'
+        mutability = True
       elif col_name == 'SavingsAccountBalance':
         attr_type = 'ordinal'
         actionability = 'any'
+        mutability = True
       elif col_name == 'HousingStatus':
         attr_type = 'ordinal'
         actionability = 'any'
+        mutability = True
 
       attributes_non_hot[col_name] = DatasetAttribute(
         attr_name_long = col_name,
@@ -538,6 +600,7 @@ def loadDataset(dataset_name, return_one_hot, load_from_cache = True, debug_flag
         attr_type = attr_type,
         is_input = True,
         actionability = actionability,
+        mutability = mutability,
         parent_name_long = -1,
         parent_name_kurz = -1,
         lower_bound = data_frame_non_hot[col_name].min(),
@@ -558,6 +621,7 @@ def loadDataset(dataset_name, return_one_hot, load_from_cache = True, debug_flag
       attr_type = 'binary',
       is_input = False,
       actionability = 'none',
+      mutability = False,
       parent_name_long = -1,
       parent_name_kurz = -1,
       lower_bound = data_frame_non_hot[col_name].min(),
@@ -568,45 +632,59 @@ def loadDataset(dataset_name, return_one_hot, load_from_cache = True, debug_flag
       if col_name == 'isMale':
         attr_type = 'binary'
         actionability = 'any' # 'none'
+        mutability = True
       elif col_name == 'isMarried':
         attr_type = 'binary'
         actionability = 'any'
+        mutability = True
       elif col_name == 'AgeGroup':
         attr_type = 'ordinal'
         actionability = 'any' # 'none'
+        mutability = True
       elif col_name == 'EducationLevel':
         attr_type = 'ordinal'
         actionability = 'any'
+        mutability = True
       elif col_name == 'MaxBillAmountOverLast6Months':
         attr_type = 'numeric-real'
         actionability = 'any'
+        mutability = True
       elif col_name == 'MaxPaymentAmountOverLast6Months':
         attr_type = 'numeric-real'
         actionability = 'any'
+        mutability = True
       elif col_name == 'MonthsWithZeroBalanceOverLast6Months':
         attr_type = 'numeric-int'
         actionability = 'any'
+        mutability = True
       elif col_name == 'MonthsWithLowSpendingOverLast6Months':
         attr_type = 'numeric-int'
         actionability = 'any'
+        mutability = True
       elif col_name == 'MonthsWithHighSpendingOverLast6Months':
         attr_type = 'numeric-int'
         actionability = 'any'
+        mutability = True
       elif col_name == 'MostRecentBillAmount':
         attr_type = 'numeric-real'
         actionability = 'any'
+        mutability = True
       elif col_name == 'MostRecentPaymentAmount':
         attr_type = 'numeric-real'
         actionability = 'any'
+        mutability = True
       elif col_name == 'TotalOverdueCounts':
         attr_type = 'numeric-int'
         actionability = 'any'
+        mutability = True
       elif col_name == 'TotalMonthsOverdue':
         attr_type = 'numeric-int'
         actionability = 'any'
+        mutability = True
       elif col_name == 'HasHistoryOfOverduePayments':
         attr_type = 'binary'
         actionability = 'any'
+        mutability = True
 
       attributes_non_hot[col_name] = DatasetAttribute(
         attr_name_long = col_name,
@@ -614,6 +692,7 @@ def loadDataset(dataset_name, return_one_hot, load_from_cache = True, debug_flag
         attr_type = attr_type,
         is_input = True,
         actionability = actionability,
+        mutability = mutability,
         parent_name_long = -1,
         parent_name_kurz = -1,
         lower_bound = data_frame_non_hot[col_name].min(),
@@ -634,6 +713,7 @@ def loadDataset(dataset_name, return_one_hot, load_from_cache = True, debug_flag
       attr_type = 'binary',
       is_input = False,
       actionability = 'none',
+      mutability = False,
       parent_name_long = -1,
       parent_name_kurz = -1,
       lower_bound = data_frame_non_hot[col_name].min(),
@@ -644,18 +724,23 @@ def loadDataset(dataset_name, return_one_hot, load_from_cache = True, debug_flag
       if col_name == 'AgeGroup':
         attr_type = 'ordinal'
         actionability = 'any' # 'none'
+        mutability = True
       elif col_name == 'Race':
         attr_type = 'binary'
         actionability = 'any' # 'none'
+        mutability = True
       elif col_name == 'Sex':
         attr_type = 'binary'
         actionability = 'any' # 'none'
+        mutability = True
       elif col_name == 'PriorsCount':
         attr_type = 'numeric-int'
         actionability = 'any'
+        mutability = True
       elif col_name == 'ChargeDegree':
         attr_type = 'binary'
         actionability = 'any'
+        mutability = True
 
       attributes_non_hot[col_name] = DatasetAttribute(
         attr_name_long = col_name,
@@ -663,6 +748,7 @@ def loadDataset(dataset_name, return_one_hot, load_from_cache = True, debug_flag
         attr_type = attr_type,
         is_input = True,
         actionability = actionability,
+        mutability = mutability,
         parent_name_long = -1,
         parent_name_kurz = -1,
         lower_bound = data_frame_non_hot[col_name].min(),
@@ -695,6 +781,7 @@ def loadDataset(dataset_name, return_one_hot, load_from_cache = True, debug_flag
       attr_type = 'binary',
       is_input = False,
       actionability = 'none',
+      mutability = False,
       parent_name_long = -1,
       parent_name_kurz = -1,
       lower_bound = data_frame_non_hot[col_name].min(),
@@ -705,12 +792,15 @@ def loadDataset(dataset_name, return_one_hot, load_from_cache = True, debug_flag
       if col_name == 'x0':
         attr_type = 'numeric-real'
         actionability = 'any' # 'none'
+        mutability = True
       elif col_name == 'x1':
         attr_type = 'numeric-real'
         actionability = 'any' # 'none'
+        mutability = True
       elif col_name == 'x2':
         attr_type = 'numeric-real'
         actionability = 'any' # 'none'
+        mutability = True
 
       attributes_non_hot[col_name] = DatasetAttribute(
         attr_name_long = col_name,
@@ -718,6 +808,7 @@ def loadDataset(dataset_name, return_one_hot, load_from_cache = True, debug_flag
         attr_type = attr_type,
         is_input = True,
         actionability = actionability,
+        mutability = mutability,
         parent_name_long = -1,
         parent_name_kurz = -1,
         lower_bound = data_frame_non_hot[col_name].min(),
@@ -750,6 +841,7 @@ def loadDataset(dataset_name, return_one_hot, load_from_cache = True, debug_flag
       attr_type = 'binary',
       is_input = False,
       actionability = 'none',
+      mutability = False,
       parent_name_long = -1,
       parent_name_kurz = -1,
       lower_bound = data_frame_non_hot[col_name].min(),
@@ -760,9 +852,11 @@ def loadDataset(dataset_name, return_one_hot, load_from_cache = True, debug_flag
       if col_name == 'x0':
         attr_type = 'numeric-real'
         actionability = 'any' # 'none'
+        mutability = True
       elif col_name == 'x1':
         attr_type = 'numeric-real'
         actionability = 'any' # 'none'
+        mutability = True
 
       attributes_non_hot[col_name] = DatasetAttribute(
         attr_name_long = col_name,
@@ -770,6 +864,7 @@ def loadDataset(dataset_name, return_one_hot, load_from_cache = True, debug_flag
         attr_type = attr_type,
         is_input = True,
         actionability = actionability,
+        mutability = mutability,
         parent_name_long = -1,
         parent_name_kurz = -1,
         lower_bound = data_frame_non_hot[col_name].min(),
@@ -826,6 +921,7 @@ def getOneHotEquivalent(data_frame_non_hot, attributes_non_hot):
     old_attr_type = attributes[old_col_name_long].attr_type
     old_is_input = attributes[old_col_name_long].is_input
     old_actionability = attributes[old_col_name_long].actionability
+    old_mutability = attributes[old_col_name_long].mutability
     old_lower_bound = attributes[old_col_name_long].lower_bound
     old_upper_bound = attributes[old_col_name_long].upper_bound
 
@@ -836,6 +932,7 @@ def getOneHotEquivalent(data_frame_non_hot, attributes_non_hot):
     new_attr_type = 'sub-' + old_attr_type
     new_is_input = old_is_input
     new_actionability = old_actionability
+    new_mutability = old_mutability
     new_parent_name_long = old_attr_name_long
     new_parent_name_kurz = old_attr_name_kurz
 
@@ -870,6 +967,7 @@ def getOneHotEquivalent(data_frame_non_hot, attributes_non_hot):
         attr_type = new_attr_type,
         is_input = new_is_input,
         actionability = new_actionability,
+        mutability = new_mutability,
         parent_name_long = new_parent_name_long,
         parent_name_kurz = new_parent_name_kurz,
         lower_bound = data_frame[new_col_name_long].min(),

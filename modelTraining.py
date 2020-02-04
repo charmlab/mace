@@ -61,7 +61,8 @@ def trainAndSaveModels(experiment_folder_name, model_class, X_train, X_test, y_t
         # model_pretrain = RandomForestClassifier(min_samples_leaf = min(100, round(0.1 * X_train.shape[0])))
         model_pretrain = RandomForestClassifier()
     elif model_class == 'lr':
-        model_pretrain = LogisticRegression()
+        # model_pretrain = LogisticRegression(penalty='l1')
+        model_pretrain = LogisticRegression(penalty='l2') # default
     elif model_class == 'mlp':
         model_pretrain = MLPClassifier(hidden_layer_sizes = (10, 10))
         # model_pretrain = MLPClassifier() # = hidden_layer_sizes = (100, 100)
@@ -81,8 +82,8 @@ def trainAndSaveModels(experiment_folder_name, model_class, X_train, X_test, y_t
     #     # model_trained.intercept_ = np.zeros(1)
     #     model_trained.intercept_ = np.array([-225000])
 
-    # print(model_trained.coef_)
-    # print(model_trained.intercept_)
+    print(model_trained.coef_)
+    print(model_trained.intercept_)
     # ipsh()
 
     if model_class == 'tree':

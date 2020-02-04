@@ -23,20 +23,20 @@ def load_german_data():
   processed_df['Credit'] = raw_df['Credit']
   processed_df['LoanDuration'] = raw_df['LoanDuration']
 
-  # order important, more balance can overwrite less balance!
-  processed_df.loc[raw_df['CheckingAccountBalance_geq_0'] == 1, 'CheckingAccountBalance'] = 2
-  processed_df.loc[raw_df['CheckingAccountBalance_geq_200'] == 1, 'CheckingAccountBalance'] = 3
-  processed_df = processed_df.fillna(1) # all other categories...
+  # # order important, more balance can overwrite less balance!
+  # processed_df.loc[raw_df['CheckingAccountBalance_geq_0'] == 1, 'CheckingAccountBalance'] = 2
+  # processed_df.loc[raw_df['CheckingAccountBalance_geq_200'] == 1, 'CheckingAccountBalance'] = 3
+  # processed_df = processed_df.fillna(1) # all other categories...
 
-  # order important, more balance can overwrite less balance!
-  processed_df.loc[raw_df['SavingsAccountBalance_geq_100'] == 1, 'SavingsAccountBalance'] = 2
-  processed_df.loc[raw_df['SavingsAccountBalance_geq_500'] == 1, 'SavingsAccountBalance'] = 3
-  processed_df = processed_df.fillna(1) # all other categories...
+  # # order important, more balance can overwrite less balance!
+  # processed_df.loc[raw_df['SavingsAccountBalance_geq_100'] == 1, 'SavingsAccountBalance'] = 2
+  # processed_df.loc[raw_df['SavingsAccountBalance_geq_500'] == 1, 'SavingsAccountBalance'] = 3
+  # processed_df = processed_df.fillna(1) # all other categories...
 
-  # 2: owns house, 1: rents house, 0: neither
-  processed_df.loc[raw_df['OwnsHouse'] == 1, 'HousingStatus'] = 3
-  processed_df.loc[raw_df['RentsHouse'] == 1, 'HousingStatus'] = 2
-  processed_df = processed_df.fillna(1) # all other categories...
+  # # 2: owns house, 1: rents house, 0: neither
+  # processed_df.loc[raw_df['OwnsHouse'] == 1, 'HousingStatus'] = 3
+  # processed_df.loc[raw_df['RentsHouse'] == 1, 'HousingStatus'] = 2
+  # processed_df = processed_df.fillna(1) # all other categories...
 
   # Save to CSV
   processed_df = processed_df + 0 # convert boolean values to numeric

@@ -161,7 +161,8 @@ def runExperiments(dataset_values, model_class_values, norm_values, approaches_v
           if model_class_string in {'tree', 'forest'}:
             one_hot = False
           elif model_class_string in {'lr', 'mlp'}:
-            if dataset_string != 'random' and dataset_string != 'mortgage': # and dataset_string != 'german':
+            # if dataset_string != 'random' and dataset_string != 'mortgage': # and dataset_string != 'german':
+            if dataset_string != 'random' and dataset_string != 'mortgage' and dataset_string != 'german':
               one_hot = True
             else:
               one_hot = False
