@@ -12,22 +12,10 @@ from _data_main.fair_adult_data import *
 from _data_main.fair_compas_data import *
 from _data_main.process_credit_data import *
 from _data_main.process_german_data import *
-import randomData
-import mortgageData
+from _data_main.process_random_data import *
+from _data_main.process_mortgage_data import *
 
 from debug import ipsh
-
-# import sys
-# sys.path.insert(0, '_data_main')
-# from _data_main import loadData
-# import loadData
-# loadData.loadDataset('adult', False, False).printDataset()
-# loadData.loadDataset('adult', True, False).printDataset()
-# loadData.loadDataset('compass', False, False).printDataset()
-# loadData.loadDataset('compass', True, False).printDataset()
-# loadData.loadDataset('credit', False, False).printDataset()
-# loadData.loadDataset('credit', True, False).printDataset()
-
 
 VALID_ATTRIBUTE_TYPES = { \
   'numeric-int', \
@@ -55,7 +43,9 @@ class Dataset(object):
   # TODO: getOneHotEquivalent can be a class method, and this object can store
   # both one-hot and non-hot versions!
 
-  def __init__(self, data_frame, attributes, is_one_hot):
+  def __init__(self, data_frame, attributes, is_one_hot, dataset_name):
+
+    self.dataset_name = dataset_name
 
     self.is_one_hot = is_one_hot
 
@@ -440,7 +430,17 @@ def getInputOutputColumns(data_frame):
   return input_cols, output_cols[0]
 
 
-def loadDataset(dataset_name, return_one_hot, load_from_cache = True, debug_flag = False):
+def loadDataset(dataset_name, return_one_hot, load_from_cache = False, debug_flag = True):
+
+  # Somebody may pass in return_one_hot = 1 even though the dataset does not
+  # contain any categorical or ordinal variables. If this is the case, then set
+  # return_one_hot = 0.
+  if return_one_hot:
+    # TODO: perhaps move this logic to later in the code, after the definition
+    #       of dataset variables. Then look through all defined variables for
+    #       categorical or ordinal variables.
+    if dataset_name == 'random' or dataset_name == 'mortgage' or dataset_name == 'german':
+      return_one_hot = 0
 
   one_hot_string = 'one_hot' if return_one_hot else 'non_hot'
   save_file_path = os.path.join(
@@ -448,7 +448,6 @@ def loadDataset(dataset_name, return_one_hot, load_from_cache = True, debug_flag
     f'_data_main/_cached/{dataset_name}_{one_hot_string}'
   )
 
-  # load from cache
   if load_from_cache:
     if debug_flag: print(f'[INFO] Attempting to load saved dataset (`{dataset_name}`) from cache...\t', end = '')
     try:
@@ -570,8 +569,7 @@ def loadDataset(dataset_name, return_one_hot, load_from_cache = True, debug_flag
         actionability = 'any'
         mutability = True
       elif col_name == 'Age':
-        attr_type = 'numeric-int'
-        # attr_type = 'numeric-real'
+        attr_type = 'numeric-int' # 'numeric-real'
         actionability = 'same-or-increase'
         mutability = True
       elif col_name == 'Credit':
@@ -580,10 +578,10 @@ def loadDataset(dataset_name, return_one_hot, load_from_cache = True, debug_flag
         mutability = True
       elif col_name == 'LoanDuration':
         attr_type = 'numeric-int'
-        actionability = 'any'
+        actionability = 'none'
         mutability = True
       # elif col_name == 'CheckingAccountBalance':
-      #   attr_type = 'ordinal'
+      #   attr_type = 'ordinal' # 'numeric-real'
       #   actionability = 'any'
       #   mutability = True
       # elif col_name == 'SavingsAccountBalance':
@@ -757,19 +755,7 @@ def loadDataset(dataset_name, return_one_hot, load_from_cache = True, debug_flag
 
   elif dataset_name == 'random':
 
-    w, X_train, y_train, X_test, y_test = randomData.getExperimentParams()
-    print('w:\n', w)
-    print('X_test[0:5]:\n', X_test[0:5])
-    data_frame_non_hot = pd.DataFrame(
-        np.concatenate((
-          np.concatenate((y_train, X_train), axis = 1), # importantly, labels have to go first, else Dataset.__init__ messes up kurz column names
-          np.concatenate((y_test, X_test), axis = 1), # importantly, labels have to go first, else Dataset.__init__ messes up kurz column names
-        ),
-        axis = 0,
-      ),
-      columns=['label', 'x0', 'x1', 'x2']
-    )
-    data_frame_non_hot = data_frame_non_hot.astype('float64')
+    data_frame_non_hot = load_random_data()
     data_frame_non_hot = data_frame_non_hot.reset_index(drop=True)
     attributes_non_hot = {}
 
@@ -792,15 +778,15 @@ def loadDataset(dataset_name, return_one_hot, load_from_cache = True, debug_flag
 
       if col_name == 'x0':
         attr_type = 'numeric-real'
-        actionability = 'any' # 'none'
+        actionability = 'any'
         mutability = True
       elif col_name == 'x1':
         attr_type = 'numeric-real'
-        actionability = 'any' # 'none'
+        actionability = 'any'
         mutability = True
       elif col_name == 'x2':
         attr_type = 'numeric-real'
-        actionability = 'any' # 'none'
+        actionability = 'any'
         mutability = True
 
       attributes_non_hot[col_name] = DatasetAttribute(
@@ -817,19 +803,7 @@ def loadDataset(dataset_name, return_one_hot, load_from_cache = True, debug_flag
 
   elif dataset_name == 'mortgage':
 
-    w, X_train, y_train, X_test, y_test = mortgageData.getExperimentParams()
-    print('w:\n', w)
-    print('X_test[0:1]:\n', X_test[0:1])
-    data_frame_non_hot = pd.DataFrame(
-        np.concatenate((
-          np.concatenate((y_train, X_train), axis = 1), # importantly, labels have to go first, else Dataset.__init__ messes up kurz column names
-          np.concatenate((y_test, X_test), axis = 1), # importantly, labels have to go first, else Dataset.__init__ messes up kurz column names
-        ),
-        axis = 0,
-      ),
-      columns=['label', 'x0', 'x1']
-    )
-    data_frame_non_hot = data_frame_non_hot.astype('float64')
+    data_frame_non_hot = load_mortgage_data()
     data_frame_non_hot = data_frame_non_hot.reset_index(drop=True)
     attributes_non_hot = {}
 
@@ -852,11 +826,11 @@ def loadDataset(dataset_name, return_one_hot, load_from_cache = True, debug_flag
 
       if col_name == 'x0':
         attr_type = 'numeric-real'
-        actionability = 'any' # 'none'
+        actionability = 'any'
         mutability = True
       elif col_name == 'x1':
         attr_type = 'numeric-real'
-        actionability = 'any' # 'none'
+        actionability = 'any'
         mutability = True
 
       attributes_non_hot[col_name] = DatasetAttribute(
@@ -881,7 +855,7 @@ def loadDataset(dataset_name, return_one_hot, load_from_cache = True, debug_flag
     data_frame, attributes = data_frame_non_hot, attributes_non_hot
 
   # save then return
-  dataset_obj = Dataset(data_frame, attributes, return_one_hot)
+  dataset_obj = Dataset(data_frame, attributes, return_one_hot, dataset_name)
   # if not loading from cache, we always overwrite the cache
   pickle.dump(dataset_obj, open(save_file_path, 'wb'))
   return dataset_obj

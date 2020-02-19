@@ -51,30 +51,41 @@ def gatherAndSaveDistances():
   #   '/Volumes/amir/dev/mace/_experiments/__2019.09.19__merged_unconstrained_MACE_eps_1e-5'
   # ]
 
-  parent_folders = [
-    '/Volumes/amir/dev/mace/_experiments/__2019.07.30__merged_unconstrained_MO_PFT_AR',
-    '/Volumes/amir/dev/mace/_experiments/__2019.09.29__merged_unconstrained_MACE_eps_1e-2__tree_forest_lr',
-    '/Volumes/amir/dev/mace/_experiments/__2019.09.29__merged_unconstrained_MACE_eps_1e-3__tree_forest_lr',
-    '/Volumes/amir/dev/mace/_experiments/__2019.09.29__merged_unconstrained_MACE_eps_1e-5__tree_forest_lr'
-  ]
+  # parent_folders = [
+  #   '/Volumes/amir/dev/mace/_experiments/__2019.07.30__merged_unconstrained_MO_PFT_AR',
+  #   '/Volumes/amir/dev/mace/_experiments/__2019.09.29__merged_unconstrained_MACE_eps_1e-2__tree_forest_lr',
+  #   '/Volumes/amir/dev/mace/_experiments/__2019.09.29__merged_unconstrained_MACE_eps_1e-3__tree_forest_lr',
+  #   '/Volumes/amir/dev/mace/_experiments/__2019.09.29__merged_unconstrained_MACE_eps_1e-5__tree_forest_lr'
+  # ]
 
   # parent_folders = [
   #   '/Volumes/amir/dev/mace/_experiments/__2019.07.30__merged_constrained_MO_AR__lr',
   #   '/Volumes/amir/dev/mace/_experiments/__2019.09.20__merged_constrained_MACE_eps_1e-3__tree_forest_lr'
   # ]
+  # year = '2019'
+
+  parent_folders = [
+    '/Users/a6karimi/dev/mace/_experiments'
+    # '/Users/a6karimi/dev/mace/_experiments/__merged_german-lr-one_norm-MACE_eps_1e-3'
+  ]
+  year = '2020'
 
   all_child_folders = []
   for parent_folder in parent_folders:
     child_folders = os.listdir(parent_folder)
-    child_folders = [x for x in child_folders if '2019' in x and x[0] != '.'] # remove .DS_Store, etc.
+    child_folders = [x for x in child_folders if year in x and x[0] != '.'] # remove .DS_Store, etc.
     child_folders = [os.path.join(parent_folder, x) for x in child_folders]
     all_child_folders.extend(child_folders) # happens in place
 
-  DATASET_VALUES = ['adult', 'credit', 'compass']
-  MODEL_CLASS_VALUES = ['tree', 'forest', 'lr'] # , 'mlp']
-  NORM_VALUES = ['zero_norm', 'one_norm', 'infty_norm']
-  APPROACHES_VALUES = ['MACE_eps_1e-2', 'MACE_eps_1e-3', 'MACE_eps_1e-5', 'MO', 'PFT', 'AR']
+  # DATASET_VALUES = ['adult', 'credit', 'compass']
+  # MODEL_CLASS_VALUES = ['tree', 'forest', 'lr'] # , 'mlp']
+  # NORM_VALUES = ['zero_norm', 'one_norm', 'infty_norm']
+  # APPROACHES_VALUES = ['MACE_eps_1e-2', 'MACE_eps_1e-3', 'MACE_eps_1e-5', 'MO', 'PFT', 'AR']
 
+  DATASET_VALUES = ['german']
+  MODEL_CLASS_VALUES = ['tree'] #,'lr']
+  NORM_VALUES = ['one_norm']
+  APPROACHES_VALUES = ['MACE_eps_1e-3']
 
   # all_counter = 72 + 18 + 6 # (without the unneccessary FT folders for LR and MLP)
   # assert len(all_child_folders) == all_counter, 'missing, or too many experiment folders'
@@ -100,6 +111,7 @@ def gatherAndSaveDistances():
     'age constant': [], \
     'age increased': [], \
     'age decreased': [], \
+    'interventional distance': [], \
   })
 
   print('Loading and merging all distance files.')
@@ -220,7 +232,7 @@ def gatherAndSaveDistances():
             # append rows
 
             if 'MACE' in approach_string:
-              all_counterfactual_distances = list(map(lambda x: x['distance'], minimum_distance_file[key]['all_counterfactuals']))
+              all_counterfactual_distances = list(map(lambda x: x['counterfactual_distance'], minimum_distance_file[key]['all_counterfactuals']))
               all_counterfactual_times = list(map(lambda x: x['time'], minimum_distance_file[key]['all_counterfactuals']))
             else:
               all_counterfactual_distances = []
@@ -246,6 +258,7 @@ def gatherAndSaveDistances():
               'age constant': age_constant,
               'age increased': age_increased,
               'age decreased': age_decreased,
+              'interventional distance': minimum_distance_file[key]['interventional_distance'],
             }, ignore_index =  True)
   # ipsh()
           # except:
@@ -942,16 +955,29 @@ def plotAvgDistanceRunTimeCoverageTradeoffAgainstIterations():
       # fig.savefig(f'_results/test_{model_class_string}_{norm_type_string}_scatter.png', dpi = 400)
 
 
+def compareMACEandMINT():
+  df_all_distances = pickle.load(open(f'_results/df_all_distances', 'rb'))
+  df = df_all_distances
+  counterfactual_distances = np.array(df['counterfactual distance'])
+  counterfactual_distances[counterfactual_distances > 1] = 1
+  counterfactual_distances = counterfactual_distances[counterfactual_distances != 0]
+  interventional_distances = np.array(df['interventional distance'])
+  interventional_distances[interventional_distances > 1] = 1
+  interventional_distances = interventional_distances[interventional_distances != 0]
+  mean_distance_ratio = np.mean(counterfactual_distances / interventional_distances)
+  std_distance_ratio = np.std(counterfactual_distances / interventional_distances)
+  print(f'MACE / MINT distances: {mean_distance_ratio:.4f} +/- {std_distance_ratio:.4f}')
 
 if __name__ == '__main__':
-  # gatherAndSaveDistances()
+  gatherAndSaveDistances()
+  compareMACEandMINT()
   # gatherAndSaveDistanceTimeTradeoffData()
 
   # analyzeRelativeDistances()
   # analyzeAverageDistanceRunTimeCoverage()
 
   # plotDistancesMainBody()
-  plotAllDistancesAppendix()
+  # plotAllDistancesAppendix()
   # plotAvgDistanceRunTimeCoverageTradeoffAgainstIterations()
 
 

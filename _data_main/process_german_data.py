@@ -46,3 +46,158 @@ def load_german_data():
   assert(processed_df.shape[0] == 1000)
 
   return processed_df.astype('float64')
+
+
+
+
+
+# import numpy as np
+# import pandas as pd
+
+# import loadData
+
+# from random import seed
+# RANDOM_SEED = 54321
+# seed(RANDOM_SEED) # set the random seed so that the random permutations can be reproduced again
+# np.random.seed(RANDOM_SEED)
+
+# from sklearn.linear_model import LogisticRegression
+# from sklearn.linear_model import LinearRegression
+# from sklearn.linear_model import Lasso
+
+# dataset_obj = loadData.loadDataset('german', return_one_hot = False, load_from_cache = False)
+# df = dataset_obj.data_frame_kurz
+
+# # See Figure 3 in paper
+
+# # Credit
+# X_train = df[['x0', 'x1']]
+# y_train = df[['x2']]
+# model_pretrain = LinearRegression()
+# # model_pretrain = Lasso()
+# model_trained = model_pretrain.fit(X_train, y_train)
+# print(model_trained.coef_)
+# print(model_trained.intercept_)
+
+# # Loan duration
+# X_train = df[['x2']]
+# y_train = df[['x3']]
+# model_pretrain = LinearRegression()
+# model_trained = model_pretrain.fit(X_train, y_train)
+# print(model_trained.coef_)
+# print(model_trained.intercept_)
+
+
+
+
+from pysmt.shortcuts import *
+from pysmt.typing import *
+
+def getGermanCausalConsistencyConstraints(model_symbols, factual_sample):
+  # Gender (no parents)
+  g = Ite(
+    Not( # if YES intervened
+      EqualsOrIff(
+        model_symbols['interventional']['x0']['symbol'],
+        factual_sample['x0'],
+      )
+    ),
+    EqualsOrIff( # set value of X^CF to the intervened value
+      model_symbols['counterfactual']['x0']['symbol'],
+      model_symbols['interventional']['x0']['symbol'],
+    ),
+    EqualsOrIff( # else, set value of X^CF to (8) from paper
+      model_symbols['counterfactual']['x0']['symbol'],
+      factual_sample['x0'],
+    ),
+  )
+
+  # Age (no parents)
+  a = Ite(
+    Not( # if YES intervened
+      EqualsOrIff(
+        model_symbols['interventional']['x1']['symbol'],
+        factual_sample['x1'],
+      )
+    ),
+    EqualsOrIff( # set value of X^CF to the intervened value
+      model_symbols['counterfactual']['x1']['symbol'],
+      model_symbols['interventional']['x1']['symbol'],
+    ),
+    EqualsOrIff( # else, set value of X^CF to (8) from paper
+      model_symbols['counterfactual']['x1']['symbol'],
+      factual_sample['x1'],
+    ),
+  )
+
+  # Credit (parents: age, sex)
+  c = Ite(
+    Not( # if YES intervened
+      EqualsOrIff(
+        ToReal(model_symbols['interventional']['x2']['symbol']),
+        ToReal(factual_sample['x2']),
+      )
+    ),
+    EqualsOrIff( # set value of X^CF to the intervened value
+      ToReal(model_symbols['counterfactual']['x2']['symbol']),
+      ToReal(model_symbols['interventional']['x2']['symbol']),
+    ),
+    EqualsOrIff( # else, set value of X^CF to (8) from paper
+      ToReal(model_symbols['counterfactual']['x2']['symbol']),
+      Plus([
+        ToReal(factual_sample['x2']),
+        Times(
+          Minus(
+            ToReal(model_symbols['counterfactual']['x0']['symbol']),
+            ToReal(factual_sample['x0']),
+          ),
+          # If you want to support numeric-int children, then you should round
+          # these structural equation weights.
+          # Real(float(552.43925387))
+          Real(float(550))
+        ),
+        Times(
+          Minus(
+            ToReal(model_symbols['counterfactual']['x1']['symbol']),
+            ToReal(factual_sample['x1']),
+          ),
+          # If you want to support numeric-int children, then you should round
+          # these structural equation weights.
+          # Real(float(4.4847736))
+          Real(float(4.5))
+        ),
+      ])
+    ),
+  )
+
+  # Repayment duration (parents: credit)
+  r = Ite(
+    Not( # if YES intervened
+      EqualsOrIff(
+        ToReal(model_symbols['interventional']['x3']['symbol']),
+        ToReal(factual_sample['x3']),
+      )
+    ),
+    EqualsOrIff( # set value of X^CF to the intervened value
+      ToReal(model_symbols['counterfactual']['x3']['symbol']),
+      ToReal(model_symbols['interventional']['x3']['symbol']),
+    ),
+    EqualsOrIff( # else, set value of X^CF to (8) from paper
+      ToReal(model_symbols['counterfactual']['x3']['symbol']),
+      Plus([
+        ToReal(factual_sample['x3']),
+        Times(
+          Minus(
+            ToReal(model_symbols['counterfactual']['x2']['symbol']),
+            ToReal(factual_sample['x2']),
+          ),
+          # If you want to support numeric-int children, then you should round
+          # these structural equation weights.
+          # Real(float(0.00266995))
+          Real(float(0.0025))
+        ),
+      ])
+    ),
+  )
+
+  return And([g,a,c,r])

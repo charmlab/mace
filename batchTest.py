@@ -15,9 +15,9 @@ import modelTraining
 from debug import ipsh
 
 try:
-  import generateMACEExplanations
+  import generateSATExplanations
 except:
-  print('[ENV WARNING] activate virtualenv to allow for testing MACE')
+  print('[ENV WARNING] activate virtualenv to allow for testing MACE or MINT')
 import generateMOExplanations
 import generateFTExplanations
 try:
@@ -58,6 +58,11 @@ def getBalancedDataFrame(dataset_obj):
   return balanced_data_frame, input_cols, output_col
 
 
+def getEpsilonInString(approach_string):
+  tmp_index = approach_string.find('eps')
+  epsilon_string = approach_string[tmp_index + 4 : tmp_index + 8]
+  return float(epsilon_string)
+
 def generateExplanations(
   approach_string,
   explanation_file_name,
@@ -70,16 +75,26 @@ def generateExplanations(
 
   if 'MACE' in approach_string: # 'MACE_counterfactual':
 
-    tmp_index = approach_string.find('eps')
-    epsilon_string = approach_string[tmp_index + 4 : tmp_index + 8]
-    epsilon = float(epsilon_string)
-    return generateMACEExplanations.genExp(
+    return generateSATExplanations.genExp(
       explanation_file_name,
       model_trained,
       dataset_obj,
       factual_sample,
       norm_type_string,
-      epsilon
+      'mace',
+      getEpsilonInString(approach_string)
+    )
+
+  elif 'MINT' in approach_string: # 'MINT_counterfactual':
+
+    return generateSATExplanations.genExp(
+      explanation_file_name,
+      model_trained,
+      dataset_obj,
+      factual_sample,
+      norm_type_string,
+      'mint',
+      getEpsilonInString(approach_string)
     )
 
   elif approach_string == 'MO': # 'minimum_observable':
@@ -158,14 +173,13 @@ def runExperiments(dataset_values, model_class_values, norm_values, approaches_v
 
           print(f'\t\t\tExperimenting with approach_string = `{approach_string}`')
 
+          if norm_type_string == 'two_norm':
+            raise Exception(f'{norm_type_string} not supported.')
+
           if model_class_string in {'tree', 'forest'}:
             one_hot = False
           elif model_class_string in {'lr', 'mlp'}:
-            # if dataset_string != 'random' and dataset_string != 'mortgage': # and dataset_string != 'german':
-            if dataset_string != 'random' and dataset_string != 'mortgage' and dataset_string != 'german':
-              one_hot = True
-            else:
-              one_hot = False
+            one_hot = True
           else:
             raise Exception(f'{model_class_string} not recognized as a valid `model_class_string`.')
 
@@ -180,43 +194,18 @@ def runExperiments(dataset_values, model_class_values, norm_values, approaches_v
           log_file = open(f'{experiment_folder_name}/log_experiment.txt','w')
 
           # save some files
-          dataset_obj = loadData.loadDataset(dataset_string, return_one_hot = one_hot, load_from_cache = False)
+          dataset_obj = loadData.loadDataset(dataset_string, return_one_hot = one_hot, load_from_cache = False, debug_flag = False)
           pickle.dump(dataset_obj, open(f'{experiment_folder_name}/_dataset_obj', 'wb'))
 
-          # TODO: deprecate this code and make it similar to other datasets; we
-          #       did it this way, specifically for mortgage dataset, as we wanted
-          #       to test a specific test example with salary / bank balance, and
-          #       we had added this specific example to the top of the test set.
-          if dataset_string == 'random':
+          # construct a balanced dataframe w/ equal number of {0,1} labels;
+          #     training portion used to train model
+          #     testing portion used to compute counterfactuals
+          balanced_data_frame, input_cols, output_col = getBalancedDataFrame(dataset_obj)
 
-            data_train = dataset_obj.data_frame_kurz.iloc[0:1000]
-            data_test = dataset_obj.data_frame_kurz.iloc[1000:2000]
-
-            X_train = data_train[['x0', 'x1', 'x2']]
-            y_train = data_train[['y']]
-            X_test = data_test[['x0', 'x1', 'x2']]
-            y_test = data_test[['y']]
-
-          elif dataset_string == 'mortgage':
-
-            data_train = dataset_obj.data_frame_kurz.iloc[0:1000]
-            data_test = dataset_obj.data_frame_kurz.iloc[1000:2000]
-
-            X_train = data_train[['x0', 'x1']]
-            y_train = data_train[['y']]
-            X_test = data_test[['x0', 'x1']]
-            y_test = data_test[['y']]
-
-          else:
-            # construct a balanced dataframe;
-            #     training portion used to train model
-            #     training & testing portions used to compute counterfactuals
-            balanced_data_frame, input_cols, output_col = getBalancedDataFrame(dataset_obj)
-
-            # get train / test splits
-            all_data = balanced_data_frame.loc[:,input_cols]
-            all_true_labels = balanced_data_frame.loc[:,output_col]
-            X_train, X_test, y_train, y_test = train_test_split(all_data, all_true_labels, train_size=.7, random_state = RANDOM_SEED)
+          # get train / test splits
+          all_data = balanced_data_frame.loc[:,input_cols]
+          all_true_labels = balanced_data_frame.loc[:,output_col]
+          X_train, X_test, y_train, y_test = train_test_split(all_data, all_true_labels, train_size=.7, random_state = RANDOM_SEED)
 
           feature_names = dataset_obj.getInputAttributeNames('kurz') # easier to read (nothing to do with one-hot vs non-hit!)
           standard_deviations = list(X_train.std())
@@ -234,7 +223,6 @@ def runExperiments(dataset_values, model_class_values, norm_values, approaches_v
 
           # get the negatively predicted samples (only test set)
           X_test_pred_labels = model_trained.predict(X_test)
-          # ipsh()
           neg_pred_data_df = X_test.iloc[X_test_pred_labels == 0]
           pos_pred_data_df = X_test.iloc[X_test_pred_labels == 1]
 
@@ -274,19 +262,24 @@ def runExperiments(dataset_values, model_class_values, norm_values, approaches_v
               standard_deviations, # used solely for feature_tweaking method
             )
 
-            print(
-              f'\tcf_found: {explanation_object["counterfactual_found"]}'
-              f'\tcf_plausible: {explanation_object["counterfactual_plausible"]}'
-              f'\tcf_distance: {explanation_object["counterfactual_distance"]:.4f}'
-              f'\tcf_time: {explanation_object["counterfactual_time"]:.4f}'
-            ) # , file=log_file)
+            if 'MACE' in approach_string:
+              print(
+                f'\t- cfe_found: {explanation_object["cfe_found"]} -'
+                f'\t- cfe_plaus: {explanation_object["cfe_plausible"]} -'
+                f'\t- cfe_time: {explanation_object["cfe_time"]:.4f} -'
+                f'\t- int_dist: N/A -'
+                f'\t- cfe_dist: {explanation_object["cfe_distance"]:.4f} -'
+              ) # , file=log_file)
+            elif 'MINT' in approach_string:
+              print(
+                f'\t- scf_found: {explanation_object["scf_found"]} -'
+                f'\t- scf_plaus: {explanation_object["scf_plausible"]} -'
+                f'\t- scf_time: {explanation_object["scf_time"]:.4f} -'
+                f'\t- int_dist: {explanation_object["int_distance"]:.4f} -'
+                f'\t- scf_dist: {explanation_object["scf_distance"]:.4f} -'
+              ) # , file=log_file)
 
             all_minimum_distances[f'sample_{factual_sample_index}'] = explanation_object
-            # {
-            #   'factual_sample': factual_sample,
-            #   'counterfactual_sample': counterfactual_sample,
-            #   'distance': distance,
-            # }
 
           pickle.dump(all_minimum_distances, open(f'{experiment_folder_name}/_minimum_distances', 'wb'))
           pprint(all_minimum_distances, open(f'{experiment_folder_name}/minimum_distances.txt', 'w'))
@@ -315,14 +308,14 @@ if __name__ == '__main__':
       nargs = '+',
       type = str,
       default = 'zero_norm',
-      help = 'Norm used to evaluate distance to counterfactual: zero_norm, one_norm, two_norm, infty_norm')
+      help = 'Norm used to evaluate distance to counterfactual: zero_norm, one_norm, infty_norm') # two_norm
 
   parser.add_argument(
       '-a', '--approach',
       nargs = '+',
       type = str,
       default = 'MACE_eps_1e-5',
-      help = 'Approach used to generate counterfactual: MACE_eps_1e-5, MO, FT, ES, AR.')
+      help = 'Approach used to generate counterfactual: MACE_eps_1e-3, MINT_eps_1e-3, MO, FT, AR.') # ES
 
   parser.add_argument(
       '-b', '--batch_number',

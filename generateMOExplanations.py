@@ -100,11 +100,11 @@ def genExp(
 
   return {
     'factual_sample': factual_sample,
-    'counterfactual_sample': closest_observable_sample['sample'],
-    'counterfactual_found': True,
-    'counterfactual_plausible': True,
-    'counterfactual_distance': closest_observable_sample['distance'],
-    'counterfactual_time': end_time - start_time,
+    'cfe_sample': closest_observable_sample['sample'],
+    'cfe_found': True,
+    'cfe_plausible': True,
+    'cfe_distance': closest_observable_sample['distance'],
+    'cfe_time': end_time - start_time,
   }
 
 

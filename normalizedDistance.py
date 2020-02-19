@@ -33,7 +33,6 @@ def getDistanceBetweenSamples(sample_1, sample_2, norm_type, dataset_obj):
         sample_1[attr_name_kurz] -
         sample_2[attr_name_kurz]
       ) /
-      # 1
       (
         dataset_obj.attributes_kurz[attr_name_kurz].upper_bound -
         dataset_obj.attributes_kurz[attr_name_kurz].lower_bound

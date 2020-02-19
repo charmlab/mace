@@ -46,3 +46,5 @@ _tmp/
 *.synctex.gz
 *.synctex.gz(busy)
 *.pdfsync
+
+_data_main/german_processed.csv

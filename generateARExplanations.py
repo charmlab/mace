@@ -180,10 +180,10 @@ def genExp(model_trained, factual_sample, norm_type, dataset_obj):
 
   return {
     'factual_sample': factual_sample,
-    'counterfactual_sample': counterfactual_sample,
-    'counterfactual_found': True, # TODO?
-    'counterfactual_plausible': counterfactual_plausible,
-    'counterfactual_distance': distance,
-    'counterfactual_time': end_time - start_time,
+    'cfe_sample': counterfactual_sample,
+    'cfe_found': True, # TODO?
+    'cfe_plausible': counterfactual_plausible,
+    'cfe_distance': distance,
+    'cfe_time': end_time - start_time,
   }
 

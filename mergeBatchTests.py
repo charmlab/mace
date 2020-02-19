@@ -11,16 +11,21 @@ from shutil import copyfile
 # # APPROACHES_VALUES = ['MACE_eps_1e-3', 'MACE_eps_1e-5']
 # APPROACHES_VALUES = ['MACE_eps_1e-3']
 
-DATASET_VALUES = ['adult', 'credit', 'compass']
-MODEL_CLASS_VALUES = ['tree', 'forest', 'lr'] # , 'mlp']
-NORM_VALUES = ['zero_norm', 'one_norm', 'infty_norm']
-APPROACHES_VALUES = ['MACE_eps_1e-5'] # , 'MACE_eps_1e-3', 'MACE_eps_1e-5']
-# APPROACHES_VALUES = ['MACE_eps_1e-3']
+# DATASET_VALUES = ['adult', 'credit', 'compass']
+# MODEL_CLASS_VALUES = ['tree', 'forest', 'lr'] # , 'mlp']
+# NORM_VALUES = ['zero_norm', 'one_norm', 'infty_norm']
+# APPROACHES_VALUES = ['MACE_eps_1e-5'] # , 'MACE_eps_1e-3', 'MACE_eps_1e-5']
+# # APPROACHES_VALUES = ['MACE_eps_1e-3']
+
+DATASET_VALUES = ['german']
+MODEL_CLASS_VALUES = ['lr']
+NORM_VALUES = ['one_norm']
+APPROACHES_VALUES = ['MACE_eps_1e-3']
 
 
 
-experiments_folder_path = '/Volumes/amir/dev/mace/_experiments/'
-# experiments_folder_path = '/Users/a6karimi/dev/mace/_experiments/'
+# experiments_folder_path = '/Volumes/amir/dev/mace/_experiments/'
+experiments_folder_path = '/Users/a6karimi/dev/mace/_experiments/'
 all_counter = len(DATASET_VALUES) * len(MODEL_CLASS_VALUES) * len(NORM_VALUES) * len(APPROACHES_VALUES)
 counter = 0
 
