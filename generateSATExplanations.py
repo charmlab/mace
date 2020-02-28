@@ -11,8 +11,6 @@ from pysmt.shortcuts import *
 from pysmt.typing import *
 from pprint import pprint
 
-from debug import ipsh
-
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression

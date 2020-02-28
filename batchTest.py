@@ -12,8 +12,6 @@ from sklearn.model_selection import train_test_split
 import loadData
 import modelTraining
 
-from debug import ipsh
-
 try:
   import generateSATExplanations
 except:
@@ -192,7 +190,7 @@ def runExperiments(dataset_values, model_class_values, norm_values, approaches_v
           log_file = open(f'{experiment_folder_name}/log_experiment.txt','w')
 
           # save some files
-          dataset_obj = loadData.loadDataset(dataset_string, return_one_hot = one_hot, load_from_cache = False, debug_flag = False)
+          dataset_obj = loadData.loadDataset(dataset_string, return_one_hot = one_hot, load_from_cache = True, debug_flag = False)
           pickle.dump(dataset_obj, open(f'{experiment_folder_name}/_dataset_obj', 'wb'))
 
           # construct a balanced dataframe w/ equal number of {0,1} labels;

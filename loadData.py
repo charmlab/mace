@@ -15,8 +15,6 @@ from _data_main.process_german_data import *
 from _data_main.process_random_data import *
 from _data_main.process_mortgage_data import *
 
-from debug import ipsh
-
 VALID_ATTRIBUTE_TYPES = { \
   'numeric-int', \
   'numeric-real', \

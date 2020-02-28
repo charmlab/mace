@@ -19,8 +19,6 @@ import argparse
 import treeUtils
 import modelConversion
 
-from debug import ipsh
-
 from random import seed
 RANDOM_SEED = 54321
 seed(RANDOM_SEED) # set the random seed so that the random permutations can be reproduced again

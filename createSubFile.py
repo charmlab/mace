@@ -6,14 +6,14 @@
 # ls -1 | grep 2019.05 | xargs rm -rf
 # scp -r amir@login.cluster.is.localnet:~/dev/mace/_experiments/__merged _results/
 
-DATASET_VALUES = ['adult', 'credit', 'compass']
-# MODEL_CLASS_VALUES = ['tree', 'forest', 'lr'] # MLP
-MODEL_CLASS_VALUES = ['mlp']
-NORM_VALUES = ['zero_norm', 'one_norm', 'infty_norm']
-APPROACHES_VALUES = ['MACE_eps_1e-2', 'MACE_eps_1e-3', 'MACE_eps_1e-5']
+DATASET_VALUES = ['credit']
+MODEL_CLASS_VALUES = ['tree', 'lr']
+NORM_VALUES = ['one_norm']
+APPROACHES_VALUES = ['MACE_eps_1e-3']
 
-NUM_BATCHES = 250
-NUM_NEG_SAMPLES_PER_BATCH = 2
+NUM_BATCHES = 60
+NUM_NEG_SAMPLES_PER_BATCH = 50
+GEN_CF_FOR = 'negative_and_positive'
 
 # DATASET_VALUES = ['adult', 'credit', 'compass']
 # # MODEL_CLASS_VALUES = ['tree', 'forest', 'lr'] # MLP
@@ -46,6 +46,7 @@ for dataset_string in DATASET_VALUES:
              f' -a {approach_string}' \
              f' -b {batch_number}' \
              f' -s {NUM_NEG_SAMPLES_PER_BATCH}', \
+             f' -g {GEN_CF_FOR}', \
           file=sub_file)
           print('error = _cluster_logs/test.$(Process).err', file=sub_file)
           print('output = _cluster_logs/test.$(Process).out', file=sub_file)
