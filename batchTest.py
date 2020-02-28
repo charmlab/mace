@@ -70,7 +70,7 @@ def generateExplanations(
   dataset_obj,
   factual_sample,
   norm_type_string,
-  potential_observable_samples,
+  observable_data_dict,
   standard_deviations):
 
   if 'MACE' in approach_string: # 'MACE_counterfactual':
@@ -103,42 +103,40 @@ def generateExplanations(
       explanation_file_name,
       dataset_obj,
       factual_sample,
-      potential_observable_samples,
+      observable_data_dict,
       norm_type_string
     )
 
   elif approach_string == 'FT': # 'feature_tweaking':
 
     possible_labels = [0, 1]
-    desired_label = 1
     epsilon = .5
+    perform_while_plausibility = False
     return generateFTExplanations.genExp(
       model_trained,
       factual_sample,
       possible_labels,
-      desired_label,
       epsilon,
       norm_type_string,
       dataset_obj,
       standard_deviations,
-      False
+      perform_while_plausibility
     )
 
   elif approach_string == 'PFT': # 'plausible_feature_tweaking':
 
     possible_labels = [0, 1]
-    desired_label = 1
     epsilon = .5
+    perform_while_plausibility = True
     return generateFTExplanations.genExp(
       model_trained,
       factual_sample,
       possible_labels,
-      desired_label,
       epsilon,
       norm_type_string,
       dataset_obj,
       standard_deviations,
-      True
+      perform_while_plausibility
     )
 
   elif approach_string == 'AR': # 'actionable_recourse':
@@ -155,7 +153,7 @@ def generateExplanations(
     raise Exception(f'{approach_string} not recognized as a valid `approach_string`.')
 
 
-def runExperiments(dataset_values, model_class_values, norm_values, approaches_values, batch_number, neg_sample_count):
+def runExperiments(dataset_values, model_class_values, norm_values, approaches_values, batch_number, sample_count, gen_cf_for):
 
   for dataset_string in dataset_values:
 
@@ -184,7 +182,7 @@ def runExperiments(dataset_values, model_class_values, norm_values, approaches_v
             raise Exception(f'{model_class_string} not recognized as a valid `model_class_string`.')
 
           # prepare experiment folder
-          experiment_name = f'{dataset_string}__{model_class_string}__{norm_type_string}__{approach_string}__batch{batch_number}__samples{neg_sample_count}'
+          experiment_name = f'{dataset_string}__{model_class_string}__{norm_type_string}__{approach_string}__batch{batch_number}__samples{sample_count}'
           experiment_folder_name = f"_experiments/{datetime.now().strftime('%Y.%m.%d_%H.%M.%S')}__{experiment_name}"
           explanation_folder_name = f'{experiment_folder_name}/__explanation_log'
           minimum_distance_folder_name = f'{experiment_folder_name}/__minimum_distances'
@@ -221,36 +219,49 @@ def runExperiments(dataset_values, model_class_values, norm_values, approaches_v
             feature_names
           )
 
-          # get the negatively predicted samples (only test set)
+          # get the predicted labels (only test set)
           X_test_pred_labels = model_trained.predict(X_test)
-          neg_pred_data_df = X_test.iloc[X_test_pred_labels == 0]
-          pos_pred_data_df = X_test.iloc[X_test_pred_labels == 1]
 
-          # neg_pred_data_df = neg_pred_data_df[0 : neg_sample_count] # choose only a subset to compare
-          batch_start_index = batch_number * neg_sample_count
-          batch_end_index = (batch_number + 1) * neg_sample_count
-          neg_pred_data_df = neg_pred_data_df[batch_start_index : batch_end_index] # choose only a subset to compare
-          pos_pred_data_df = pos_pred_data_df[0 : -1] # choose ALL to compare (critical for minimum_observable method!)
+          all_pred_data_df = X_test
+          # IMPORTANT: note that 'y' is actually 'pred_y', not 'true_y'
+          all_pred_data_df['y'] = X_test_pred_labels
+          neg_pred_data_df = all_pred_data_df.where(all_pred_data_df['y'] == 0).dropna()
+          pos_pred_data_df = all_pred_data_df.where(all_pred_data_df['y'] == 1).dropna()
+
+          batch_start_index = batch_number * sample_count
+          batch_end_index = (batch_number + 1) * sample_count
+
+          # generate counterfactuals for {only negative, negative & positive} samples
+          if gen_cf_for == 'negative_only':
+            iterate_over_data_df = neg_pred_data_df[batch_start_index : batch_end_index] # choose only a subset to compare
+            observable_data_df = pos_pred_data_df
+          elif gen_cf_for == 'negative_and_positive':
+            iterate_over_data_df = all_pred_data_df[batch_start_index : batch_end_index] # choose only a subset to compare
+            observable_data_df = all_pred_data_df
+          else:
+            raise Exception(f'{gen_cf_for} not recognized as a valid `gen_cf_for`.')
 
           # convert to dictionary for easier enumeration (iteration)
-          neg_pred_data_dict = neg_pred_data_df.T.to_dict()
-          pos_pred_data_dict = pos_pred_data_df.T.to_dict()
+          iterate_over_data_dict = iterate_over_data_df.T.to_dict()
+          observable_data_dict = observable_data_df.T.to_dict()
 
-          # loop through the negative samples (to be saved as part of the same file of minimum distances)
+          # loop through samples for which we desire a counterfactual,
+          # (to be saved as part of the same file of minimum distances)
           explanation_counter = 1
           all_minimum_distances = {}
-          for factual_sample_index, factual_sample in neg_pred_data_dict.items():
+          for factual_sample_index, factual_sample in iterate_over_data_dict.items():
+
+            factual_sample['y'] = bool(factual_sample['y'])
 
             print(
               '\t\t\t\t'
               f'Generating explanation for\t'
               f'batch #{batch_number}\t'
-              f'sample #{explanation_counter}/{len(neg_pred_data_dict.keys())}\t'
+              f'sample #{explanation_counter}/{len(iterate_over_data_dict.keys())}\t'
               f'(sample index {factual_sample_index}): ', end = '') # , file=log_file)
             explanation_counter = explanation_counter + 1
-
             explanation_file_name = f'{explanation_folder_name}/sample_{factual_sample_index}.txt'
-            potential_observable_samples = pos_pred_data_dict
+
             explanation_object = generateExplanations(
               approach_string,
               explanation_file_name,
@@ -258,7 +269,7 @@ def runExperiments(dataset_values, model_class_values, norm_values, approaches_v
               dataset_obj,
               factual_sample,
               norm_type_string,
-              potential_observable_samples, # used solely for minimum_observable method
+              observable_data_dict, # used solely for minimum_observable method
               standard_deviations, # used solely for feature_tweaking method
             )
 
@@ -324,10 +335,16 @@ if __name__ == '__main__':
       help = 'If b = b, s = s, compute explanations for samples in range( b * s, (b + 1) * s )).')
 
   parser.add_argument(
-      '-s', '--neg_sample_count',
+      '-s', '--sample_count',
       type = int,
       default = 5,
       help = 'Number of samples seeking explanations.')
+
+  parser.add_argument(
+      '-g', '--gen_cf_for',
+      type = str,
+      default = 'negative_only',
+      help = 'Decide whether to generate counterfactuals for negative pred samples only, or for both negative and positive pred samples.')
 
 
   # parsing the args
@@ -348,7 +365,8 @@ if __name__ == '__main__':
     args.norm_type,
     args.approach,
     args.batch_number,
-    args.neg_sample_count)
+    args.sample_count,
+    args.gen_cf_for)
 
 
 

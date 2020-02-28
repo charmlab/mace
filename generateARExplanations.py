@@ -79,8 +79,9 @@ def genExp(model_trained, factual_sample, norm_type, dataset_obj):
   counterfactual_sample_values = np.add(factual_sample_values, output['actions'])
   counterfactual_sample = dict(zip(factual_sample.keys(), counterfactual_sample_values))
 
-  factual_sample['y'] = False
-  counterfactual_sample['y'] = True
+  # factual_sample['y'] = False
+  # counterfactual_sample['y'] = True
+  counterfactual_sample['y'] = not factual_sample['y']
   counterfactual_plausible = True
 
   # IMPORTANT: no need to check for integer-based / binary-based plausibility,

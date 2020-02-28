@@ -12,13 +12,16 @@ seed(RANDOM_SEED) # set the random seed so that the random permutations can be r
 np.random.seed(RANDOM_SEED)
 
 
-def findClosestObservableSample(potential_observable_samples, dataset_obj, factual_sample, norm_type):
+def findClosestObservableSample(observable_samples, dataset_obj, factual_sample, norm_type):
 
   closest_observable_sample = {'sample': {}, 'distance': np.infty, 'norm_type': None} # in case no observables are found.
 
-  for observable_sample_index, observable_sample in potential_observable_samples.items():
+  for observable_sample_index, observable_sample in observable_samples.items():
 
-    observable_sample['y'] = True
+    # observable_sample['y'] = True
+
+    if observable_sample['y'] == factual_sample['y']: # make sure the cf flips the prediction
+      continue
 
     # Only compare against those observable samples that DO NOT differ with the
     # factual sample in non-actionable features!
@@ -74,17 +77,17 @@ def genExp(
   explanation_file_name,
   dataset_obj,
   factual_sample,
-  potential_observable_samples,
+  observable_samples,
   norm_type):
 
   start_time = time.time()
 
   log_file = open(explanation_file_name,'w')
 
-  factual_sample['y'] = False
+  # factual_sample['y'] = False
 
   closest_observable_sample = findClosestObservableSample(
-    potential_observable_samples,
+    observable_samples,
     dataset_obj,
     factual_sample,
     norm_type

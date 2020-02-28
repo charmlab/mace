@@ -463,7 +463,8 @@ def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, f
     for attr_name_kurz in dataset_obj.getInputAttributeNames('kurz'):
       vectorized_sample.append(dict_sample[attr_name_kurz])
 
-    prediction = int(str(dict_sample['y']) == 'True')
+    # prediction = int(str(dict_sample['y']) == 'True')
+    prediction = int(str(dict_sample['y']) == str(not factual_sample['y']))
     assert int(model_trained.predict([vectorized_sample])[0]) == prediction, 'Counterfactual prediction does not match sklearn prediction.'
 
   # Convert to pysmt_sample so factual symbols can be used in formulae
@@ -671,7 +672,7 @@ def genExp(
   epsilon):
 
   # # ONLY TO BE USED FOR TEST PURPOSES ON MORTGAGE DATASET
-  # factual_sample = {'x0': 75000,  'x1': 25000}
+  # factual_sample = {'x0': 75000, 'x1': 25000, 'y': False}
 
   if 'mace' not in approach_string and 'mint' not in approach_string:
     raise Exception(f'`{approach_string}` not recognized as valid approach string; expected `mint` or `mace`.')
@@ -725,7 +726,7 @@ def genExp(
   print('Model Symbols:', file = log_file)
   pprint(model_symbols, log_file)
 
-  factual_sample['y'] = False
+  # factual_sample['y'] = False
 
   # find closest counterfactual sample from this negative sample
   all_counterfactuals, closest_counterfactual_sample, closest_interventional_sample = findClosestCounterfactualSample(
