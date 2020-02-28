@@ -260,6 +260,11 @@ def lr2formula(model, model_symbols):
         # this bug before, becuase of another bug in genMACEExplanations where
         # numeric-real variables were not being set to REAL. Therefore, it never
         # happened that np.dot(coef_, sample) + intercept_ would be exactly 0 lol!
+        # UPDATE (Feb 28, 2020): turns out that:
+        #                        for factual_sample['y'] = 1 for which we seek a negative CF --> GE works, GT fails
+        #                        for factual_sample['y'] = 0 for which we seek a positive CF --> GT works, GE fails
+        # ... which is due to 2e-16 values... therefore, I reluctantly added a
+        # condition to assertPrediction in genSATExplanations.py. Resolved.
         GT(
             Plus(
                 Real(float(model.intercept_[0])),

@@ -13,7 +13,7 @@ APPROACHES_VALUES = ['MACE_eps_1e-3']
 
 NUM_BATCHES = 60
 NUM_NEG_SAMPLES_PER_BATCH = 50
-GEN_CF_FOR = 'negative_and_positive'
+GEN_CF_FOR = 'neg_and_pos'
 
 # DATASET_VALUES = ['adult', 'credit', 'compass']
 # # MODEL_CLASS_VALUES = ['tree', 'forest', 'lr'] # MLP

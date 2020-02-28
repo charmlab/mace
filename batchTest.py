@@ -230,10 +230,13 @@ def runExperiments(dataset_values, model_class_values, norm_values, approaches_v
           batch_end_index = (batch_number + 1) * sample_count
 
           # generate counterfactuals for {only negative, negative & positive} samples
-          if gen_cf_for == 'negative_only':
+          if gen_cf_for == 'neg_only':
             iterate_over_data_df = neg_pred_data_df[batch_start_index : batch_end_index] # choose only a subset to compare
             observable_data_df = pos_pred_data_df
-          elif gen_cf_for == 'negative_and_positive':
+          elif gen_cf_for == 'pos_only':
+            iterate_over_data_df = pos_pred_data_df[batch_start_index : batch_end_index] # choose only a subset to compare
+            observable_data_df = neg_pred_data_df
+          elif gen_cf_for == 'neg_and_pos':
             iterate_over_data_df = all_pred_data_df[batch_start_index : batch_end_index] # choose only a subset to compare
             observable_data_df = all_pred_data_df
           else:
@@ -341,7 +344,7 @@ if __name__ == '__main__':
   parser.add_argument(
       '-g', '--gen_cf_for',
       type = str,
-      default = 'negative_only',
+      default = 'neg_only',
       help = 'Decide whether to generate counterfactuals for negative pred samples only, or for both negative and positive pred samples.')
 
 

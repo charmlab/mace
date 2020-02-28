@@ -461,9 +461,16 @@ def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, f
     for attr_name_kurz in dataset_obj.getInputAttributeNames('kurz'):
       vectorized_sample.append(dict_sample[attr_name_kurz])
 
-    # prediction = int(str(dict_sample['y']) == 'True')
-    prediction = int(str(dict_sample['y']) == str(not factual_sample['y']))
-    assert int(model_trained.predict([vectorized_sample])[0]) == prediction, 'Counterfactual prediction does not match sklearn prediction.'
+    sklearn_prediction = int(model_trained.predict([vectorized_sample])[0])
+    pysmt_prediction = int(dict_sample['y'])
+    factual_prediction = int(factual_sample['y'])
+
+    if isinstance(model_trained, LogisticRegression):
+      if np.dot(model_trained.coef_, vectorized_sample) + model_trained.intercept_ < 1e-10:
+        return
+
+    assert sklearn_prediction == pysmt_prediction, 'Pysmt prediction does not match sklearn prediction.'
+    assert sklearn_prediction != factual_prediction, 'Counterfactual and factual samples have the same prediction.'
 
   # Convert to pysmt_sample so factual symbols can be used in formulae
   factual_pysmt_sample = getPySMTSampleFromDictSample(factual_sample, dataset_obj)
@@ -650,7 +657,7 @@ def getDictSampleFromPySMTSample(pysmt_sample, dataset_obj):
     attr_obj = dataset_obj.attributes_kurz[attr_name_kurz]
     try:
       if not attr_obj.is_input:
-        dict_sample[attr_name_kurz] = bool(str(pysmt_sample[attr_name_kurz]))
+        dict_sample[attr_name_kurz] = bool(str(pysmt_sample[attr_name_kurz]) == 'True')
       elif attr_obj.attr_type == 'numeric-real':
         dict_sample[attr_name_kurz] = float(eval(str(pysmt_sample[attr_name_kurz])))
       else: # refer to loadData.VALID_ATTRIBUTE_TYPES
