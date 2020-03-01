@@ -7,12 +7,12 @@
 # scp -r amir@login.cluster.is.localnet:~/dev/mace/_experiments/__merged _results/
 
 DATASET_VALUES = ['credit']
-MODEL_CLASS_VALUES = ['tree', 'lr']
+MODEL_CLASS_VALUES = ['mlp']
 NORM_VALUES = ['one_norm']
 APPROACHES_VALUES = ['MACE_eps_1e-3']
 
-NUM_BATCHES = 60
-NUM_NEG_SAMPLES_PER_BATCH = 50
+NUM_BATCHES = 600
+NUM_NEG_SAMPLES_PER_BATCH = 5
 GEN_CF_FOR = 'neg_and_pos'
 
 # DATASET_VALUES = ['adult', 'credit', 'compass']
