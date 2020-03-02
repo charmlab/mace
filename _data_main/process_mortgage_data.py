@@ -6,15 +6,13 @@ np.random.seed(54321)
 salary_lambda = 10
 salary_multiplier = 10000
 balance_multiplier = 2500
-
-w = np.array([[1], [5]])
 mortgage_cutoff = -225000
-
+w = np.array([[1], [5]])
 n = 2000
 
 def getExperimentParams():
 
-  U_0 = np.random.poisson(salary_lambda, (n, 1)) * salary_multiplier
+  U_0 = (np.random.poisson(salary_lambda, (n, 1)) + np.random.normal(0,1, (n,1))) * salary_multiplier
   U_1 = np.random.normal(0, 1, (n, 1)) * balance_multiplier
   U_1 = 500 * np.round(U_1 / 500)
   X = np.concatenate((U_0, U_1), axis=1).astype(float)
@@ -22,7 +20,7 @@ def getExperimentParams():
   # Shuffle just in case the random generator from Poisson
   # distributions gets skewed as more samples are generated
   np.random.shuffle(X) # must happen before we assign labels
-  y = (np.sign(np.dot(X, w) + mortgage_cutoff + 1e-3) + 1) / 2 # add 1e-3 to prevent label 0.5
+  y = (np.sign(np.sign(np.dot(X, w) + mortgage_cutoff) + 1e-6) + 1) / 2 # add 1e-3 to prevent label 0.5
 
   X_train = X[ : n // 2, :]
   X_test = X[n // 2 : , :]
@@ -31,7 +29,8 @@ def getExperimentParams():
 
   X_test[0,:] = np.array([[75000, 25000]])
 
-  return w, X_train, y_train, X_test, y_test
+  b = mortgage_cutoff
+  return w, b, X_train, y_train, X_test, y_test
 
 def processDataAccordingToGraph(data):
   # We assume the model below
@@ -39,15 +38,15 @@ def processDataAccordingToGraph(data):
   # X_1 := X_0 / 5 +  U_1 \\
   # U_0 ~ Poisson(salary_lambda) * salary_multiplier
   # U_1 ~ Poisson(balance_lambda) * balance_multiplier
-  data = copy.deepcopy(data)
+  # data = copy.deepcopy(data)
   data[:,0] = data[:,0]
-  data[:,1] += data[:,0] * 3 / 10.
+  data[:,1] = data[:,1] + data[:,0] * 3 / 10.
   return data
 
 
 
 def load_mortgage_data():
-  w, X_train, y_train, X_test, y_test = getExperimentParams()
+  w, b, X_train, y_train, X_test, y_test = getExperimentParams()
   # print('w:\n', w)
   # print('X_test[0:1]:\n', X_test[0:1])
   data_frame_non_hot = pd.DataFrame(

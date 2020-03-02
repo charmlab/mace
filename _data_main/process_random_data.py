@@ -11,15 +11,18 @@ d = 3
 def getExperimentParams():
   w = np.random.normal(mu_w, sigma_w, (d, 1))
 
-  X_train = np.random.normal(mu_x, sigma_x, (n, d))
-  X_train = processDataAccordingToGraph(X_train)
-  y_train = (np.sign(np.dot(X_train, w)) + 1) / 2
+  X = np.random.normal(mu_x, sigma_x, (n, d))
+  X = processDataAccordingToGraph(X)
+  np.random.shuffle(X)
+  y = (np.sign(np.dot(X, w)) + 1) / 2
 
-  X_test = np.random.normal(mu_x, sigma_x, (n, d))
-  X_test = processDataAccordingToGraph(X_test)
-  y_test = (np.sign(np.dot(X_test, w)) + 1) / 2
+  X_train = X[ : n // 2, :]
+  X_test = X[n // 2 : , :]
+  y_train = y[ : n // 2, :]
+  y_test = y[n // 2 : , :]
 
-  return w, X_train, y_train, X_test, y_test
+  b = 0
+  return w, b, X_train, y_train, X_test, y_test
 
 
 def processDataAccordingToGraph(data):
@@ -36,7 +39,7 @@ def processDataAccordingToGraph(data):
 
 
 def load_random_data():
-  w, X_train, y_train, X_test, y_test = getExperimentParams()
+  w, b, X_train, y_train, X_test, y_test = getExperimentParams()
   print('w:\n', w)
   print('X_test[0:5]:\n', X_test[0:5])
   data_frame_non_hot = pd.DataFrame(
