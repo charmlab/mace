@@ -23,7 +23,7 @@ from shutil import copyfile
 # APPROACHES_VALUES = ['MACE_eps_1e-3']
 
 DATASET_VALUES = ['credit']
-MODEL_CLASS_VALUES = ['tree', 'lr']
+MODEL_CLASS_VALUES = ['mlp']
 NORM_VALUES = ['one_norm']
 APPROACHES_VALUES = ['MACE_eps_1e-3']
 

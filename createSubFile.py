@@ -11,8 +11,8 @@ MODEL_CLASS_VALUES = ['mlp']
 NORM_VALUES = ['one_norm']
 APPROACHES_VALUES = ['MACE_eps_1e-3']
 
-NUM_BATCHES = 600
-NUM_NEG_SAMPLES_PER_BATCH = 5
+NUM_BATCHES = 1500
+NUM_NEG_SAMPLES_PER_BATCH = 2
 GEN_CF_FOR = 'neg_and_pos'
 
 # DATASET_VALUES = ['adult', 'credit', 'compass']
