@@ -218,6 +218,7 @@ def runExperiments(dataset_values, model_class_values, norm_values, approaches_v
           )
 
           # get the predicted labels (only test set)
+          X_test = pd.concat([X_train, X_test])
           X_test_pred_labels = model_trained.predict(X_test)
 
           all_pred_data_df = X_test
