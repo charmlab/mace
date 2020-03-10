@@ -1,7 +1,12 @@
 import copy
 import numpy as np
 import pandas as pd
-np.random.seed(54321)
+
+from random import seed
+RANDOM_SEED = 54321
+seed(RANDOM_SEED) # set the random seed so that the random permutations can be reproduced again
+np.random.seed(RANDOM_SEED)
+
 
 salary_lambda = 10
 salary_multiplier = 10000
@@ -32,6 +37,7 @@ def getExperimentParams():
   b = mortgage_cutoff
   return w, b, X_train, y_train, X_test, y_test
 
+
 def processDataAccordingToGraph(data):
   # We assume the model below
   # X_0 := U_0 \\ annual salary
@@ -42,7 +48,6 @@ def processDataAccordingToGraph(data):
   data[:,0] = data[:,0]
   data[:,1] = data[:,1] + data[:,0] * 3 / 10.
   return data
-
 
 
 def load_mortgage_data():
@@ -59,6 +64,11 @@ def load_mortgage_data():
     columns=['label', 'x0', 'x1']
   )
   return data_frame_non_hot.astype('float64')
+
+
+def load_mortgage_model():
+  w, b, X_train, y_train, X_test, y_test = getExperimentParams()
+  return w, b
 
 
 

@@ -12,6 +12,8 @@ from sklearn.model_selection import train_test_split
 import loadData
 import modelTraining
 
+from debug import ipsh
+
 try:
   import generateSATExplanations
 except:
@@ -28,32 +30,6 @@ from random import seed
 RANDOM_SEED = 54321
 seed(RANDOM_SEED) # set the random seed so that the random permutations can be reproduced again
 np.random.seed(RANDOM_SEED)
-
-
-def getBalancedDataFrame(dataset_obj):
-  balanced_data_frame = copy.deepcopy(dataset_obj.data_frame_kurz)
-
-  # get input and output columns
-  all_data_frame_cols = balanced_data_frame.columns.values
-
-  input_cols = [x for x in all_data_frame_cols if 'y' not in x.lower()]
-  output_col = [x for x in all_data_frame_cols if 'y' in x.lower()][0]
-
-  # assert only two classes in label (maybe relax later??)
-  assert np.array_equal(
-    np.unique(balanced_data_frame[output_col]),
-    np.array([0, 1]) # only allowing {0, 1} labels
-  )
-
-  # get balanced dataframe (take minimum of the count, then round down to nearest 250)
-  unique_values_and_count = balanced_data_frame[output_col].value_counts()
-  number_of_subsamples_in_each_class = unique_values_and_count.min() // 250 * 250
-  balanced_data_frame = pd.concat([
-      balanced_data_frame[balanced_data_frame.loc[:,output_col] == 0].sample(number_of_subsamples_in_each_class, random_state = RANDOM_SEED),
-      balanced_data_frame[balanced_data_frame.loc[:,output_col] == 1].sample(number_of_subsamples_in_each_class, random_state = RANDOM_SEED),
-  ]).sample(frac = 1, random_state = RANDOM_SEED)
-
-  return balanced_data_frame, input_cols, output_col
 
 
 def getEpsilonInString(approach_string):
@@ -196,7 +172,7 @@ def runExperiments(dataset_values, model_class_values, norm_values, approaches_v
           # construct a balanced dataframe w/ equal number of {0,1} labels;
           #     training portion used to train model
           #     testing portion used to compute counterfactuals
-          balanced_data_frame, input_cols, output_col = getBalancedDataFrame(dataset_obj)
+          balanced_data_frame, input_cols, output_col = loadData.getBalancedDataFrame(dataset_obj)
 
           # get train / test splits
           all_data = balanced_data_frame.loc[:,input_cols]

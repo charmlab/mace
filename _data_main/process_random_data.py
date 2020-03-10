@@ -1,7 +1,12 @@
 import copy
 import numpy as np
 import pandas as pd
-np.random.seed(54321)
+
+from random import seed
+RANDOM_SEED = 54321
+seed(RANDOM_SEED) # set the random seed so that the random permutations can be reproduced again
+np.random.seed(RANDOM_SEED)
+
 
 mu_x, sigma_x = 0, 1 # mean and standard deviation for data
 mu_w, sigma_w = 0, 1 # mean and standard deviation for weights
@@ -53,6 +58,10 @@ def load_random_data():
   )
   return data_frame_non_hot.astype('float64')
 
+
+def load_random_model():
+  w, b, X_train, y_train, X_test, y_test = getExperimentParams()
+  return w, b
 
 
 from pysmt.shortcuts import *

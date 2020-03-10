@@ -949,6 +949,31 @@ def getOneHotEquivalent(data_frame_non_hot, attributes_non_hot):
   return data_frame, attributes
 
 
+def getBalancedDataFrame(dataset_obj):
+  balanced_data_frame = copy.deepcopy(dataset_obj.data_frame_kurz)
+
+  # get input and output columns
+  all_data_frame_cols = balanced_data_frame.columns.values
+
+  input_cols = [x for x in all_data_frame_cols if 'y' not in x.lower()]
+  output_col = [x for x in all_data_frame_cols if 'y' in x.lower()][0]
+
+  # assert only two classes in label (maybe relax later??)
+  assert np.array_equal(
+    np.unique(balanced_data_frame[output_col]),
+    np.array([0, 1]) # only allowing {0, 1} labels
+  )
+
+  # get balanced dataframe (take minimum of the count, then round down to nearest 250)
+  unique_values_and_count = balanced_data_frame[output_col].value_counts()
+  number_of_subsamples_in_each_class = unique_values_and_count.min() // 250 * 250
+  balanced_data_frame = pd.concat([
+      balanced_data_frame[balanced_data_frame.loc[:,output_col] == 0].sample(number_of_subsamples_in_each_class, random_state = RANDOM_SEED),
+      balanced_data_frame[balanced_data_frame.loc[:,output_col] == 1].sample(number_of_subsamples_in_each_class, random_state = RANDOM_SEED),
+  ]).sample(frac = 1, random_state = RANDOM_SEED)
+
+  return balanced_data_frame, input_cols, output_col
+
 
 
 
