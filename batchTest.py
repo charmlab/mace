@@ -127,7 +127,7 @@ def generateExplanations(
     raise Exception(f'{approach_string} not recognized as a valid `approach_string`.')
 
 
-def runExperiments(dataset_values, model_class_values, norm_values, approaches_values, batch_number, sample_count, gen_cf_for):
+def runExperiments(dataset_values, model_class_values, norm_values, approaches_values, batch_number, sample_count, gen_cf_for, process_id):
 
   for dataset_string in dataset_values:
 
@@ -156,7 +156,7 @@ def runExperiments(dataset_values, model_class_values, norm_values, approaches_v
             raise Exception(f'{model_class_string} not recognized as a valid `model_class_string`.')
 
           # prepare experiment folder
-          experiment_name = f'{dataset_string}__{model_class_string}__{norm_type_string}__{approach_string}__batch{batch_number}__samples{sample_count}'
+          experiment_name = f'{dataset_string}__{model_class_string}__{norm_type_string}__{approach_string}__batch{batch_number}__samples{sample_count}__process{process_id}'
           experiment_folder_name = f"_experiments/{datetime.now().strftime('%Y.%m.%d_%H.%M.%S')}__{experiment_name}"
           explanation_folder_name = f'{experiment_folder_name}/__explanation_log'
           minimum_distance_folder_name = f'{experiment_folder_name}/__minimum_distances'
@@ -194,7 +194,7 @@ def runExperiments(dataset_values, model_class_values, norm_values, approaches_v
           )
 
           # get the predicted labels (only test set)
-          X_test = pd.concat([X_train, X_test])
+          # X_test = pd.concat([X_train, X_test]) # ONLY ACTIVATE THIS WHEN TEST SET IS NOT LARGE ENOUGH TO GEN' MODEL RECON DATASET
           X_test_pred_labels = model_trained.predict(X_test)
 
           all_pred_data_df = X_test
@@ -324,6 +324,12 @@ if __name__ == '__main__':
       default = 'neg_only',
       help = 'Decide whether to generate counterfactuals for negative pred samples only, or for both negative and positive pred samples.')
 
+  parser.add_argument(
+      '-p', '--process_id',
+      type = str,
+      default = 'neg_only',
+      help = 'When running parallel tests on the cluster, process_id guarantees (in addition to time stamped experiment folder) that experiments do not conflict.')
+
 
   # parsing the args
   args = parser.parse_args()
@@ -344,7 +350,8 @@ if __name__ == '__main__':
     args.approach,
     args.batch_number,
     args.sample_count,
-    args.gen_cf_for)
+    args.gen_cf_for,
+    args.process_id)
 
 
 
