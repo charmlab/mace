@@ -6,12 +6,12 @@
 # ls -1 | grep 2019.05 | xargs rm -rf
 # scp -r amir@login.cluster.is.localnet:~/dev/mace/_experiments/__merged _results/
 
-DATASET_VALUES = ['credit']
-MODEL_CLASS_VALUES = ['mlp']
+DATASET_VALUES = ['random', 'mortgage']
+MODEL_CLASS_VALUES = ['lr']
 NORM_VALUES = ['one_norm']
 APPROACHES_VALUES = ['MACE_eps_1e-3']
 
-NUM_BATCHES = 150
+NUM_BATCHES = 100
 NUM_NEG_SAMPLES_PER_BATCH = 1
 GEN_CF_FOR = 'neg_and_pos'
 

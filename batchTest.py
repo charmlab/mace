@@ -37,6 +37,7 @@ def getEpsilonInString(approach_string):
   epsilon_string = approach_string[tmp_index + 4 : tmp_index + 8]
   return float(epsilon_string)
 
+
 def generateExplanations(
   approach_string,
   explanation_file_name,
@@ -327,7 +328,7 @@ if __name__ == '__main__':
   parser.add_argument(
       '-p', '--process_id',
       type = str,
-      default = 'neg_only',
+      default = '0',
       help = 'When running parallel tests on the cluster, process_id guarantees (in addition to time stamped experiment folder) that experiments do not conflict.')
 
 

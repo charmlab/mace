@@ -12,6 +12,10 @@ from sklearn.neural_network import MLPClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
 
+from _data_main.process_random_data import *
+from _data_main.process_mortgage_data import *
+from _data_main.process_german_data import *
+
 import argparse
 
 # TODO: change to be like _data_main below, and make python module
@@ -74,17 +78,24 @@ def trainAndSaveModels(experiment_folder_name, model_class, X_train, X_test, y_t
     print('\tTesting accuracy: %{:.2f}'.format(accuracy_score(y_test, model_trained.predict(X_test)) * 100), file=log_file)
     print('[INFO] done.\n', file=log_file)
 
-    # ONLY TO BE USED FOR TEST PURPOSES ON MORTGAGE DATASET
-    if 'mortgage' in experiment_folder_name and model_class == 'lr':
-        # w = np.array([[ 0.22397889, 0.7445909, -0.33426894]]).T # Hardcoded because haven't cached this value from experimentSetup.py!
-        w = np.array([[1, 5]]).T # Hardcoded because haven't cached this value from experimentSetup.py!
-        assert w.T.shape == model_trained.coef_.shape, f'Expecting equal size weight vector for new experiments no lr model.'
-        model_trained.coef_ = w.T
-        # model_trained.intercept_ = np.zeros(1)
-        model_trained.intercept_ = np.array([-225000])
+    # ONLY TO BE USED FOR TEST PURPOSES ON MORTGAGE / RANDOM DATASET
+    if model_class == 'lr':
+        if 'mortgage' in experiment_folder_name:
+            w, b = load_mortgage_model()
+            w = w.T
+            assert np.array_equal(w, np.array((1,5)).reshape(1,2))
+            assert b == -225000
+        elif'random' in experiment_folder_name:
+            w, b = load_random_model()
+            w = w.T
+        if 'mortgage' in experiment_folder_name or 'random' in experiment_folder_name:
+            assert w.shape == model_trained.coef_.shape, f'Expecting equal size weight vector for new experiments no lr model.'
+            model_trained.coef_ = w
+            model_trained.intercept_ = np.ones(1) * b
 
-        # if model_class == 'lr':
-        #     print(f'Logistic Regression weights {model_trained.coef_} and intercept {model_trained.intercept_}')
+    if model_class == 'mlp':
+        if 'german' in experiment_folder_name:
+            model_trained = load_german_model()
 
     if model_class == 'tree':
         tmp = 1
@@ -108,9 +119,6 @@ def trainAndSaveModels(experiment_folder_name, model_class, X_train, X_test, y_t
         # exec(modelConversion.lr2py(model_trained, feature_names))
     elif model_class == 'mlp':
         tmp = 1
-        for i in range(len(model_trained.coefs_)):
-            model_trained.coefs_[i] = np.around(model_trained.coefs_[i], 4).astype('float32')
-            model_trained.intercepts_[i] = np.around(model_trained.intercepts_[i], 4).astype('float32')
         # exec(modelConversion.mlp2py(model_trained))
 
     pickle.dump(model_trained, open(f'{experiment_folder_name}/_model_trained', 'wb'))
