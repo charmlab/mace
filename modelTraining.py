@@ -19,6 +19,8 @@ import argparse
 import treeUtils
 import modelConversion
 
+from debug import ipsh
+
 from random import seed
 RANDOM_SEED = 54321
 seed(RANDOM_SEED) # set the random seed so that the random permutations can be reproduced again
@@ -106,6 +108,9 @@ def trainAndSaveModels(experiment_folder_name, model_class, X_train, X_test, y_t
         # exec(modelConversion.lr2py(model_trained, feature_names))
     elif model_class == 'mlp':
         tmp = 1
+        for i in range(len(model_trained.coefs_)):
+            model_trained.coefs_[i] = np.around(model_trained.coefs_[i], 4).astype('float32')
+            model_trained.intercepts_[i] = np.around(model_trained.intercepts_[i], 4).astype('float32')
         # exec(modelConversion.mlp2py(model_trained))
 
     pickle.dump(model_trained, open(f'{experiment_folder_name}/_model_trained', 'wb'))

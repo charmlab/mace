@@ -74,6 +74,9 @@ def load_german_model():
   # X_train, X_test, y_train, y_test = train_test_split(all_data, all_true_labels, train_size=.7, random_state = RANDOM_SEED)
   model_pretrain = MLPClassifier(hidden_layer_sizes = (10, 10))
   model_trained = model_pretrain.fit(X_train, y_train)
+  for i in range(len(model_trained.coefs_)):
+    model_trained.coefs_[i] = np.around(model_trained.coefs_[i], 4).astype('float32')
+    model_trained.intercepts_[i] = np.around(model_trained.intercepts_[i], 4).astype('float32')
   return model_trained
 
 
