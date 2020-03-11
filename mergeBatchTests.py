@@ -2,6 +2,7 @@ import os
 import glob
 import pickle
 from tqdm import tqdm
+from pprint import pprint
 from shutil import copyfile
 
 # DATASET_VALUES = ['adult', 'credit', 'compass']
@@ -22,7 +23,17 @@ from shutil import copyfile
 # NORM_VALUES = ['one_norm']
 # APPROACHES_VALUES = ['MACE_eps_1e-3']
 
-DATASET_VALUES = ['credit']
+# DATASET_VALUES = ['credit']
+# MODEL_CLASS_VALUES = ['mlp']
+# NORM_VALUES = ['one_norm']
+# APPROACHES_VALUES = ['MACE_eps_1e-3']
+
+# DATASET_VALUES = ['random', 'mortgage']
+# MODEL_CLASS_VALUES = ['lr']
+# NORM_VALUES = ['one_norm']
+# APPROACHES_VALUES = ['MACE_eps_1e-3']
+
+DATASET_VALUES = ['german']
 MODEL_CLASS_VALUES = ['mlp']
 NORM_VALUES = ['one_norm']
 APPROACHES_VALUES = ['MACE_eps_1e-3']
@@ -84,4 +95,5 @@ for dataset_string in DATASET_VALUES:
           )
 
         pickle.dump(all_minimum_distances, open(f'{new_folder_path}/_minimum_distances', 'wb'))
+        pprint(all_minimum_distances, open(f'{new_folder_path}/minimum_distances.txt', 'w'))
 
