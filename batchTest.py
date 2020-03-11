@@ -157,7 +157,7 @@ def runExperiments(dataset_values, model_class_values, norm_values, approaches_v
             raise Exception(f'{model_class_string} not recognized as a valid `model_class_string`.')
 
           # prepare experiment folder
-          experiment_name = f'{dataset_string}__{model_class_string}__{norm_type_string}__{approach_string}__batch{batch_number}__samples{sample_count}__process{process_id}'
+          experiment_name = f'{dataset_string}__{model_class_string}__{norm_type_string}__{approach_string}__batch{batch_number}__samples{sample_count}__pid{process_id}'
           experiment_folder_name = f"_experiments/{datetime.now().strftime('%Y.%m.%d_%H.%M.%S')}__{experiment_name}"
           explanation_folder_name = f'{experiment_folder_name}/__explanation_log'
           minimum_distance_folder_name = f'{experiment_folder_name}/__minimum_distances'
@@ -178,7 +178,11 @@ def runExperiments(dataset_values, model_class_values, norm_values, approaches_v
           # get train / test splits
           all_data = balanced_data_frame.loc[:,input_cols]
           all_true_labels = balanced_data_frame.loc[:,output_col]
-          X_train, X_test, y_train, y_test = train_test_split(all_data, all_true_labels, train_size=.7, random_state = RANDOM_SEED)
+          X_train, X_test, y_train, y_test = train_test_split(
+            all_data,
+            all_true_labels,
+            train_size=.7,
+            random_state = RANDOM_SEED)
 
           feature_names = dataset_obj.getInputAttributeNames('kurz') # easier to read (nothing to do with one-hot vs non-hit!)
           standard_deviations = list(X_train.std())
@@ -187,6 +191,7 @@ def runExperiments(dataset_values, model_class_values, norm_values, approaches_v
           model_trained = modelTraining.trainAndSaveModels(
             experiment_folder_name,
             model_class_string,
+            dataset_string,
             X_train,
             X_test,
             y_train,

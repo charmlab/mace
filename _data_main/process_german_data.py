@@ -1,10 +1,7 @@
-# from recourse.path import *
 import os
 import numpy as np
 import pandas as pd
 pd.options.mode.chained_assignment = None
-
-from debug import ipsh
 
 from random import seed
 RANDOM_SEED = 54321
@@ -54,30 +51,6 @@ def load_german_data():
   assert(processed_df.shape[0] == 1000)
 
   return processed_df.astype('float64')
-
-
-import loadData
-from sklearn.neural_network import MLPClassifier
-from sklearn.model_selection import train_test_split
-
-def load_german_model():
-
-  dataset_obj = loadData.loadDataset('german', return_one_hot = False, load_from_cache = True, debug_flag = False)
-  balanced_data_frame, input_cols, output_col = loadData.getBalancedDataFrame(dataset_obj)
-
-  # get train / test splits
-  all_data = balanced_data_frame.loc[:,input_cols]
-  all_true_labels = balanced_data_frame.loc[:,output_col]
-  X_train, X_test, y_train, y_test = train_test_split(all_data.to_numpy(), all_true_labels.to_numpy(), train_size=.7, random_state = RANDOM_SEED)
-
-  # processed_df = load_german_data()
-  # X_train, X_test, y_train, y_test = train_test_split(all_data, all_true_labels, train_size=.7, random_state = RANDOM_SEED)
-  model_pretrain = MLPClassifier(hidden_layer_sizes = (10, 10))
-  model_trained = model_pretrain.fit(X_train, y_train)
-  for i in range(len(model_trained.coefs_)):
-    model_trained.coefs_[i] = np.around(model_trained.coefs_[i], 4).astype('float32')
-    model_trained.intercepts_[i] = np.around(model_trained.intercepts_[i], 4).astype('float32')
-  return model_trained
 
 
 

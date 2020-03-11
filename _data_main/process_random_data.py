@@ -13,21 +13,31 @@ mu_w, sigma_w = 0, 1 # mean and standard deviation for weights
 n = 1000
 d = 3
 
-def getExperimentParams():
-  w = np.random.normal(mu_w, sigma_w, (d, 1))
+w = np.random.normal(mu_w, sigma_w, (d, 1))
+b = 0
+
+def load_random_data():
 
   X = np.random.normal(mu_x, sigma_x, (n, d))
   X = processDataAccordingToGraph(X)
   np.random.shuffle(X)
-  y = (np.sign(np.dot(X, w)) + 1) / 2
+  y = (np.sign(np.sign(np.dot(X, w) + b) + 1e-6) + 1) / 2 # add 1e-3 to prevent label 0.5
 
   X_train = X[ : n // 2, :]
   X_test = X[n // 2 : , :]
   y_train = y[ : n // 2, :]
   y_test = y[n // 2 : , :]
 
-  b = 0
-  return w, b, X_train, y_train, X_test, y_test
+  data_frame_non_hot = pd.DataFrame(
+      np.concatenate((
+        np.concatenate((y_train, X_train), axis = 1), # importantly, labels have to go first, else Dataset.__init__ messes up kurz column names
+        np.concatenate((y_test, X_test), axis = 1), # importantly, labels have to go first, else Dataset.__init__ messes up kurz column names
+      ),
+      axis = 0,
+    ),
+    columns=['label', 'x0', 'x1', 'x2']
+  )
+  return data_frame_non_hot.astype('float64')
 
 
 def processDataAccordingToGraph(data):
@@ -43,25 +53,6 @@ def processDataAccordingToGraph(data):
   return data
 
 
-def load_random_data():
-  w, b, X_train, y_train, X_test, y_test = getExperimentParams()
-  # print('w:\n', w)
-  # print('X_test[0:5]:\n', X_test[0:5])
-  data_frame_non_hot = pd.DataFrame(
-      np.concatenate((
-        np.concatenate((y_train, X_train), axis = 1), # importantly, labels have to go first, else Dataset.__init__ messes up kurz column names
-        np.concatenate((y_test, X_test), axis = 1), # importantly, labels have to go first, else Dataset.__init__ messes up kurz column names
-      ),
-      axis = 0,
-    ),
-    columns=['label', 'x0', 'x1', 'x2']
-  )
-  return data_frame_non_hot.astype('float64')
-
-
-def load_random_model():
-  w, b, X_train, y_train, X_test, y_test = getExperimentParams()
-  return w, b
 
 
 from pysmt.shortcuts import *

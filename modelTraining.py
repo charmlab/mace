@@ -23,7 +23,7 @@ import argparse
 import treeUtils
 import modelConversion
 
-from debug import ipsh
+import loadModel
 
 from random import seed
 RANDOM_SEED = 54321
@@ -54,7 +54,7 @@ SIMPLIFY_TREES = False
 
 #     assert(not any(list_predictions))
 
-def trainAndSaveModels(experiment_folder_name, model_class, X_train, X_test, y_train, y_test, feature_names):
+def trainAndSaveModels(experiment_folder_name, model_class, dataset_string, X_train, X_test, y_train, y_test, feature_names):
 
     log_file = open(f'{experiment_folder_name}/log_training.txt','w')
 
@@ -78,24 +78,11 @@ def trainAndSaveModels(experiment_folder_name, model_class, X_train, X_test, y_t
     print('\tTesting accuracy: %{:.2f}'.format(accuracy_score(y_test, model_trained.predict(X_test)) * 100), file=log_file)
     print('[INFO] done.\n', file=log_file)
 
-    # ONLY TO BE USED FOR TEST PURPOSES ON MORTGAGE / RANDOM DATASET
-    if model_class == 'lr':
-        if 'mortgage' in experiment_folder_name:
-            w, b = load_mortgage_model()
-            w = w.T
-            assert np.array_equal(w, np.array((1,5)).reshape(1,2))
-            assert b == -225000
-        elif'random' in experiment_folder_name:
-            w, b = load_random_model()
-            w = w.T
-        if 'mortgage' in experiment_folder_name or 'random' in experiment_folder_name:
-            assert w.shape == model_trained.coef_.shape, f'Expecting equal size weight vector for new experiments no lr model.'
-            model_trained.coef_ = w
-            model_trained.intercept_ = np.ones(1) * b
-
-    if model_class == 'mlp':
-        if 'german' in experiment_folder_name:
-            model_trained = load_german_model()
+    # OVERRIDE MODEL_TRAINED; to be used for test purposes against pytorch on
+    # {mortgage, random, german} x {lr, mlp}
+    if model_class == 'lr' or model_class == 'mlp':
+        if dataset_string == 'mortgage' or dataset_string == 'random' or dataset_string == 'german':
+            model_trained = loadModel.loadModelForDataset(model_class, dataset_string)
 
     if model_class == 'tree':
         tmp = 1
