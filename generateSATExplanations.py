@@ -760,7 +760,7 @@ def genExp(
 
   if 'mace' in approach_string:
     return {
-      'factual_sample': factual_sample,
+      'fac_sample': factual_sample,
       'cfe_found': True,
       'cfe_plausible': True,
       'cfe_time': end_time - start_time,
@@ -770,7 +770,7 @@ def genExp(
     }
   elif 'mint' in approach_string:
     return {
-      'factual_sample': factual_sample,
+      'fac_sample': factual_sample,
       'scf_found': True,
       'scf_plausible': True,
       'scf_time': end_time - start_time,

@@ -58,6 +58,97 @@ def processDataAccordingToGraph(data):
 from pysmt.shortcuts import *
 from pysmt.typing import *
 
+# def getRandomCausalConsistencyConstraints(model_symbols, factual_sample):
+#   a = Ite(
+#     Not( # if YES intervened
+#       EqualsOrIff(
+#         model_symbols['interventional']['x0']['symbol'],
+#         factual_sample['x0'],
+#       )
+#     ),
+#     EqualsOrIff( # set value of X^CF to the intervened value
+#       model_symbols['counterfactual']['x0']['symbol'],
+#       model_symbols['interventional']['x0']['symbol'],
+#     ),
+#     EqualsOrIff( # else, set value of X^CF to (8) from paper
+#       model_symbols['counterfactual']['x0']['symbol'],
+#       factual_sample['x0'],
+#     ),
+#   )
+
+#   b = Ite(
+#     Not( # if YES intervened
+#       EqualsOrIff(
+#         model_symbols['interventional']['x1']['symbol'],
+#         factual_sample['x1'],
+#       )
+#     ),
+#     EqualsOrIff( # set value of X^CF to the intervened value
+#       model_symbols['counterfactual']['x1']['symbol'],
+#       model_symbols['interventional']['x1']['symbol'],
+#     ),
+#     EqualsOrIff( # else, set value of X^CF to (8) from paper
+#       model_symbols['counterfactual']['x1']['symbol'],
+#       Plus(
+#         factual_sample['x1'],
+#         Minus(
+#           model_symbols['counterfactual']['x0']['symbol'],
+#           factual_sample['x0'],
+#         )
+#       )
+#     ),
+#   )
+
+#   c = Ite(
+#     Not( # if YES intervened
+#       EqualsOrIff(
+#         model_symbols['interventional']['x2']['symbol'],
+#         factual_sample['x2'],
+#       )
+#     ),
+#     EqualsOrIff( # set value of X^CF to the intervened value
+#       model_symbols['counterfactual']['x2']['symbol'],
+#       model_symbols['interventional']['x2']['symbol'],
+#     ),
+#     EqualsOrIff( # else, set value of X^CF to (8) from paper
+#       model_symbols['counterfactual']['x2']['symbol'],
+#       Plus(
+#         factual_sample['x2'],
+#         Minus(
+#           Plus(
+#             Times(
+#               Minus(
+#                 model_symbols['counterfactual']['x0']['symbol'],
+#                 Real(1)
+#               ),
+#               Real(0.25)
+#             ),
+#             Times(
+#               model_symbols['counterfactual']['x1']['symbol'],
+#               Real(float(np.sqrt(3)))
+#             )
+#           ),
+#           Plus(
+#             Times(
+#               Minus(
+#                 factual_sample['x0'],
+#                 Real(1)
+#               ),
+#               Real(0.25)
+#             ),
+#             Times(
+#               factual_sample['x1'],
+#               Real(float(np.sqrt(3)))
+#             )
+#           ),
+#         )
+#       )
+#     ),
+#   )
+
+#   return And([a,b,c])
+
+
 def getRandomCausalConsistencyConstraints(model_symbols, factual_sample):
   a = Ite(
     Not( # if YES intervened
@@ -89,13 +180,7 @@ def getRandomCausalConsistencyConstraints(model_symbols, factual_sample):
     ),
     EqualsOrIff( # else, set value of X^CF to (8) from paper
       model_symbols['counterfactual']['x1']['symbol'],
-      Plus(
-        factual_sample['x1'],
-        Minus(
-          model_symbols['counterfactual']['x0']['symbol'],
-          factual_sample['x0'],
-        )
-      )
+      factual_sample['x1'],
     ),
   )
 
@@ -112,37 +197,7 @@ def getRandomCausalConsistencyConstraints(model_symbols, factual_sample):
     ),
     EqualsOrIff( # else, set value of X^CF to (8) from paper
       model_symbols['counterfactual']['x2']['symbol'],
-      Plus(
-        factual_sample['x2'],
-        Minus(
-          Plus(
-            Times(
-              Minus(
-                model_symbols['counterfactual']['x0']['symbol'],
-                Real(1)
-              ),
-              Real(0.25)
-            ),
-            Times(
-              model_symbols['counterfactual']['x1']['symbol'],
-              Real(float(np.sqrt(3)))
-            )
-          ),
-          Plus(
-            Times(
-              Minus(
-                factual_sample['x0'],
-                Real(1)
-              ),
-              Real(0.25)
-            ),
-            Times(
-              factual_sample['x1'],
-              Real(float(np.sqrt(3)))
-            )
-          ),
-        )
-      )
+      factual_sample['x2'],
     ),
   )
 
