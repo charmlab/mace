@@ -6,8 +6,8 @@
 # ls -1 | grep 2019.05 | xargs rm -rf
 # scp -r amir@login.cluster.is.localnet:~/dev/mace/_experiments/__merged _results/
 
-DATASET_VALUES = ['random', 'mortgage']
-MODEL_CLASS_VALUES = ['lr']
+DATASET_VALUES = ['random', 'mortgage', 'german']
+MODEL_CLASS_VALUES = ['lr', 'mlp']
 NORM_VALUES = ['one_norm']
 APPROACHES_VALUES = ['MACE_eps_1e-3']
 
@@ -34,7 +34,6 @@ print('log = _cluster_logs/test.$(Process).log', file=sub_file)
 print(f'request_memory = {request_memory}', file=sub_file)
 print('request_cpus = 1', file=sub_file)
 print('\n' * 4, file=sub_file)
-
 
 
 for dataset_string in DATASET_VALUES:

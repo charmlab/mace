@@ -42,7 +42,7 @@ def loadModelForDataset(model_class, dataset_string):
     random_state = RANDOM_SEED)
 
   if model_class == 'lr':
-    model_pretrain = LogisticRegression(penalty='l1')
+    model_pretrain = LogisticRegression()
   elif model_class == 'mlp':
     model_pretrain = MLPClassifier(hidden_layer_sizes = (10, 10))
 
