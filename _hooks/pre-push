@@ -1,0 +1,66 @@
+#!/usr/bin/env bash
+
+# This is a pre-push script to hook errors by running all combinations of flags on MACE
+
+executable=./venv/bin/python
+
+red=`tput setaf 1`
+green=`tput setaf 2`
+yellow=`tput setaf 3`
+blue=`tput setaf 4`
+reset=`tput sgr0`
+
+experiments_start_time=$(date +%Y.%m.%d_%H.%M.%S)
+
+echo "${blue}running hooks on mace... please do not run other experiments until the hooks are finished. ${reset}"
+echo "${blue}checking exit codes...${reset}"
+
+for dataset_string in "compass" "credit" "adult"
+do
+    for model_class_string in "tree" "forest" "lr" "mlp"
+    do
+        for norm_type_string in "zero_norm" "one_norm" "infty_norm"
+        do
+            for approach_string in "MACE_eps_1e-3"
+            do
+                # Execute the current setup with a time-limit of 60 seconds
+                output=$(timeout 60 ${executable} batchTest.py -d ${dataset_string} -m ${model_class_string} -n ${norm_type_string} -a ${approach_string} -b 0 -s 3 2>&1 >/dev/null)
+                
+                # The status determines the exit code of the just-ran command. If it is 0 then we're good.
+                # If it is 124, it has exceeded the time-limit but we're still good.
+                # In any other case, the error will be reported and the push will be aborted.
+                status=$?
+                if [ $status -eq 0 ]
+                then
+                    echo ${green}OK \(exited with code 0\): -d ${dataset_string} -m ${model_class_string} -n ${norm_type_string} -a ${approach_string} -b 0 -s 3${reset}
+                elif [ $status -eq 124 ] && [ -z "$output" ]
+                then
+                    echo ${yellow}Timed out with no error: -d ${dataset_string} -m ${model_class_string} -n ${norm_type_string} -a ${approach_string} -b 0 -s 3${reset}
+                else
+                    echo ${red}Error: -d ${dataset_string} -m ${model_class_string} -n ${norm_type_string} -a ${approach_string} -b 0 -s 3
+                    echo output:${reset}
+                    echo ${output}
+                    echo ${red}push aborted. try again after resolving the above error.${reset}
+                    exit 1
+                fi
+            done
+        done
+    done
+done
+
+echo "${blue}exit code hooks completed successfully. ${reset}"
+echo 
+echo "${blue}checking CFEs closeness to the optimal CFEs...${reset}"
+
+# run the distance optimality check script
+${executable} _hooks/checkDistanceOptimality.py -t ${experiments_start_time}
+status=$?
+
+if [ $status -eq 0 ]
+then
+    echo "${blue}distance optimality hooks completed successfully. ready to push.${reset}"
+else
+    echo ${red}distance optimality hooks failed.${reset}
+    echo ${red}push aborted. try again after resolving the above error.${reset}
+    exit 1
+fi

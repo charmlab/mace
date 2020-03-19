@@ -56,3 +56,17 @@ $ python batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-5 MACE_eps_1e
 ```
 
 Then you can compare the distances resulting fron MACE and MINT as outputted in the console. Do make sure to run `batchTest.py` with `loadData.loadDataset(load_from_cache = True)` so that MACE and MINT use the same data and the resulting comparison is fair.
+
+
+
+# Using git-hooks script for sanity checking
+
+There is a `pre-push` script under `_hooks/` which can be used to check MACE under different setups.
+Specifically, it checks for successfully running of the code and the closeness of the generated CFEs
+to the previously-saved (approximately) optimal ones. You can either manually call the script from MACE root directory by
+`_hooks/pre-push` or place it under your local `.git/hooks/` directory to run automatically before every push.
+In this case, please remember to give it the required permissions:
+
+```console
+$ chmod +x .git/hooks/pre-push
+```
