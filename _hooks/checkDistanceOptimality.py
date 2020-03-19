@@ -15,17 +15,17 @@ APPROACHES_VALUES = ['MACE_eps_1e-3']
 
 experiments_folder_path = '_experiments/'
 
-def get_all_minimum_distances(experiments_start_time):
+def get_all_new_minimum_distances(experiments_start_time):
     # create a dictionary with regards to the setup
-    all_minimum_distances = {}
+    all_new_minimum_distances = {}
     for dataset_string in DATASET_VALUES:
-        all_minimum_distances[dataset_string] = {}
+        all_new_minimum_distances[dataset_string] = {}
         for model_class_string in MODEL_CLASS_VALUES:
-            all_minimum_distances[dataset_string][model_class_string] = {}
+            all_new_minimum_distances[dataset_string][model_class_string] = {}
             for norm_type_string in NORM_VALUES:
-                all_minimum_distances[dataset_string][model_class_string][norm_type_string] = {}
+                all_new_minimum_distances[dataset_string][model_class_string][norm_type_string] = {}
                 for approach_string in APPROACHES_VALUES:
-                    all_minimum_distances[dataset_string][model_class_string][norm_type_string][approach_string] = {}
+                    all_new_minimum_distances[dataset_string][model_class_string][norm_type_string][approach_string] = {}
 
     # take the minimum distances from each experiment folder created after experiments_start_time
     for experiment_folder in glob.glob(f'{experiments_folder_path}*'):
@@ -43,11 +43,11 @@ def get_all_minimum_distances(experiments_start_time):
             try:
                 assert os.path.isfile(minimum_distances_path)
                 minimum_distances = pickle.load(open(minimum_distances_path, 'rb'))
-                all_minimum_distances[dataset_string][model_class_string][norm_type_string][approach_string] = minimum_distances
+                all_new_minimum_distances[dataset_string][model_class_string][norm_type_string][approach_string] = minimum_distances
             except:
                 pass
 
-    return all_minimum_distances
+    return all_new_minimum_distances
 
 
 if __name__ == '__main__':
@@ -65,10 +65,10 @@ if __name__ == '__main__':
     experiments_start_time = args.experiments_start_time[0]
 
     # # read the previously-saved (approx) optimal distances
-    all_optimal_distances = pickle.load(open('_hooks/optimal_distances', 'rb'))
+    all_old_minimum_distances = pickle.load(open('_hooks/old_minimum_distances', 'rb'))
 
     # get minimum distances computed by running the hooks (i.e. experiments after experiments_start_time)
-    all_minimum_distances = get_all_minimum_distances(experiments_start_time)
+    all_new_minimum_distances = get_all_new_minimum_distances(experiments_start_time)
 
     # check whether the computed minimum_distances are close enough to the optimal distances (+- epsilon)
     for dataset_string in DATASET_VALUES:
@@ -79,16 +79,18 @@ if __name__ == '__main__':
 
                 for approach_string in APPROACHES_VALUES:
 
-                    cur_minimum_distances = all_minimum_distances[dataset_string][model_class_string][norm_type_string][approach_string]
-                    cur_optimal_distances = all_optimal_distances[dataset_string][model_class_string][norm_type_string][approach_string]
+                    cur_old_minimum_distances = all_old_minimum_distances[dataset_string][model_class_string][norm_type_string][approach_string]
+                    cur_new_minimum_distances = all_new_minimum_distances[dataset_string][model_class_string][norm_type_string][approach_string]
 
-                    if bool(cur_minimum_distances):
+                    if bool(cur_new_minimum_distances):
+
                         if approach_string == 'MACE_eps_1e-3':
 
-                            assert bool(cur_optimal_distances)
-                            for sample_idx in cur_minimum_distances.keys():
-                                if sample_idx in cur_optimal_distances.keys():
-                                    if not abs(cur_minimum_distances[sample_idx]['cfe_distance'] - cur_optimal_distances[sample_idx]['cfe_distance']) <= 2e-3:
+                            assert bool(cur_old_minimum_distances)
+                            for sample_idx in cur_new_minimum_distances.keys():
+                                
+                                if sample_idx in cur_old_minimum_distances.keys():
+                                    if not abs(cur_new_minimum_distances[sample_idx]['cfe_distance'] - cur_old_minimum_distances[sample_idx]['cfe_distance']) <= 2e-3:
                                         print('\033[91m' + f'Error (distance to optimal > 2eps): {dataset_string}, {model_class_string}, {norm_type_string}, {approach_string}' + '\033[0m')
                                         exit(1)
                                 else:
@@ -103,4 +105,4 @@ if __name__ == '__main__':
 
 
     # The following line is for the one-time writing of optimal distances from experiments to the optimal_distances binary file
-    # pickle.dump(all_minimum_distances, open(f'_hooks/optimal_distances', 'wb'))
+    # pickle.dump(all_new_minimum_distances, open(f'_hooks/optimal_distances', 'wb'))
