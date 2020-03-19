@@ -7,6 +7,7 @@ RANDOM_SEED = 54321
 seed(RANDOM_SEED) # set the random seed so that the random permutations can be reproduced again
 np.random.seed(RANDOM_SEED)
 
+from debug import ipsh
 
 mu_x, sigma_x = 0, 1 # mean and standard deviation for data
 mu_w, sigma_w = 0, 1 # mean and standard deviation for weights
@@ -16,10 +17,10 @@ d = 3
 w = np.random.normal(mu_w, sigma_w, (d, 1))
 b = 0
 
-def load_random_data():
+def load_random_data(scm_class = 'linear'):
 
   X = np.random.normal(mu_x, sigma_x, (n, d))
-  X = processDataAccordingToGraph(X)
+  X = processDataAccordingToGraph(X, scm_class)
   np.random.shuffle(X)
   y = (np.sign(np.sign(np.dot(X, w) + b) + 1e-6) + 1) / 2 # add 1e-3 to prevent label 0.5
 
@@ -40,16 +41,27 @@ def load_random_data():
   return data_frame_non_hot.astype('float64')
 
 
-def processDataAccordingToGraph(data):
-  # We assume the model below
-  # X_1 := U_1 \\
-  # X_2 := X_1 + 1 + U_2 \\
-  # X_3 := (X_1 - 1) / 4 + np.sqrt{3} * X_2 + U_3
-  # U_i ~ \forall ~ i \in [3] \sim \mathcal{N}(0,1)
-  data = copy.deepcopy(data)
-  data[:,0] = data[:,0]
-  data[:,1] += data[:,0] + np.ones((n))
-  data[:,2] += (data[:,0] - 1)/4 + np.sqrt(3) * data[:,1]
+def processDataAccordingToGraph(data, scm_class = 'linear'):
+  if scm_class == 'linear':
+    # We assume the model below
+    # X_1 := U_1 \\
+    # X_2 := X_1 + 1 + U_2 \\
+    # X_3 := (X_1 - 1) / 4 + np.sqrt{3} * X_2 + U_3
+    # U_i ~ \forall ~ i \in [3] \sim \mathcal{N}(0,1)
+    data = copy.deepcopy(data)
+    data[:,0] = data[:,0]
+    data[:,1] += data[:,0] + np.ones((n))
+    data[:,2] += (data[:,0] - 1)/4 + np.sqrt(3) * data[:,1]
+  elif scm_class == 'nonlinear':
+    # We assume the model below
+    # X_1 := U_1 \\
+    # X_2 := X_1 ** 3 + 1 + U_2 \\
+    # X_3 := (X_1 - 1) / 4 + np.sqrt{3} * sin(X_2) + U_3
+    # U_i ~ \forall ~ i \in [3] \sim \mathcal{N}(0,1)
+    data = copy.deepcopy(data)
+    data[:,0] = data[:,0]
+    data[:,1] += np.power(data[:,0], 3) + np.ones((n))
+    data[:,2] += (data[:,0] - 1)/4 + np.sqrt(3) * np.sin(np.pi / 180 * data[:,1])
   return data
 
 
@@ -148,7 +160,9 @@ from pysmt.typing import *
 
 #   return And([a,b,c])
 
-
+# TODO: this function needs to be updated to add the weights for linear scm_model;
+#       see process_german_data.py for an example. Also, perhaps it is already
+#       implemented (but commented) above for some reason...
 def getRandomCausalConsistencyConstraints(model_symbols, factual_sample):
   a = Ite(
     Not( # if YES intervened

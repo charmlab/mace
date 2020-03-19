@@ -33,11 +33,10 @@ from shutil import copyfile
 # NORM_VALUES = ['one_norm']
 # APPROACHES_VALUES = ['MACE_eps_1e-3']
 
-DATASET_VALUES = ['german']
-MODEL_CLASS_VALUES = ['mlp']
+DATASET_VALUES = ['random', 'mortgage']
+MODEL_CLASS_VALUES = ['lr', 'mlp']
 NORM_VALUES = ['one_norm']
-APPROACHES_VALUES = ['MACE_eps_1e-3']
-
+APPROACHES_VALUES = ['MINT_eps_1e-3']
 
 
 experiments_folder_path = '/Volumes/amir/dev/mace/_experiments/'

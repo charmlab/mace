@@ -7,6 +7,8 @@ import pandas as pd
 from tqdm import tqdm
 from pprint import pprint
 
+from debug import ipsh
+
 sys.path.insert(0, '_data_main')
 from _data_main.fair_adult_data import *
 from _data_main.fair_compas_data import *

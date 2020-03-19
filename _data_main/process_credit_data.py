@@ -80,7 +80,7 @@ def load_credit_data():
 
   overdue = ['MonthsOverdue_%d' % j for j in range(1, 7)]
   raw_df[overdue] = raw_df[overdue].replace(to_replace = [-2, -1], value = [0, 0])
-  overdue_history = raw_df[overdue].as_matrix() > 0
+  overdue_history = raw_df[overdue].to_numpy() > 0
   payment_history = np.logical_not(overdue_history)
 
   def count_zero_streaks(a):
