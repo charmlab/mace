@@ -11,17 +11,19 @@ from debug import ipsh
 
 mu_x, sigma_x = 0, 1 # mean and standard deviation for data
 mu_w, sigma_w = 0, 1 # mean and standard deviation for weights
-n = 1000
+n = 10000
 d = 3
 
 w = np.random.normal(mu_w, sigma_w, (d, 1))
-b = 0
+# b = 0 # see below.
 
 def load_random_data(scm_class = 'linear'):
 
   X = np.random.normal(mu_x, sigma_x, (n, d))
   X = processDataAccordingToGraph(X, scm_class)
   np.random.shuffle(X)
+  # to create a more balanced dataset, do not set b to 0.
+  b = - np.mean(np.dot(X, w))
   y = (np.sign(np.sign(np.dot(X, w) + b) + 1e-6) + 1) / 2 # add 1e-3 to prevent label 0.5
 
   X_train = X[ : n // 2, :]
@@ -55,14 +57,60 @@ def processDataAccordingToGraph(data, scm_class = 'linear'):
   elif scm_class == 'nonlinear':
     # We assume the model below
     # X_1 := U_1 \\
-    # X_2 := X_1 ** 3 + 1 + U_2 \\
-    # X_3 := (X_1 - 1) / 4 + np.sqrt{3} * sin(X_2) + U_3
+    # X_2 := (X_1 + 1) ** 3 + 1 + U_2 \\
+    # X_3 := 2 * X_1 + np.sqrt{3} * sin(X_2) - 1/4 + U_3
     # U_i ~ \forall ~ i \in [3] \sim \mathcal{N}(0,1)
     data = copy.deepcopy(data)
     data[:,0] = data[:,0]
-    data[:,1] += np.power(data[:,0], 3) + np.ones((n))
-    data[:,2] += (data[:,0] - 1)/4 + np.sqrt(3) * np.sin(np.pi / 180 * data[:,1])
+    data[:,1] += np.power(data[:,0] + 1, 3) + 1 * np.ones((n))
+    data[:,2] += data[:,0] * 2 + np.sqrt(3) * np.sin(data[:,1]) - 1/4
   return data
+
+
+# import numpy as np
+# import pandas as pd
+
+# import loadData
+
+# from random import seed
+# RANDOM_SEED = 54321
+# seed(RANDOM_SEED) # set the random seed so that the random permutations can be reproduced again
+# np.random.seed(RANDOM_SEED)
+
+# from sklearn.linear_model import LogisticRegression
+# from sklearn.linear_model import LinearRegression
+# from sklearn.linear_model import Lasso
+
+# dataset_obj = loadData.loadDataset('random', return_one_hot = False, load_from_cache = False)
+# df = dataset_obj.data_frame_kurz
+
+# # See Figure 3 in paper
+
+# # node: x1     parents: {x0}
+# X_train = df[['x0']]
+# y_train = df[['x1']]
+# model_pretrain = LinearRegression()
+# # model_pretrain = Lasso()
+# model_trained = model_pretrain.fit(X_train, y_train)
+# print(model_trained.coef_)
+# print(model_trained.intercept_)
+
+# # node: x2     parents: {x1,  x2}
+# X_train = df[['x0', 'x1']]
+# y_train = df[['x2']]
+# model_pretrain = LinearRegression()
+# model_trained = model_pretrain.fit(X_train, y_train)
+# print(model_trained.coef_)
+# print(model_trained.intercept_)
+# #
+
+
+
+
+
+
+
+
 
 
 
