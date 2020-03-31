@@ -146,8 +146,8 @@ def runExperiments(dataset_values, model_class_values, norm_values, approaches_v
 
           print(f'\t\t\tExperimenting with approach_string = `{approach_string}`')
 
-          if norm_type_string == 'two_norm':
-            raise Exception(f'{norm_type_string} not supported.')
+          # if norm_type_string == 'two_norm':
+          #   raise Exception(f'{norm_type_string} not supported.')
 
           if model_class_string in {'tree', 'forest'}:
             one_hot = False
