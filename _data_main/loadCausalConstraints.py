@@ -209,8 +209,7 @@ def getRandomCausalConsistencyConstraints(model_symbols, factual_sample):
 
 
 
-# Below is the linear approx SCM to the nonlinear SCM for the random dataset
-# TODO: update the weights here as we have a new nonlinear model
+# # Below is the linear approx SCM to the nonlinear SCM for the random dataset
 # def getRandomCausalConsistencyConstraints(model_symbols, factual_sample):
 #   # x0 (root node; no parents)
 #   x0 = Ite(
@@ -251,7 +250,7 @@ def getRandomCausalConsistencyConstraints(model_symbols, factual_sample):
 #             ToReal(model_symbols['counterfactual']['x0']['symbol']),
 #             ToReal(factual_sample['x0']),
 #           ),
-#           Real(7.43)
+#           Real(1)
 #         )
 #       )
 #     ),
@@ -278,14 +277,14 @@ def getRandomCausalConsistencyConstraints(model_symbols, factual_sample):
 #             ToReal(model_symbols['counterfactual']['x0']['symbol']),
 #             ToReal(factual_sample['x0']),
 #           ),
-#           Real(1.6)
+#           Real(5.5)
 #         ),
 #         Times(
 #           Minus(
 #             ToReal(model_symbols['counterfactual']['x1']['symbol']),
 #             ToReal(factual_sample['x1']),
 #           ),
-#           Real(0.015)
+#           Real(3.5)
 #         ),
 #       ])
 #     ),
