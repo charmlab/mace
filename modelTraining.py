@@ -65,8 +65,9 @@ def trainAndSaveModels(experiment_folder_name, model_class, dataset_string, X_tr
         # model_pretrain = RandomForestClassifier(min_samples_leaf = min(100, round(0.1 * X_train.shape[0])))
         model_pretrain = RandomForestClassifier()
     elif model_class == 'lr':
-        model_pretrain = LogisticRegression(penalty='l1')
-        # model_pretrain = LogisticRegression(penalty='l2') # default
+        # IMPORTANT: The default solver changed from ‘liblinear’ to ‘lbfgs’ in 0.22.
+        # model_pretrain = LogisticRegression(penalty='l1', solver='liblinear')
+        model_pretrain = LogisticRegression(penalty='l2') # default
     elif model_class == 'mlp':
         model_pretrain = MLPClassifier(hidden_layer_sizes = (10, 10))
         # model_pretrain = MLPClassifier() # = hidden_layer_sizes = (100, 100)

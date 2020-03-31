@@ -19,6 +19,8 @@ w = np.random.normal(mu_w, sigma_w, (d, 1))
 
 def load_random_data(scm_class = 'linear'):
 
+  scm_class = 'nonlinear'
+
   X = np.random.normal(mu_x, sigma_x, (n, d))
   X = processDataAccordingToGraph(X, scm_class)
   np.random.shuffle(X)

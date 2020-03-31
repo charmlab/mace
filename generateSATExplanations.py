@@ -18,6 +18,8 @@ from sklearn.neural_network import MLPClassifier
 
 from loadCausalConstraints import *
 
+from debug import ipsh
+
 from random import seed
 RANDOM_SEED = 1122334455
 seed(RANDOM_SEED) # set the random seed so that the random permutations can be reproduced again
@@ -827,6 +829,10 @@ def genExp(
       # 'all_counterfactuals': all_counterfactuals
     }
   elif 'mint' in approach_string:
+    action_set = {}
+    for attr_name_kurz in dataset_obj.getInputAttributeNames('kurz'):
+      if factual_sample[attr_name_kurz] != closest_interventional_sample['interventional_sample'][attr_name_kurz]:
+        action_set[attr_name_kurz] = closest_interventional_sample['interventional_sample'][attr_name_kurz]
     return {
       'fac_sample': factual_sample,
       'scf_found': True,
@@ -836,6 +842,7 @@ def genExp(
       'scf_distance': closest_interventional_sample['counterfactual_distance'],
       'int_sample': closest_interventional_sample['interventional_sample'],
       'int_distance': closest_interventional_sample['interventional_distance'],
+      'action_set': action_set,
       # 'all_counterfactuals': all_counterfactuals
     }
 

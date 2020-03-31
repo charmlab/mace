@@ -17,7 +17,7 @@ np.random.seed(RANDOM_SEED)
 
 def convertSklearnDtypeToPytorch(input_obj):
   return input_obj
-  # isinstance(input_obj, (np.ndarray))
+  # isinstance(input_obj, (np.ndarray)) # TODO complete
   # return np.around(input_obj, 4).astype('float32')
 
 
