@@ -79,10 +79,10 @@ def trainAndSaveModels(experiment_folder_name, model_class, dataset_string, X_tr
     print('[INFO] done.\n', file=log_file)
 
     # OVERRIDE MODEL_TRAINED; to be used for test purposes against pytorch on
-    # {mortgage, random, german} x {lr, mlp}
-    if model_class == 'lr' or model_class == 'mlp':
-        if dataset_string == 'mortgage' or dataset_string == 'random' or dataset_string == 'german':
-            model_trained = loadModel.loadModelForDataset(model_class, dataset_string)
+    # {mortgage, random, german, credit} x {lr, mlp}
+    # if model_class in {'lr', 'mlp'}:
+    #     if dataset_string in {'mortgage', 'random', 'german'}:
+    #         model_trained = loadModel.loadModelForDataset(model_class, dataset_string)
 
     if model_class == 'tree':
         tmp = 1

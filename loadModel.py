@@ -23,10 +23,10 @@ def convertSklearnDtypeToPytorch(input_obj):
 
 def loadModelForDataset(model_class, dataset_string):
 
-  if not (model_class == 'lr' or model_class == 'mlp'):
+  if not (model_class in {'lr', 'mlp'}):
     raise Exception(f'{model_class} not supported.')
 
-  if not (dataset_string == 'random' or dataset_string == 'mortgage' or dataset_string == 'german' or dataset_string == 'credit'):
+  if not (dataset_string in {'random', 'mortgage', 'german', 'credit'}):
     raise Exception(f'{dataset_string} not supported.')
 
   dataset_obj = loadData.loadDataset(dataset_string, return_one_hot = False, load_from_cache = True, debug_flag = False)
@@ -56,7 +56,7 @@ def loadModelForDataset(model_class, dataset_string):
       mortgage_cutoff = -225000
       w = np.array([[1], [5]]).T
       b = np.ones(1) * mortgage_cutoff
-    elif dataset_string == 'german' or dataset_string == 'random'  or dataset_string == 'credit':
+    elif dataset_string in {'random', 'german', 'credit'}:
       w = model_trained.coef_
       b = model_trained.intercept_
 
@@ -70,33 +70,6 @@ def loadModelForDataset(model_class, dataset_string):
       model_trained.intercepts_[i] = convertSklearnDtypeToPytorch(model_trained.intercepts_[i])
 
   return model_trained
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

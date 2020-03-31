@@ -70,3 +70,6 @@ In this case, please remember to give it the required permissions:
 ```console
 $ chmod +x .git/hooks/pre-push
 ```
+
+
+# Update pip packages, test, and push
