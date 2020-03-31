@@ -71,5 +71,3 @@ In this case, please remember to give it the required permissions:
 $ chmod +x .git/hooks/pre-push
 ```
 
-
-# Update pip packages, test, and push
