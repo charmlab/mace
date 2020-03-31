@@ -99,6 +99,24 @@ def getDistanceFormula(model_symbols, dataset_obj, factual_sample, norm_type, ap
         )
       )
     )
+    normalized_squared_distances.append(
+      Pow(
+        Div(
+          ToReal(
+            Minus(
+              model_symbols[variable_to_compute_distance_on][attr_name_kurz]['symbol'],
+              factual_sample[attr_name_kurz]
+            )
+          ),
+          # Real(1)
+          ToReal(
+            model_symbols[variable_to_compute_distance_on][attr_name_kurz]['upper_bound'] -
+            model_symbols[variable_to_compute_distance_on][attr_name_kurz]['lower_bound']
+          )
+        ),
+        Real(2)
+      )
+    )
 
   # 2. mutable & integer-based & one-hot
   already_considered = []
@@ -121,6 +139,23 @@ def getDistanceFormula(model_symbols, dataset_obj, factual_sample, norm_type, ap
             Real(1)
           )
         )
+        # TODO: What about this? might be cheaper than Ite.
+        # normalized_absolute_distances.append(
+        #   Minus(
+        #     Real(1),
+        #     ToReal(And([
+        #       EqualsOrIff(
+        #         model_symbols[variable_to_compute_distance_on][attr_name_kurz]['symbol'],
+        #         factual_sample[attr_name_kurz]
+        #       )
+        #       for attr_name_kurz in siblings_kurz
+        #     ]))
+        #   )
+        # )
+
+        # As the distance is 0 or 1 in this case, the 2nd power is same as itself
+        normalized_squared_distances.append(normalized_absolute_distances[-1])
+
       elif 'ord' in dataset_obj.attributes_kurz[attr_name_kurz].attr_type:
         normalized_absolute_distances.append(
           Div(
@@ -158,6 +193,26 @@ def getDistanceFormula(model_symbols, dataset_obj, factual_sample, norm_type, ap
         #     Real(len(siblings_kurz))
         #   )
         # )
+        normalized_squared_distances.append(
+          Pow(
+            Div(
+              ToReal(
+                Minus(
+                  Plus([
+                    model_symbols[variable_to_compute_distance_on][attr_name_kurz]['symbol']
+                    for attr_name_kurz in siblings_kurz
+                  ]),
+                  Plus([
+                    factual_sample[attr_name_kurz]
+                    for attr_name_kurz in siblings_kurz
+                  ]),
+                )
+              ),
+              Real(len(siblings_kurz))
+            ),
+            Real(2)
+          )
+        )
       else:
         raise Exception(f'{attr_name_kurz} must include either `cat` or `ord`.')
       already_considered.extend(siblings_kurz)
@@ -166,7 +221,7 @@ def getDistanceFormula(model_symbols, dataset_obj, factual_sample, norm_type, ap
   # # pysmt.exceptions.SolverReturnedUnknownResultError
   # normalized_squared_distances = [
   #   # Times(distance, distance)
-  #   Pow(distance, Real(2))
+  #   Pow(distance, Int(2))
   #   for distance in normalized_absolute_distances
   # ]
   # # TODO: deprecate?
@@ -203,17 +258,17 @@ def getDistanceFormula(model_symbols, dataset_obj, factual_sample, norm_type, ap
       ),
       Real(norm_threshold)
     )
-  # elif norm_type == 'two_norm':
-  #   distance_formula = LE(
-  #     Pow(
-  #       Times(
-  #         Real(1 / len(normalized_squared_distances)),
-  #         ToReal(Plus(normalized_squared_distances))
-  #       ),
-  #     Real(0.5)
-  #     ),
-  #     Real(norm_threshold)
-  #   )
+  elif norm_type == 'two_norm':
+    distance_formula = LE(
+      Times(
+        Real(1 / len(normalized_squared_distances)),
+        ToReal(Plus(normalized_squared_distances))
+      ),
+      Pow(
+        Real(norm_threshold),
+        Real(2)
+      )
+    )
   elif norm_type == 'infty_norm':
     distance_formula = LE(
       Times(
@@ -515,94 +570,100 @@ def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, f
       distance_formula,
       diversity_formula,
     )
-    iteration_start_time = time.time()
-    model = get_model(formula)
-    iteration_end_time = time.time()
 
-    if model: # joint formula is satisfiable
+    solver_name = "z3"
+    with Solver(name=solver_name) as solver:
+      solver.add_assertion(formula)
 
-      print('solution exists & found.', file = log_file)
-      counterfactual_pysmt_sample = {}
-      interventional_pysmt_sample = {}
-      for (symbol_key, symbol_value) in model:
-        # symbol_key may be 'x#', {'p0#', 'p1#'}, 'w#', or 'y'
-        tmp = str(symbol_key)
-        if 'counterfactual' in str(symbol_key):
-          tmp = tmp[:-15]
-          if tmp in dataset_obj.getInputOutputAttributeNames('kurz'):
+      iteration_start_time = time.time()
+      solved = solver.solve()
+      iteration_end_time = time.time()
+
+      if solved: # joint formula is satisfiable
+        model = solver.get_model()
+        print('solution exists & found.', file = log_file)
+        counterfactual_pysmt_sample = {}
+        interventional_pysmt_sample = {}
+        for (symbol_key, symbol_value) in model:
+          # symbol_key may be 'x#', {'p0#', 'p1#'}, 'w#', or 'y'
+          tmp = str(symbol_key)
+          if 'counterfactual' in str(symbol_key):
+            tmp = tmp[:-15]
+            if tmp in dataset_obj.getInputOutputAttributeNames('kurz'):
+              counterfactual_pysmt_sample[tmp] = symbol_value
+          elif 'interventional' in str(symbol_key):
+            tmp = tmp[:-15]
+            if tmp in dataset_obj.getInputOutputAttributeNames('kurz'):
+              interventional_pysmt_sample[tmp] = symbol_value
+          elif tmp in dataset_obj.getInputOutputAttributeNames('kurz'): # for y variable
             counterfactual_pysmt_sample[tmp] = symbol_value
-        elif 'interventional' in str(symbol_key):
-          tmp = tmp[:-15]
-          if tmp in dataset_obj.getInputOutputAttributeNames('kurz'):
             interventional_pysmt_sample[tmp] = symbol_value
-        elif tmp in dataset_obj.getInputOutputAttributeNames('kurz'): # for y variable
-          counterfactual_pysmt_sample[tmp] = symbol_value
-          interventional_pysmt_sample[tmp] = symbol_value
 
-      # Convert back from pysmt_sample to dict_sample to compute distance and save
-      counterfactual_sample  = getDictSampleFromPySMTSample(
-        counterfactual_pysmt_sample,
-        dataset_obj)
-      interventional_sample  = getDictSampleFromPySMTSample(
-        interventional_pysmt_sample,
-        dataset_obj)
+        # Convert back from pysmt_sample to dict_sample to compute distance and save
+        counterfactual_sample  = getDictSampleFromPySMTSample(
+          counterfactual_pysmt_sample,
+          dataset_obj)
+        interventional_sample  = getDictSampleFromPySMTSample(
+          interventional_pysmt_sample,
+          dataset_obj)
 
-      # Assert samples have correct prediction label according to sklearn model
-      assertPrediction(counterfactual_sample, model_trained, dataset_obj)
-      # of course, there is no need to assertPrediction on the interventional_sample
+        # Assert samples have correct prediction label according to sklearn model
+        assertPrediction(counterfactual_sample, model_trained, dataset_obj)
+        # of course, there is no need to assertPrediction on the interventional_sample
 
-      counterfactual_distance = normalizedDistance.getDistanceBetweenSamples(
-        factual_sample,
-        counterfactual_sample,
-        norm_type,
-        dataset_obj)
-      interventional_distance = normalizedDistance.getDistanceBetweenSamples(
-        factual_sample,
-        interventional_sample,
-        norm_type,
-        dataset_obj)
-      counterfactual_time = iteration_end_time - iteration_start_time
-      counterfactuals.append({
-        'counterfactual_sample': counterfactual_sample,
-        'counterfactual_distance': counterfactual_distance,
-        'interventional_sample': interventional_sample,
-        'interventional_distance': interventional_distance,
-        'time': counterfactual_time,
-        'norm_type': norm_type})
+        counterfactual_distance = normalizedDistance.getDistanceBetweenSamples(
+          factual_sample,
+          counterfactual_sample,
+          norm_type,
+          dataset_obj)
+        interventional_distance = normalizedDistance.getDistanceBetweenSamples(
+          factual_sample,
+          interventional_sample,
+          norm_type,
+          dataset_obj)
+        counterfactual_time = iteration_end_time - iteration_start_time
+        counterfactuals.append({
+          'counterfactual_sample': counterfactual_sample,
+          'counterfactual_distance': counterfactual_distance,
+          'interventional_sample': interventional_sample,
+          'interventional_distance': interventional_distance,
+          'time': counterfactual_time,
+          'norm_type': norm_type})
 
-      # Update diversity and distance formulas now that we have found a solution
-      # TODO: I think the line below should be removed, because in successive
-      #       reductions of delta, we should be able to re-use previous CFs
-      # diversity_formula = And(diversity_formula, getDiversityFormulaUpdate(model))
+        # Update diversity and distance formulas now that we have found a solution
+        # TODO: I think the line below should be removed, because in successive
+        #       reductions of delta, we should be able to re-use previous CFs
+        # diversity_formula = And(diversity_formula, getDiversityFormulaUpdate(model))
 
-      # IMPORTANT: something odd happens somtimes if use vanilla binary search;
-      #            On the first iteration, with [0, 1] bounds, we may see a CF at
-      #            d = 0.22. When we update the bounds to [0, 0.5] bounds,  we
-      #            sometimes surprisingly see a new CF at distance 0.24. We optimize
-      #            the binary search to solve this.
-      norm_lower_bound = norm_lower_bound
-      # norm_upper_bound = curr_norm_threshold
-      if 'mace' in approach_string:
-        norm_upper_bound = float(counterfactual_distance + epsilon / 100) # not float64
-      elif 'mint' in approach_string:
-        norm_upper_bound = float(interventional_distance + epsilon / 100) # not float64
-      curr_norm_threshold = getCenterNormThresholdInRange(norm_lower_bound, norm_upper_bound)
-      distance_formula = getDistanceFormula(model_symbols, dataset_obj, factual_pysmt_sample, norm_type, approach_string, curr_norm_threshold)
-
-    else: # no solution found in the assigned norm range --> update range and try again
-
-      neg_formula = Not(formula)
-      neg_model = get_model(neg_formula)
-      if neg_model:
-        print('no solution exists.', file = log_file)
-        norm_lower_bound = curr_norm_threshold
-        norm_upper_bound = norm_upper_bound
+        # IMPORTANT: something odd happens somtimes if use vanilla binary search;
+        #            On the first iteration, with [0, 1] bounds, we may see a CF at
+        #            d = 0.22. When we update the bounds to [0, 0.5] bounds,  we
+        #            sometimes surprisingly see a new CF at distance 0.24. We optimize
+        #            the binary search to solve this.
+        norm_lower_bound = norm_lower_bound
+        # norm_upper_bound = curr_norm_threshold
+        if 'mace' in approach_string:
+          norm_upper_bound = float(counterfactual_distance + epsilon / 100) # not float64
+        elif 'mint' in approach_string:
+          norm_upper_bound = float(interventional_distance + epsilon / 100) # not float64
         curr_norm_threshold = getCenterNormThresholdInRange(norm_lower_bound, norm_upper_bound)
         distance_formula = getDistanceFormula(model_symbols, dataset_obj, factual_pysmt_sample, norm_type, approach_string, curr_norm_threshold)
-      else:
-        print('no solution found (SMT issue).', file = log_file)
-        quit()
-        break
+
+      else: # no solution found in the assigned norm range --> update range and try again
+        with Solver(name=solver_name) as neg_solver:
+          neg_formula = Not(formula)
+          neg_solver.add_assertion(neg_formula)
+          neg_solved = neg_solver.solve()
+          if neg_solved:
+            print('no solution exists.', file = log_file)
+            norm_lower_bound = curr_norm_threshold
+            norm_upper_bound = norm_upper_bound
+            curr_norm_threshold = getCenterNormThresholdInRange(norm_lower_bound, norm_upper_bound)
+            distance_formula = getDistanceFormula(model_symbols, dataset_obj, factual_pysmt_sample, norm_type, approach_string, curr_norm_threshold)
+          else:
+            print('no solution found (SMT issue).', file = log_file)
+            quit()
+            break
 
   # IMPORTANT: there may be many more at this same distance! OR NONE! (what?? 2020.02.19)
   closest_counterfactual_sample = sorted(counterfactuals, key = lambda x: x['counterfactual_distance'])[0]
