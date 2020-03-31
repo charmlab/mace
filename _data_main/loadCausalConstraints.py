@@ -119,98 +119,6 @@ def getGermanCausalConsistencyConstraints(model_symbols, factual_sample):
 
 
 
-
-
-
-
-
-
-# TODO: this is the random_linear dataset,... building support for random_nonlinear
-# is not possible in SMT... perhaps then build support for the linear approximation
-# to the random_nonlinear dataset?
-# def getRandomCausalConsistencyConstraints(model_symbols, factual_sample):
-#   # x0 (root node; no parents)
-#   x0 = Ite(
-#     Not( # if YES intervened
-#       EqualsOrIff(
-#         ToReal(model_symbols['interventional']['x0']['symbol']),
-#         ToReal(factual_sample['x0']),
-#       )
-#     ),
-#     EqualsOrIff( # set value of X^CF to the intervened value
-#       ToReal(model_symbols['counterfactual']['x0']['symbol']),
-#       ToReal(model_symbols['interventional']['x0']['symbol']),
-#     ),
-#     EqualsOrIff( # else, set value of X^CF to (8) from paper
-#       ToReal(model_symbols['counterfactual']['x0']['symbol']),
-#       ToReal(factual_sample['x0']),
-#     ),
-#   )
-
-#   # x1 (parents = {x0})
-#   x1 = Ite(
-#     Not( # if YES intervened
-#       EqualsOrIff(
-#         ToReal(model_symbols['interventional']['x1']['symbol']),
-#         ToReal(factual_sample['x1']),
-#       )
-#     ),
-#     EqualsOrIff( # set value of X^CF to the intervened value
-#       ToReal(model_symbols['counterfactual']['x1']['symbol']),
-#       ToReal(model_symbols['interventional']['x1']['symbol']),
-#     ),
-#     EqualsOrIff( # else, set value of X^CF to (8) from paper
-#       ToReal(model_symbols['counterfactual']['x1']['symbol']),
-#       Plus(
-#         ToReal(factual_sample['x1']),
-#         Times(
-#           Minus(
-#             ToReal(model_symbols['counterfactual']['x0']['symbol']),
-#             ToReal(factual_sample['x0']),
-#           ),
-#           Real(1)
-#         )
-#       )
-#     ),
-#   )
-
-#   # x2 (parents = {x0, x1})
-#   x2 = Ite(
-#     Not( # if YES intervened
-#       EqualsOrIff(
-#         ToReal(model_symbols['interventional']['x2']['symbol']),
-#         ToReal(factual_sample['x2']),
-#       )
-#     ),
-#     EqualsOrIff( # set value of X^CF to the intervened value
-#       ToReal(model_symbols['counterfactual']['x2']['symbol']),
-#       ToReal(model_symbols['interventional']['x2']['symbol']),
-#     ),
-#     EqualsOrIff( # else, set value of X^CF to (8) from paper
-#       ToReal(model_symbols['counterfactual']['x2']['symbol']),
-#       Plus([
-#         ToReal(factual_sample['x2']),
-#         Times(
-#           Minus(
-#             ToReal(model_symbols['counterfactual']['x0']['symbol']),
-#             ToReal(factual_sample['x0']),
-#           ),
-#           Real(0.25)
-#         ),
-#         Times(
-#           Minus(
-#             ToReal(model_symbols['counterfactual']['x1']['symbol']),
-#             ToReal(factual_sample['x1']),
-#           ),
-#           Real(float(np.sqrt(3)))
-#         ),
-#       ])
-#     ),
-#   )
-
-#   return And([x0,x1,x2])
-
-
 def getRandomCausalConsistencyConstraints(model_symbols, factual_sample):
   # x0 (root node; no parents)
   x0 = Ite(
@@ -251,7 +159,7 @@ def getRandomCausalConsistencyConstraints(model_symbols, factual_sample):
             ToReal(model_symbols['counterfactual']['x0']['symbol']),
             ToReal(factual_sample['x0']),
           ),
-          Real(7.43)
+          Real(1)
         )
       )
     ),
@@ -275,23 +183,115 @@ def getRandomCausalConsistencyConstraints(model_symbols, factual_sample):
         ToReal(factual_sample['x2']),
         Times(
           Minus(
-            ToReal(model_symbols['counterfactual']['x0']['symbol']),
-            ToReal(factual_sample['x0']),
+            Times(
+              ToReal(model_symbols['counterfactual']['x0']['symbol']),
+              Pow(
+                ToReal(model_symbols['counterfactual']['x1']['symbol']),
+                Real(2)
+              ),
+            ),
+            Times(
+              ToReal(factual_sample['x0']),
+              Pow(
+                ToReal(factual_sample['x1']),
+                Real(2)
+              ),
+            ),
           ),
-          Real(1.6)
-        ),
-        Times(
-          Minus(
-            ToReal(model_symbols['counterfactual']['x1']['symbol']),
-            ToReal(factual_sample['x1']),
-          ),
-          Real(0.015)
+          Real(float(np.sqrt(3)))
         ),
       ])
     ),
   )
 
   return And([x0,x1,x2])
+
+
+
+
+# Below is the linear approx SCM to the nonlinear SCM for the random dataset
+# TODO: update the weights here as we have a new nonlinear model
+# def getRandomCausalConsistencyConstraints(model_symbols, factual_sample):
+#   # x0 (root node; no parents)
+#   x0 = Ite(
+#     Not( # if YES intervened
+#       EqualsOrIff(
+#         ToReal(model_symbols['interventional']['x0']['symbol']),
+#         ToReal(factual_sample['x0']),
+#       )
+#     ),
+#     EqualsOrIff( # set value of X^CF to the intervened value
+#       ToReal(model_symbols['counterfactual']['x0']['symbol']),
+#       ToReal(model_symbols['interventional']['x0']['symbol']),
+#     ),
+#     EqualsOrIff( # else, set value of X^CF to (8) from paper
+#       ToReal(model_symbols['counterfactual']['x0']['symbol']),
+#       ToReal(factual_sample['x0']),
+#     ),
+#   )
+
+#   # x1 (parents = {x0})
+#   x1 = Ite(
+#     Not( # if YES intervened
+#       EqualsOrIff(
+#         ToReal(model_symbols['interventional']['x1']['symbol']),
+#         ToReal(factual_sample['x1']),
+#       )
+#     ),
+#     EqualsOrIff( # set value of X^CF to the intervened value
+#       ToReal(model_symbols['counterfactual']['x1']['symbol']),
+#       ToReal(model_symbols['interventional']['x1']['symbol']),
+#     ),
+#     EqualsOrIff( # else, set value of X^CF to (8) from paper
+#       ToReal(model_symbols['counterfactual']['x1']['symbol']),
+#       Plus(
+#         ToReal(factual_sample['x1']),
+#         Times(
+#           Minus(
+#             ToReal(model_symbols['counterfactual']['x0']['symbol']),
+#             ToReal(factual_sample['x0']),
+#           ),
+#           Real(7.43)
+#         )
+#       )
+#     ),
+#   )
+
+#   # x2 (parents = {x0, x1})
+#   x2 = Ite(
+#     Not( # if YES intervened
+#       EqualsOrIff(
+#         ToReal(model_symbols['interventional']['x2']['symbol']),
+#         ToReal(factual_sample['x2']),
+#       )
+#     ),
+#     EqualsOrIff( # set value of X^CF to the intervened value
+#       ToReal(model_symbols['counterfactual']['x2']['symbol']),
+#       ToReal(model_symbols['interventional']['x2']['symbol']),
+#     ),
+#     EqualsOrIff( # else, set value of X^CF to (8) from paper
+#       ToReal(model_symbols['counterfactual']['x2']['symbol']),
+#       Plus([
+#         ToReal(factual_sample['x2']),
+#         Times(
+#           Minus(
+#             ToReal(model_symbols['counterfactual']['x0']['symbol']),
+#             ToReal(factual_sample['x0']),
+#           ),
+#           Real(1.6)
+#         ),
+#         Times(
+#           Minus(
+#             ToReal(model_symbols['counterfactual']['x1']['symbol']),
+#             ToReal(factual_sample['x1']),
+#           ),
+#           Real(0.015)
+#         ),
+#       ])
+#     ),
+#   )
+
+#   return And([x0,x1,x2])
 
 
 
