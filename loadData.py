@@ -7,13 +7,39 @@ import pandas as pd
 from tqdm import tqdm
 from pprint import pprint
 
+from debug import ipsh
+
 sys.path.insert(0, '_data_main')
-from _data_main.fair_adult_data import *
-from _data_main.fair_compas_data import *
-from _data_main.process_credit_data import *
-from _data_main.process_german_data import *
-from _data_main.process_random_data import *
-from _data_main.process_mortgage_data import *
+
+try:
+  from _data_main.fair_adult_data import *
+except:
+  print('[ENV WARNING] fair_adult_data not available')
+
+try:
+  from _data_main.fair_compas_data import *
+except:
+  print('[ENV WARNING] fair_compas_data not available')
+
+try:
+  from _data_main.process_credit_data import *
+except:
+  print('[ENV WARNING] process_credit_data not available')
+
+try:
+  from _data_main.process_german_data import *
+except:
+  print('[ENV WARNING] process_german_data not available')
+
+try:
+  from _data_main.process_random_data import *
+except:
+  print('[ENV WARNING] process_random_data not available')
+
+try:
+  from _data_main.process_mortgage_data import *
+except:
+  print('[ENV WARNING] process_mortgage_data not available')
 
 VALID_ATTRIBUTE_TYPES = { \
   'numeric-int', \

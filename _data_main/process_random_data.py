@@ -7,20 +7,23 @@ RANDOM_SEED = 54321
 seed(RANDOM_SEED) # set the random seed so that the random permutations can be reproduced again
 np.random.seed(RANDOM_SEED)
 
+from debug import ipsh
 
 mu_x, sigma_x = 0, 1 # mean and standard deviation for data
 mu_w, sigma_w = 0, 1 # mean and standard deviation for weights
-n = 1000
+n = 10000
 d = 3
 
 w = np.random.normal(mu_w, sigma_w, (d, 1))
-b = 0
+# b = 0 # see below.
 
-def load_random_data():
+def load_random_data(scm_class = 'linear'):
 
   X = np.random.normal(mu_x, sigma_x, (n, d))
-  X = processDataAccordingToGraph(X)
+  X = processDataAccordingToGraph(X, scm_class)
   np.random.shuffle(X)
+  # to create a more balanced dataset, do not set b to 0.
+  b = - np.mean(np.dot(X, w))
   y = (np.sign(np.sign(np.dot(X, w) + b) + 1e-6) + 1) / 2 # add 1e-3 to prevent label 0.5
 
   X_train = X[ : n // 2, :]
@@ -40,165 +43,63 @@ def load_random_data():
   return data_frame_non_hot.astype('float64')
 
 
-def processDataAccordingToGraph(data):
-  # We assume the model below
-  # X_1 := U_1 \\
-  # X_2 := X_1 + 1 + U_2 \\
-  # X_3 := (X_1 - 1) / 4 + np.sqrt{3} * X_2 + U_3
-  # U_i ~ \forall ~ i \in [3] \sim \mathcal{N}(0,1)
-  data = copy.deepcopy(data)
-  data[:,0] = data[:,0]
-  data[:,1] += data[:,0] + np.ones((n))
-  data[:,2] += (data[:,0] - 1)/4 + np.sqrt(3) * data[:,1]
+def processDataAccordingToGraph(data, scm_class = 'linear'):
+  if scm_class == 'linear':
+    # We assume the model below
+    # X_1 := U_1 \\
+    # X_2 := X_1 + 1 + U_2 \\
+    # X_3 := (X_1 - 1) / 4 + np.sqrt{3} * X_2 + U_3
+    # U_i ~ \forall ~ i \in [3] \sim \mathcal{N}(0,1)
+    data = copy.deepcopy(data)
+    data[:,0] = data[:,0]
+    data[:,1] += data[:,0] + np.ones((n))
+    data[:,2] += (data[:,0] - 1)/4 + np.sqrt(3) * data[:,1]
+  elif scm_class == 'nonlinear':
+    # We assume the model below
+    # X_1 := U_1 \\
+    # X_2 := (X_1 + 1) ** 3 + 1 + U_2 \\
+    # X_3 := 2 * X_1 + np.sqrt{3} * sin(X_2) - 1/4 + U_3
+    # U_i ~ \forall ~ i \in [3] \sim \mathcal{N}(0,1)
+    data = copy.deepcopy(data)
+    data[:,0] = data[:,0]
+    data[:,1] += np.power(data[:,0] + 1, 3) + 1 * np.ones((n))
+    data[:,2] += data[:,0] * 2 + np.sqrt(3) * np.sin(data[:,1]) - 1/4
   return data
 
 
+# import numpy as np
+# import pandas as pd
 
+# import loadData
 
-from pysmt.shortcuts import *
-from pysmt.typing import *
+# from random import seed
+# RANDOM_SEED = 54321
+# seed(RANDOM_SEED) # set the random seed so that the random permutations can be reproduced again
+# np.random.seed(RANDOM_SEED)
 
-# def getRandomCausalConsistencyConstraints(model_symbols, factual_sample):
-#   a = Ite(
-#     Not( # if YES intervened
-#       EqualsOrIff(
-#         model_symbols['interventional']['x0']['symbol'],
-#         factual_sample['x0'],
-#       )
-#     ),
-#     EqualsOrIff( # set value of X^CF to the intervened value
-#       model_symbols['counterfactual']['x0']['symbol'],
-#       model_symbols['interventional']['x0']['symbol'],
-#     ),
-#     EqualsOrIff( # else, set value of X^CF to (8) from paper
-#       model_symbols['counterfactual']['x0']['symbol'],
-#       factual_sample['x0'],
-#     ),
-#   )
+# from sklearn.linear_model import LogisticRegression
+# from sklearn.linear_model import LinearRegression
+# from sklearn.linear_model import Lasso
 
-#   b = Ite(
-#     Not( # if YES intervened
-#       EqualsOrIff(
-#         model_symbols['interventional']['x1']['symbol'],
-#         factual_sample['x1'],
-#       )
-#     ),
-#     EqualsOrIff( # set value of X^CF to the intervened value
-#       model_symbols['counterfactual']['x1']['symbol'],
-#       model_symbols['interventional']['x1']['symbol'],
-#     ),
-#     EqualsOrIff( # else, set value of X^CF to (8) from paper
-#       model_symbols['counterfactual']['x1']['symbol'],
-#       Plus(
-#         factual_sample['x1'],
-#         Minus(
-#           model_symbols['counterfactual']['x0']['symbol'],
-#           factual_sample['x0'],
-#         )
-#       )
-#     ),
-#   )
+# dataset_obj = loadData.loadDataset('random', return_one_hot = False, load_from_cache = False)
+# df = dataset_obj.data_frame_kurz
 
-#   c = Ite(
-#     Not( # if YES intervened
-#       EqualsOrIff(
-#         model_symbols['interventional']['x2']['symbol'],
-#         factual_sample['x2'],
-#       )
-#     ),
-#     EqualsOrIff( # set value of X^CF to the intervened value
-#       model_symbols['counterfactual']['x2']['symbol'],
-#       model_symbols['interventional']['x2']['symbol'],
-#     ),
-#     EqualsOrIff( # else, set value of X^CF to (8) from paper
-#       model_symbols['counterfactual']['x2']['symbol'],
-#       Plus(
-#         factual_sample['x2'],
-#         Minus(
-#           Plus(
-#             Times(
-#               Minus(
-#                 model_symbols['counterfactual']['x0']['symbol'],
-#                 Real(1)
-#               ),
-#               Real(0.25)
-#             ),
-#             Times(
-#               model_symbols['counterfactual']['x1']['symbol'],
-#               Real(float(np.sqrt(3)))
-#             )
-#           ),
-#           Plus(
-#             Times(
-#               Minus(
-#                 factual_sample['x0'],
-#                 Real(1)
-#               ),
-#               Real(0.25)
-#             ),
-#             Times(
-#               factual_sample['x1'],
-#               Real(float(np.sqrt(3)))
-#             )
-#           ),
-#         )
-#       )
-#     ),
-#   )
+# # See Figure 3 in paper
 
-#   return And([a,b,c])
+# # node: x1     parents: {x0}
+# X_train = df[['x0']]
+# y_train = df[['x1']]
+# model_pretrain = LinearRegression()
+# # model_pretrain = Lasso()
+# model_trained = model_pretrain.fit(X_train, y_train)
+# print(model_trained.coef_)
+# print(model_trained.intercept_)
 
-
-def getRandomCausalConsistencyConstraints(model_symbols, factual_sample):
-  a = Ite(
-    Not( # if YES intervened
-      EqualsOrIff(
-        model_symbols['interventional']['x0']['symbol'],
-        factual_sample['x0'],
-      )
-    ),
-    EqualsOrIff( # set value of X^CF to the intervened value
-      model_symbols['counterfactual']['x0']['symbol'],
-      model_symbols['interventional']['x0']['symbol'],
-    ),
-    EqualsOrIff( # else, set value of X^CF to (8) from paper
-      model_symbols['counterfactual']['x0']['symbol'],
-      factual_sample['x0'],
-    ),
-  )
-
-  b = Ite(
-    Not( # if YES intervened
-      EqualsOrIff(
-        model_symbols['interventional']['x1']['symbol'],
-        factual_sample['x1'],
-      )
-    ),
-    EqualsOrIff( # set value of X^CF to the intervened value
-      model_symbols['counterfactual']['x1']['symbol'],
-      model_symbols['interventional']['x1']['symbol'],
-    ),
-    EqualsOrIff( # else, set value of X^CF to (8) from paper
-      model_symbols['counterfactual']['x1']['symbol'],
-      factual_sample['x1'],
-    ),
-  )
-
-  c = Ite(
-    Not( # if YES intervened
-      EqualsOrIff(
-        model_symbols['interventional']['x2']['symbol'],
-        factual_sample['x2'],
-      )
-    ),
-    EqualsOrIff( # set value of X^CF to the intervened value
-      model_symbols['counterfactual']['x2']['symbol'],
-      model_symbols['interventional']['x2']['symbol'],
-    ),
-    EqualsOrIff( # else, set value of X^CF to (8) from paper
-      model_symbols['counterfactual']['x2']['symbol'],
-      factual_sample['x2'],
-    ),
-  )
-
-  return And([a,b,c])
+# # node: x2     parents: {x1,  x2}
+# X_train = df[['x0', 'x1']]
+# y_train = df[['x2']]
+# model_pretrain = LinearRegression()
+# model_trained = model_pretrain.fit(X_train, y_train)
+# print(model_trained.coef_)
+# print(model_trained.intercept_)
+# #

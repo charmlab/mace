@@ -16,10 +16,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.neural_network import MLPClassifier
 
-# import get*CausalConsistencyConstraints()
-from _data_main.process_german_data import *
-from _data_main.process_random_data import *
-from _data_main.process_mortgage_data import *
+from loadCausalConstraints import *
 
 from random import seed
 RANDOM_SEED = 1122334455
