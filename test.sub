@@ -9,1603 +9,2403 @@ request_cpus = 1
 
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 0 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 0 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 1 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 1 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 2 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 2 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 3 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 3 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 4 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 4 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 5 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 5 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 6 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 6 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 7 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 7 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 8 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 8 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 9 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 9 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 10 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 10 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 11 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 11 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 12 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 12 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 13 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 13 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 14 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 14 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 15 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 15 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 16 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 16 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 17 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 17 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 18 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 18 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 19 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 19 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 20 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 20 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 21 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 21 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 22 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 22 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 23 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 23 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 24 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 24 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 25 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 25 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 26 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 26 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 27 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 27 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 28 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 28 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 29 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 29 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 30 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 30 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 31 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 31 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 32 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 32 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 33 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 33 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 34 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 34 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 35 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 35 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 36 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 36 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 37 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 37 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 38 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 38 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 39 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 39 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 40 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 40 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 41 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 41 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 42 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 42 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 43 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 43 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 44 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 44 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 45 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 45 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 46 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 46 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 47 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 47 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 48 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 48 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 49 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 49 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 50 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 50 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 51 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 51 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 52 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 52 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 53 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 53 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 54 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 54 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 55 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 55 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 56 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 56 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 57 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 57 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 58 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 58 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 59 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 59 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 60 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 60 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 61 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 61 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 62 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 62 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 63 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 63 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 64 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 64 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 65 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 65 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 66 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 66 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 67 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 67 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 68 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 68 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 69 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 69 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 70 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 70 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 71 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 71 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 72 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 72 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 73 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 73 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 74 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 74 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 75 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 75 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 76 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 76 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 77 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 77 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 78 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 78 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 79 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 79 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 80 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 80 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 81 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 81 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 82 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 82 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 83 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 83 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 84 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 84 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 85 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 85 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 86 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 86 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 87 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 87 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 88 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 88 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 89 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 89 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 90 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 90 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 91 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 91 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 92 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 92 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 93 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 93 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 94 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 94 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 95 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 95 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 96 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 96 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 97 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 97 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 98 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 98 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m lr -n one_norm -a MINT_eps_1e-3 -b 99 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m lr -n two_norm -a MINT_eps_1e-3 -b 99 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 0 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 0 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 1 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 1 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 2 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 2 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 3 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 3 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 4 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 4 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 5 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 5 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 6 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 6 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 7 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 7 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 8 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 8 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 9 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 9 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 10 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 10 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 11 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 11 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 12 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 12 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 13 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 13 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 14 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 14 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 15 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 15 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 16 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 16 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 17 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 17 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 18 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 18 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 19 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 19 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 20 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 20 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 21 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 21 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 22 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 22 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 23 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 23 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 24 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 24 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 25 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 25 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 26 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 26 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 27 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 27 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 28 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 28 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 29 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 29 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 30 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 30 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 31 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 31 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 32 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 32 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 33 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 33 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 34 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 34 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 35 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 35 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 36 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 36 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 37 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 37 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 38 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 38 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 39 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 39 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 40 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 40 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 41 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 41 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 42 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 42 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 43 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 43 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 44 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 44 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 45 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 45 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 46 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 46 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 47 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 47 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 48 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 48 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 49 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 49 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 50 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 50 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 51 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 51 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 52 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 52 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 53 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 53 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 54 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 54 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 55 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 55 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 56 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 56 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 57 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 57 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 58 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 58 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 59 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 59 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 60 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 60 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 61 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 61 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 62 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 62 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 63 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 63 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 64 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 64 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 65 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 65 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 66 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 66 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 67 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 67 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 68 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 68 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 69 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 69 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 70 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 70 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 71 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 71 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 72 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 72 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 73 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 73 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 74 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 74 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 75 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 75 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 76 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 76 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 77 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 77 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 78 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 78 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 79 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 79 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 80 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 80 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 81 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 81 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 82 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 82 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 83 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 83 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 84 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 84 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 85 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 85 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 86 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 86 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 87 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 87 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 88 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 88 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 89 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 89 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 90 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 90 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 91 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 91 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 92 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 92 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 93 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 93 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 94 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 94 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 95 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 95 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 96 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 96 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 97 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 97 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 98 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 98 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d random -m mlp -n one_norm -a MINT_eps_1e-3 -b 99 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d random -m mlp -n two_norm -a MINT_eps_1e-3 -b 99 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 0 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 0 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 1 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 1 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 2 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 2 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 3 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 3 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 4 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 4 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 5 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 5 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 6 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 6 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 7 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 7 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 8 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 8 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 9 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 9 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 10 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 10 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 11 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 11 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 12 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 12 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 13 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 13 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 14 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 14 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 15 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 15 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 16 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 16 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 17 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 17 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 18 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 18 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 19 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 19 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 20 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 20 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 21 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 21 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 22 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 22 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 23 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 23 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 24 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 24 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 25 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 25 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 26 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 26 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 27 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 27 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 28 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 28 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 29 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 29 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 30 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 30 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 31 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 31 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 32 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 32 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 33 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 33 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 34 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 34 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 35 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 35 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 36 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 36 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 37 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 37 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 38 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 38 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 39 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 39 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 40 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 40 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 41 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 41 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 42 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 42 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 43 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 43 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 44 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 44 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 45 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 45 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 46 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 46 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 47 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 47 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 48 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 48 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 49 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 49 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 50 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 50 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 51 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 51 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 52 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 52 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 53 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 53 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 54 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 54 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 55 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 55 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 56 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 56 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 57 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 57 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 58 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 58 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 59 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 59 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 60 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 60 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 61 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 61 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 62 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 62 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 63 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 63 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 64 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 64 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 65 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 65 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 66 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 66 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 67 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 67 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 68 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 68 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 69 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 69 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 70 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 70 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 71 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 71 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 72 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 72 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 73 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 73 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 74 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 74 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 75 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 75 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 76 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 76 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 77 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 77 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 78 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 78 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 79 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 79 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 80 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 80 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 81 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 81 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 82 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 82 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 83 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 83 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 84 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 84 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 85 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 85 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 86 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 86 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 87 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 87 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 88 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 88 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 89 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 89 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 90 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 90 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 91 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 91 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 92 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 92 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 93 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 93 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 94 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 94 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 95 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 95 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 96 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 96 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 97 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 97 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 98 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 98 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m lr -n one_norm -a MINT_eps_1e-3 -b 99 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m lr -n two_norm -a MINT_eps_1e-3 -b 99 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 0 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 0 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 1 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 1 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 2 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 2 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 3 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 3 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 4 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 4 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 5 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 5 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 6 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 6 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 7 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 7 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 8 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 8 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 9 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 9 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 10 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 10 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 11 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 11 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 12 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 12 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 13 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 13 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 14 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 14 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 15 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 15 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 16 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 16 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 17 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 17 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 18 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 18 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 19 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 19 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 20 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 20 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 21 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 21 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 22 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 22 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 23 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 23 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 24 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 24 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 25 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 25 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 26 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 26 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 27 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 27 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 28 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 28 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 29 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 29 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 30 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 30 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 31 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 31 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 32 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 32 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 33 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 33 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 34 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 34 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 35 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 35 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 36 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 36 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 37 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 37 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 38 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 38 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 39 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 39 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 40 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 40 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 41 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 41 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 42 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 42 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 43 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 43 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 44 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 44 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 45 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 45 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 46 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 46 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 47 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 47 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 48 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 48 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 49 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 49 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 50 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 50 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 51 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 51 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 52 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 52 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 53 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 53 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 54 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 54 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 55 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 55 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 56 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 56 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 57 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 57 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 58 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 58 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 59 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 59 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 60 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 60 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 61 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 61 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 62 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 62 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 63 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 63 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 64 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 64 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 65 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 65 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 66 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 66 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 67 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 67 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 68 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 68 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 69 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 69 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 70 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 70 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 71 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 71 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 72 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 72 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 73 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 73 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 74 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 74 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 75 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 75 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 76 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 76 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 77 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 77 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 78 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 78 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 79 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 79 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 80 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 80 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 81 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 81 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 82 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 82 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 83 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 83 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 84 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 84 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 85 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 85 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 86 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 86 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 87 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 87 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 88 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 88 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 89 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 89 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 90 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 90 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 91 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 91 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 92 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 92 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 93 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 93 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 94 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 94 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 95 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 95 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 96 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 96 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 97 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 97 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 98 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 98 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
-arguments = batchTest.py -d mortgage -m mlp -n one_norm -a MINT_eps_1e-3 -b 99 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d mortgage -m mlp -n two_norm -a MINT_eps_1e-3 -b 99 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 0 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 1 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 2 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 3 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 4 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 5 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 6 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 7 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 8 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 9 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 10 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 11 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 12 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 13 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 14 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 15 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 16 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 17 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 18 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 19 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 20 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 21 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 22 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 23 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 24 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 25 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 26 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 27 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 28 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 29 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 30 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 31 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 32 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 33 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 34 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 35 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 36 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 37 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 38 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 39 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 40 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 41 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 42 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 43 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 44 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 45 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 46 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 47 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 48 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 49 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 50 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 51 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 52 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 53 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 54 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 55 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 56 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 57 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 58 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 59 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 60 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 61 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 62 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 63 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 64 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 65 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 66 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 67 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 68 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 69 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 70 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 71 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 72 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 73 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 74 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 75 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 76 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 77 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 78 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 79 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 80 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 81 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 82 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 83 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 84 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 85 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 86 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 87 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 88 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 89 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 90 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 91 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 92 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 93 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 94 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 95 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 96 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 97 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 98 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m lr -n two_norm -a MINT_eps_1e-3 -b 99 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 0 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 1 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 2 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 3 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 4 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 5 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 6 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 7 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 8 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 9 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 10 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 11 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 12 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 13 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 14 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 15 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 16 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 17 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 18 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 19 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 20 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 21 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 22 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 23 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 24 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 25 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 26 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 27 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 28 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 29 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 30 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 31 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 32 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 33 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 34 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 35 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 36 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 37 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 38 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 39 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 40 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 41 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 42 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 43 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 44 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 45 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 46 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 47 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 48 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 49 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 50 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 51 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 52 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 53 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 54 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 55 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 56 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 57 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 58 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 59 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 60 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 61 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 62 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 63 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 64 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 65 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 66 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 67 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 68 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 69 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 70 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 71 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 72 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 73 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 74 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 75 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 76 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 77 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 78 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 79 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 80 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 81 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 82 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 83 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 84 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 85 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 86 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 87 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 88 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 89 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 90 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 91 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 92 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 93 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 94 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 95 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 96 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 97 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 98 -s 1  -g neg_and_pos  -p $(Process)
+queue
+
+
+arguments = batchTest.py -d credit -m mlp -n two_norm -a MINT_eps_1e-3 -b 99 -s 1  -g neg_and_pos  -p $(Process)
 queue
 
 
