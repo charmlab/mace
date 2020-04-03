@@ -73,17 +73,24 @@ def trainAndSaveModels(experiment_folder_name, model_class, dataset_string, X_tr
         # model_pretrain = MLPClassifier() # = hidden_layer_sizes = (100, 100)
         # model_pretrain = MLPClassifier(hidden_layer_sizes = (100, 100))
 
+    # for mortgage, german, compass, credit, ~adult datasets, some normalization is needed...
+    # just not for random, moons lol
+    # x_max = X_train.max()
+    # X_train /= x_max
+    # X_test /= x_max
+
     print('[INFO] Training `{}` on {:,} samples (%{:.2f} of {:,} samples)...'.format(model_class, X_train.shape[0], 100 * X_train.shape[0] / (X_train.shape[0] + X_test.shape[0]), X_train.shape[0] + X_test.shape[0]), file=log_file)
     model_trained = model_pretrain.fit(X_train, y_train)
-    print('\tTraining accuracy: %{:.2f}'.format(accuracy_score(y_train, model_trained.predict(X_train)) * 100), file=log_file)
-    print('\tTesting accuracy: %{:.2f}'.format(accuracy_score(y_test, model_trained.predict(X_test)) * 100), file=log_file)
-    print('[INFO] done.\n', file=log_file)
 
     # OVERRIDE MODEL_TRAINED; to be used for test purposes against pytorch on
     # {mortgage, random, german, credit} x {lr, mlp}
-    # if model_class in {'lr', 'mlp'}:
-    #     if dataset_string in {'mortgage', 'random', 'german'}:
-    #         model_trained = loadModel.loadModelForDataset(model_class, dataset_string)
+    if model_class in {'lr', 'mlp'}:
+        if dataset_string in {'mortgage', 'random', 'german'}: # NOT credit as I don't want to ruin master
+            model_trained = loadModel.loadModelForDataset(model_class, dataset_string)
+
+    print('\tTraining accuracy: %{:.2f}'.format(accuracy_score(y_train, model_trained.predict(X_train)) * 100), file=log_file)
+    print('\tTesting accuracy: %{:.2f}'.format(accuracy_score(y_test, model_trained.predict(X_test)) * 100), file=log_file)
+    print('[INFO] done.\n', file=log_file)
 
     if model_class == 'tree':
         tmp = 1
