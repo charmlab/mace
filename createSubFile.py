@@ -6,7 +6,8 @@
 # ls -1 | grep 2019.05 | xargs rm -rf
 # scp -r amir@login.cluster.is.localnet:~/dev/mace/_experiments/__merged _results/
 
-DATASET_VALUES = ['random', 'mortgage', 'credit']
+# DATASET_VALUES = ['random', 'mortgage', 'credit']
+DATASET_VALUES = ['twomoon']
 MODEL_CLASS_VALUES = ['lr', 'mlp']
 NORM_VALUES = ['two_norm']
 APPROACHES_VALUES = ['MINT_eps_1e-3']
