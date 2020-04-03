@@ -6,6 +6,7 @@ import numpy as np
 import pandas as pd
 from tqdm import tqdm
 from pprint import pprint
+from sklearn.model_selection import train_test_split
 
 from debug import ipsh
 
@@ -975,7 +976,21 @@ def getOneHotEquivalent(data_frame_non_hot, attributes_non_hot):
   return data_frame, attributes
 
 
-def getBalancedDataFrame(dataset_obj):
+# TODO: This should be used with caution... it messes things up in MACE as ranges
+# will differ between factual and counterfactual domains
+def normalizeData(X_train, X_test):
+    x_mean = X_train.mean()
+    x_std = X_train.std()
+    for index in x_std.index:
+        if '_ord_' in index or '_cat_' in index:
+            x_mean[index] = 0
+            x_std[index] = 1
+    X_train = (X_train - x_mean) / x_std
+    X_test = (X_test - x_mean) / x_std
+    return X_train, X_test
+
+
+def getBalancedDataFrame(dataset_obj, RANDOM_SEED):
   balanced_data_frame = copy.deepcopy(dataset_obj.data_frame_kurz)
 
   # get input and output columns
@@ -1000,6 +1015,19 @@ def getBalancedDataFrame(dataset_obj):
 
   return balanced_data_frame, input_cols, output_col
 
+
+def getTrainTestData(dataset_obj, RANDOM_SEED, standardize_data = False):
+  balanced_data_frame, input_cols, output_col = getBalancedDataFrame(dataset_obj, RANDOM_SEED)
+  all_data = balanced_data_frame.loc[:,input_cols]
+  all_true_labels = balanced_data_frame.loc[:,output_col]
+  X_train, X_test, y_train, y_test = train_test_split(
+    all_data,
+    all_true_labels,
+    train_size=.7,
+    random_state = RANDOM_SEED)
+  if standardize_data == True:
+    X_train, X_test = normalizeData(X_train, X_test)
+  return X_train, X_test, y_train, y_test
 
 
 
