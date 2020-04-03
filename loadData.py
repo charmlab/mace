@@ -42,6 +42,11 @@ try:
 except:
   print('[ENV WARNING] process_mortgage_data not available')
 
+try:
+  from _data_main.process_twomoon_data import *
+except:
+  print('[ENV WARNING] process_twomoon_data not available')
+
 VALID_ATTRIBUTE_TYPES = { \
   'numeric-int', \
   'numeric-real', \
@@ -464,7 +469,7 @@ def loadDataset(dataset_name, return_one_hot, load_from_cache = False, debug_fla
     # TODO: perhaps move this logic to later in the code, after the definition
     #       of dataset variables. Then look through all defined variables for
     #       categorical or ordinal variables.
-    if dataset_name == 'random' or dataset_name == 'mortgage' or dataset_name == 'german':
+    if dataset_name in {'random', 'mortgage', 'twomoon', 'german'}:
       return_one_hot = 0
 
   one_hot_string = 'one_hot' if return_one_hot else 'non_hot'
@@ -829,6 +834,50 @@ def loadDataset(dataset_name, return_one_hot, load_from_cache = False, debug_fla
   elif dataset_name == 'mortgage':
 
     data_frame_non_hot = load_mortgage_data()
+    data_frame_non_hot = data_frame_non_hot.reset_index(drop=True)
+    attributes_non_hot = {}
+
+    input_cols, output_col = getInputOutputColumns(data_frame_non_hot)
+
+    col_name = output_col
+    attributes_non_hot[col_name] = DatasetAttribute(
+      attr_name_long = col_name,
+      attr_name_kurz = 'y',
+      attr_type = 'binary',
+      is_input = False,
+      actionability = 'none',
+      mutability = False,
+      parent_name_long = -1,
+      parent_name_kurz = -1,
+      lower_bound = data_frame_non_hot[col_name].min(),
+      upper_bound = data_frame_non_hot[col_name].max())
+
+    for col_idx, col_name in enumerate(input_cols):
+
+      if col_name == 'x0':
+        attr_type = 'numeric-real'
+        actionability = 'any'
+        mutability = True
+      elif col_name == 'x1':
+        attr_type = 'numeric-real'
+        actionability = 'any'
+        mutability = True
+
+      attributes_non_hot[col_name] = DatasetAttribute(
+        attr_name_long = col_name,
+        attr_name_kurz = f'x{col_idx}',
+        attr_type = attr_type,
+        is_input = True,
+        actionability = actionability,
+        mutability = mutability,
+        parent_name_long = -1,
+        parent_name_kurz = -1,
+        lower_bound = data_frame_non_hot[col_name].min(),
+        upper_bound = data_frame_non_hot[col_name].max())
+
+  elif dataset_name == 'twomoon':
+
+    data_frame_non_hot = load_twomoon_data()
     data_frame_non_hot = data_frame_non_hot.reset_index(drop=True)
     attributes_non_hot = {}
 

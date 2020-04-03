@@ -12,10 +12,6 @@ from sklearn.neural_network import MLPClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
 
-from _data_main.process_random_data import *
-from _data_main.process_mortgage_data import *
-from _data_main.process_german_data import *
-
 import argparse
 
 # TODO: change to be like _data_main below, and make python module
@@ -79,7 +75,7 @@ def trainAndSaveModels(experiment_folder_name, model_class, dataset_string, X_tr
     # OVERRIDE MODEL_TRAINED; to be used for test purposes against pytorch on
     # {mortgage, random, german, credit} x {lr, mlp}
     if model_class in {'lr', 'mlp'}:
-        if dataset_string in {'mortgage', 'random', 'german'}: # NOT credit as I don't want to ruin master
+        if dataset_string in {'mortgage', 'random', 'twomoon', 'german'}: # NOT credit as I don't want to ruin master
             model_trained = loadModel.loadModelForDataset(model_class, dataset_string)
 
     print('\tTraining accuracy: %{:.2f}'.format(accuracy_score(y_train, model_trained.predict(X_train)) * 100), file=log_file)
