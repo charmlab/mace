@@ -5,6 +5,8 @@ from tqdm import tqdm
 from pprint import pprint
 from shutil import copyfile
 
+from debug import ipsh
+
 # DATASET_VALUES = ['adult', 'credit', 'compass']
 # MODEL_CLASS_VALUES = ['tree', 'forest', 'lr'] # MLP
 # # MODEL_CLASS_VALUES = ['mlp']
@@ -33,10 +35,11 @@ from shutil import copyfile
 # NORM_VALUES = ['one_norm']
 # APPROACHES_VALUES = ['MACE_eps_1e-3']
 
-DATASET_VALUES = ['random', 'mortgage']
+DATASET_VALUES = ['random', 'mortgage', 'twomoon', 'credit']
 MODEL_CLASS_VALUES = ['lr', 'mlp']
-NORM_VALUES = ['one_norm']
-APPROACHES_VALUES = ['MINT_eps_1e-3']
+NORM_VALUES = ['two_norm']
+# APPROACHES_VALUES = ['MINT_eps_1e-3']
+APPROACHES_VALUES = ['MACE_eps_1e-3']
 
 
 experiments_folder_path = '/Volumes/amir/dev/mace/_experiments/'
