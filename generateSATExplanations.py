@@ -557,26 +557,29 @@ def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, f
 
   print('Solving (not searching) for closest counterfactual using various distance thresholds...', file = log_file)
 
-  while iters < max_iters and norm_upper_bound - norm_lower_bound >= epsilon:
-
-    print(f'\tIteration #{iters:03d}: testing norm threshold {curr_norm_threshold:.6f} in range [{norm_lower_bound:.6f}, {norm_upper_bound:.6f}]...\t', end = '', file = log_file)
-    iters = iters + 1
-
-    formula = And( # works for both initial iteration and all subsequent iterations
+  solver_name = "z3"
+  with Solver(name=solver_name) as solver:
+    formula = And(  # works for both initial iteration and all subsequent iterations
       model_formula,
       counterfactual_formula,
       plausibility_formula,
-      distance_formula,
       diversity_formula,
     )
+    formula = formula.simplify()
+    solver.add_assertion(formula)
 
-    solver_name = "z3"
-    with Solver(name=solver_name) as solver:
-      solver.add_assertion(formula)
+    while iters < max_iters and norm_upper_bound - norm_lower_bound >= epsilon:
 
+      print(f'\tIteration #{iters:03d}: testing norm threshold {curr_norm_threshold:.6f} in range [{norm_lower_bound:.6f}, {norm_upper_bound:.6f}]...\t', end = '', file = log_file)
+      iters = iters + 1
+
+      solver.push()
+      distance_formula = distance_formula.simplify()
+      solver.add_assertion(distance_formula)
       iteration_start_time = time.time()
       solved = solver.solve()
       iteration_end_time = time.time()
+      solver.pop()
 
       if solved: # joint formula is satisfiable
         model = solver.get_model()
@@ -649,8 +652,9 @@ def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, f
         distance_formula = getDistanceFormula(model_symbols, dataset_obj, factual_pysmt_sample, norm_type, approach_string, curr_norm_threshold)
 
       else: # no solution found in the assigned norm range --> update range and try again
+        # TODO: find a way to implement assertion boost for the negated case
         with Solver(name=solver_name) as neg_solver:
-          neg_formula = Not(formula)
+          neg_formula = Not(And(formula, distance_formula))
           neg_solver.add_assertion(neg_formula)
           neg_solved = neg_solver.solve()
           if neg_solved:
