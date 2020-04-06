@@ -7,7 +7,6 @@ import pandas as pd
 
 from pprint import pprint
 from datetime import datetime
-from sklearn.model_selection import train_test_split
 
 import loadData
 import modelTraining
@@ -169,20 +168,9 @@ def runExperiments(dataset_values, model_class_values, norm_values, approaches_v
           # save some files
           dataset_obj = loadData.loadDataset(dataset_string, return_one_hot = one_hot, load_from_cache = False, debug_flag = False)
           pickle.dump(dataset_obj, open(f'{experiment_folder_name}/_dataset_obj', 'wb'))
-
-          # construct a balanced dataframe w/ equal number of {0,1} labels;
-          #     training portion used to train model
+          #     training portion used to train models
           #     testing portion used to compute counterfactuals
-          balanced_data_frame, input_cols, output_col = loadData.getBalancedDataFrame(dataset_obj)
-
-          # get train / test splits
-          all_data = balanced_data_frame.loc[:,input_cols]
-          all_true_labels = balanced_data_frame.loc[:,output_col]
-          X_train, X_test, y_train, y_test = train_test_split(
-            all_data,
-            all_true_labels,
-            train_size=.7,
-            random_state = RANDOM_SEED)
+          X_train, X_test, y_train, y_test = loadData.getTrainTestData(dataset_obj, RANDOM_SEED, standardize_data = False)
 
           feature_names = dataset_obj.getInputAttributeNames('kurz') # easier to read (nothing to do with one-hot vs non-hit!)
           standard_deviations = list(X_train.std())

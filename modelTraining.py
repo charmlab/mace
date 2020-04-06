@@ -12,10 +12,6 @@ from sklearn.neural_network import MLPClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
 
-from _data_main.process_random_data import *
-from _data_main.process_mortgage_data import *
-from _data_main.process_german_data import *
-
 import argparse
 
 # TODO: change to be like _data_main below, and make python module
@@ -75,15 +71,16 @@ def trainAndSaveModels(experiment_folder_name, model_class, dataset_string, X_tr
 
     print('[INFO] Training `{}` on {:,} samples (%{:.2f} of {:,} samples)...'.format(model_class, X_train.shape[0], 100 * X_train.shape[0] / (X_train.shape[0] + X_test.shape[0]), X_train.shape[0] + X_test.shape[0]), file=log_file)
     model_trained = model_pretrain.fit(X_train, y_train)
-    print('\tTraining accuracy: %{:.2f}'.format(accuracy_score(y_train, model_trained.predict(X_train)) * 100), file=log_file)
-    print('\tTesting accuracy: %{:.2f}'.format(accuracy_score(y_test, model_trained.predict(X_test)) * 100), file=log_file)
-    print('[INFO] done.\n', file=log_file)
 
     # OVERRIDE MODEL_TRAINED; to be used for test purposes against pytorch on
     # {mortgage, random, german, credit} x {lr, mlp}
-    # if model_class in {'lr', 'mlp'}:
-    #     if dataset_string in {'mortgage', 'random', 'german'}:
-    #         model_trained = loadModel.loadModelForDataset(model_class, dataset_string)
+    if model_class in {'lr', 'mlp'}:
+        if dataset_string in {'mortgage', 'random', 'twomoon', 'german'}: # NOT credit as I don't want to ruin master
+            model_trained = loadModel.loadModelForDataset(model_class, dataset_string)
+
+    print('\tTraining accuracy: %{:.2f}'.format(accuracy_score(y_train, model_trained.predict(X_train)) * 100), file=log_file)
+    print('\tTesting accuracy: %{:.2f}'.format(accuracy_score(y_test, model_trained.predict(X_test)) * 100), file=log_file)
+    print('[INFO] done.\n', file=log_file)
 
     if model_class == 'tree':
         tmp = 1

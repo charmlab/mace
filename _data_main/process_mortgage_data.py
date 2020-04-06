@@ -7,7 +7,6 @@ RANDOM_SEED = 54321
 seed(RANDOM_SEED) # set the random seed so that the random permutations can be reproduced again
 np.random.seed(RANDOM_SEED)
 
-
 salary_lambda = 10
 salary_multiplier = 10000
 balance_multiplier = 2500
@@ -36,7 +35,6 @@ def load_mortgage_data():
   y_test = y[n // 2 : , :]
 
   X_test[0,:] = np.array([[75000, 25000]])
-
 
   # return w, b, X_train, y_train, X_test, y_test
   data_frame_non_hot = pd.DataFrame(

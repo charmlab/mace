@@ -16,8 +16,8 @@ First,
 $ git clone https://github.com/amirhk/mace.git
 $ pip install virtualenv
 $ cd mace
-$ virtualenv -p python3 venv
-$ source venv/bin/activate
+$ virtualenv -p python3 _venv
+$ source _venv/bin/activate
 $ pip install -r pip_requirements.txt
 $ pysmt-install --z3 --confirm-agreement
 ```
@@ -37,7 +37,7 @@ For instance, you may run
 ```console
 $ python batchTest.py -d adult -m lr -n zero_norm -a AR -b 0 -s 1
 $ python batchTest.py -d credit -m mlp -n one_norm -a MACE_eps_1e-3 -b 0 -s 1
-$ python batchTest.py -d german -m tree -n one_norm -a MINT__eps_1e-3 -b 0 -s 1
+$ python batchTest.py -d german -m tree -n two_norm -a MINT__eps_1e-3 -b 0 -s 1
 $ python batchTest.py -d mortgage -m forest -n infty_norm -a MINT__eps_1e-3 -b 0 -s 1
 ```
 

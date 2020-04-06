@@ -6,6 +6,7 @@ import numpy as np
 import pandas as pd
 from tqdm import tqdm
 from pprint import pprint
+from sklearn.model_selection import train_test_split
 
 from debug import ipsh
 
@@ -40,6 +41,11 @@ try:
   from _data_main.process_mortgage_data import *
 except:
   print('[ENV WARNING] process_mortgage_data not available')
+
+try:
+  from _data_main.process_twomoon_data import *
+except:
+  print('[ENV WARNING] process_twomoon_data not available')
 
 VALID_ATTRIBUTE_TYPES = { \
   'numeric-int', \
@@ -463,7 +469,7 @@ def loadDataset(dataset_name, return_one_hot, load_from_cache = False, debug_fla
     # TODO: perhaps move this logic to later in the code, after the definition
     #       of dataset variables. Then look through all defined variables for
     #       categorical or ordinal variables.
-    if dataset_name == 'random' or dataset_name == 'mortgage' or dataset_name == 'german':
+    if dataset_name in {'random', 'mortgage', 'twomoon', 'german'}:
       return_one_hot = 0
 
   one_hot_string = 'one_hot' if return_one_hot else 'non_hot'
@@ -869,6 +875,50 @@ def loadDataset(dataset_name, return_one_hot, load_from_cache = False, debug_fla
         lower_bound = data_frame_non_hot[col_name].min(),
         upper_bound = data_frame_non_hot[col_name].max())
 
+  elif dataset_name == 'twomoon':
+
+    data_frame_non_hot = load_twomoon_data()
+    data_frame_non_hot = data_frame_non_hot.reset_index(drop=True)
+    attributes_non_hot = {}
+
+    input_cols, output_col = getInputOutputColumns(data_frame_non_hot)
+
+    col_name = output_col
+    attributes_non_hot[col_name] = DatasetAttribute(
+      attr_name_long = col_name,
+      attr_name_kurz = 'y',
+      attr_type = 'binary',
+      is_input = False,
+      actionability = 'none',
+      mutability = False,
+      parent_name_long = -1,
+      parent_name_kurz = -1,
+      lower_bound = data_frame_non_hot[col_name].min(),
+      upper_bound = data_frame_non_hot[col_name].max())
+
+    for col_idx, col_name in enumerate(input_cols):
+
+      if col_name == 'x0':
+        attr_type = 'numeric-real'
+        actionability = 'any'
+        mutability = True
+      elif col_name == 'x1':
+        attr_type = 'numeric-real'
+        actionability = 'any'
+        mutability = True
+
+      attributes_non_hot[col_name] = DatasetAttribute(
+        attr_name_long = col_name,
+        attr_name_kurz = f'x{col_idx}',
+        attr_type = attr_type,
+        is_input = True,
+        actionability = actionability,
+        mutability = mutability,
+        parent_name_long = -1,
+        parent_name_kurz = -1,
+        lower_bound = data_frame_non_hot[col_name].min(),
+        upper_bound = data_frame_non_hot[col_name].max())
+
   else:
 
     raise Exception(f'{dataset_name} not recognized as a valid dataset.')
@@ -975,7 +1025,21 @@ def getOneHotEquivalent(data_frame_non_hot, attributes_non_hot):
   return data_frame, attributes
 
 
-def getBalancedDataFrame(dataset_obj):
+# TODO: This should be used with caution... it messes things up in MACE as ranges
+# will differ between factual and counterfactual domains
+def normalizeData(X_train, X_test):
+    x_mean = X_train.mean()
+    x_std = X_train.std()
+    for index in x_std.index:
+        if '_ord_' in index or '_cat_' in index:
+            x_mean[index] = 0
+            x_std[index] = 1
+    X_train = (X_train - x_mean) / x_std
+    X_test = (X_test - x_mean) / x_std
+    return X_train, X_test
+
+
+def getBalancedDataFrame(dataset_obj, RANDOM_SEED):
   balanced_data_frame = copy.deepcopy(dataset_obj.data_frame_kurz)
 
   # get input and output columns
@@ -1000,6 +1064,19 @@ def getBalancedDataFrame(dataset_obj):
 
   return balanced_data_frame, input_cols, output_col
 
+
+def getTrainTestData(dataset_obj, RANDOM_SEED, standardize_data = False):
+  balanced_data_frame, input_cols, output_col = getBalancedDataFrame(dataset_obj, RANDOM_SEED)
+  all_data = balanced_data_frame.loc[:,input_cols]
+  all_true_labels = balanced_data_frame.loc[:,output_col]
+  X_train, X_test, y_train, y_test = train_test_split(
+    all_data,
+    all_true_labels,
+    train_size=.7,
+    random_state = RANDOM_SEED)
+  if standardize_data == True:
+    X_train, X_test = normalizeData(X_train, X_test)
+  return X_train, X_test, y_train, y_test
 
 
 
