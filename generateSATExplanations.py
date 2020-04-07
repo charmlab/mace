@@ -568,18 +568,53 @@ def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, f
     formula = formula.simplify()
     solver.add_assertion(formula)
 
-    while iters < max_iters and norm_upper_bound - norm_lower_bound >= epsilon:
+    ###### Reverse BS Begin #########
+    reverse_norm_threshold = epsilon
+    solved = False
+    iteration_start_time, iteration_end_time = 0, 0
 
-      print(f'\tIteration #{iters:03d}: testing norm threshold {curr_norm_threshold:.6f} in range [{norm_lower_bound:.6f}, {norm_upper_bound:.6f}]...\t', end = '', file = log_file)
-      iters = iters + 1
+    while (not solved):
+      distance_formula = getDistanceFormula(model_symbols, dataset_obj, factual_pysmt_sample, norm_type,
+                                            approach_string, reverse_norm_threshold)
+      distance_formula = distance_formula.simplify()
 
       solver.push()
-      distance_formula = distance_formula.simplify()
       solver.add_assertion(distance_formula)
       iteration_start_time = time.time()
       solved = solver.solve()
       iteration_end_time = time.time()
 
+      if not solved:
+        reverse_norm_threshold *= 2.0
+        solver.pop()
+
+    norm_upper_bound = reverse_norm_threshold
+    if reverse_norm_threshold == epsilon:
+      norm_lower_bound = 0.
+    else:
+      norm_lower_bound = reverse_norm_threshold/2.0
+
+    curr_norm_threshold = (norm_lower_bound + norm_upper_bound)/2.0
+    distance_formula = getDistanceFormula(model_symbols, dataset_obj, factual_pysmt_sample, norm_type, approach_string,
+                                          curr_norm_threshold)
+    first_iter = True
+    ###### Reverse BS End #########
+
+    while iters < max_iters and norm_upper_bound - norm_lower_bound >= epsilon:
+
+      print(f'\tIteration #{iters:03d}: testing norm threshold {curr_norm_threshold:.6f} in range [{norm_lower_bound:.6f}, {norm_upper_bound:.6f}]...\t', end = '', file = log_file)
+      iters = iters + 1
+
+      if not first_iter: # I want it to save the last CFE in previous loop first
+                         # Upper-bound becomes equal to the CFE distance so BS doesn't corrupt
+        solver.push()
+        distance_formula = distance_formula.simplify()
+        solver.add_assertion(distance_formula)
+        iteration_start_time = time.time()
+        solved = solver.solve()
+        iteration_end_time = time.time()
+
+      first_iter = False
 
       if solved: # joint formula is satisfiable
         model = solver.get_model()
@@ -667,7 +702,6 @@ def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, f
             print('no solution found (SMT issue).', file = log_file)
             quit()
             break
-
       solver.pop()
 
   # IMPORTANT: there may be many more at this same distance! OR NONE! (what?? 2020.02.19)
@@ -851,4 +885,3 @@ def genExp(
       'action_set': action_set,
       # 'all_counterfactuals': all_counterfactuals
     }
-
