@@ -2,7 +2,7 @@
 
 # This is a pre-push script to hook errors by running all combinations of flags on MACE
 
-executable=./venv/bin/python
+executable=./_venv/bin/python
 
 red=`tput setaf 1`
 green=`tput setaf 2`
