@@ -35,11 +35,18 @@ from debug import ipsh
 # NORM_VALUES = ['one_norm']
 # APPROACHES_VALUES = ['MACE_eps_1e-3']
 
-DATASET_VALUES = ['random', 'mortgage', 'twomoon', 'credit']
+# DATASET_VALUES = ['random', 'mortgage', 'twomoon', 'credit']
+# MODEL_CLASS_VALUES = ['lr', 'mlp']
+# NORM_VALUES = ['two_norm']
+# # APPROACHES_VALUES = ['MINT_eps_1e-3']
+# APPROACHES_VALUES = ['MACE_eps_1e-3']
+
+DATASET_VALUES = ['random', 'mortgage'] #, 'twomoon', 'credit']
 MODEL_CLASS_VALUES = ['lr', 'mlp']
 NORM_VALUES = ['two_norm']
-# APPROACHES_VALUES = ['MINT_eps_1e-3']
-APPROACHES_VALUES = ['MACE_eps_1e-3']
+# APPROACHES_VALUES = ['MACE_eps_1e-3']
+APPROACHES_VALUES = ['MACE_eps_1e-3', 'MINT_eps_1e-3']
+
 
 
 experiments_folder_path = '/Volumes/amir/dev/mace/_experiments/'
