@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 
+import utils
 import loadData
 
 from sklearn.neural_network import MLPClassifier
@@ -19,7 +20,7 @@ def convertSklearnDtypeToPytorch(input_obj):
   # isinstance(input_obj, (np.ndarray)) # TODO complete
   return np.around(input_obj, 4).astype('float32')
 
-
+@utils.Memoize
 def loadModelForDataset(model_class, dataset_string):
 
   if not (model_class in {'lr', 'mlp'}):

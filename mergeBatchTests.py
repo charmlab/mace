@@ -45,7 +45,7 @@ DATASET_VALUES = ['random', 'mortgage'] #, 'twomoon', 'credit']
 MODEL_CLASS_VALUES = ['lr', 'mlp']
 NORM_VALUES = ['two_norm']
 # APPROACHES_VALUES = ['MACE_eps_1e-3']
-APPROACHES_VALUES = ['MACE_eps_1e-3', 'MINT_eps_1e-3']
+APPROACHES_VALUES = ['MACE_eps_1e-5', 'MINT_eps_1e-5']
 
 
 
