@@ -41,7 +41,7 @@ from debug import ipsh
 # # APPROACHES_VALUES = ['MINT_eps_1e-3']
 # APPROACHES_VALUES = ['MACE_eps_1e-3']
 
-DATASET_VALUES = ['random', 'twomoon'] #, 'twomoon', 'credit']
+DATASET_VALUES = ['twomoon'] #, 'twomoon', 'credit']
 MODEL_CLASS_VALUES = ['lr', 'mlp']
 NORM_VALUES = ['two_norm']
 # APPROACHES_VALUES = ['MACE_eps_1e-3']
@@ -92,7 +92,8 @@ for dataset_string in DATASET_VALUES:
         random_batch_folder = sorted_all_batch_folders[0]
         new_folder_name = random_batch_folder.split('/')[-1]
         new_folder_name = '__'.join(new_folder_name.split('__')[:-2])
-        new_folder_path = os.path.join(experiments_folder_path, '__merged_MACE_eps_1e-5', new_folder_name)
+        # new_folder_path = os.path.join(experiments_folder_path, '__merged_MACE_eps_1e-5', new_folder_name)
+        new_folder_path = os.path.join(experiments_folder_path, '__merged', new_folder_name)
 
         print(f'Creating new merged folder {new_folder_path}')
         os.makedirs(new_folder_path, exist_ok = False)
