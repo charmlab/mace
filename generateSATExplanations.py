@@ -289,6 +289,9 @@ def getCausalConsistencyConstraints(model_symbols, dataset_obj, factual_sample):
     return getRandomCausalConsistencyConstraints(model_symbols, factual_sample)
   elif dataset_obj.dataset_name == 'mortgage':
     return getMortgageCausalConsistencyConstraints(model_symbols, factual_sample)
+  elif dataset_obj.dataset_name == 'twomoon':
+    return getTwoMoonCausalConsistencyConstraints(model_symbols, factual_sample)
+
 
 
 def getPlausibilityFormula(model_symbols, dataset_obj, factual_sample, approach_string):
