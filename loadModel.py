@@ -29,7 +29,7 @@ def loadModelForDataset(model_class, dataset_string):
   if not (dataset_string in {'random', 'mortgage', 'twomoon', 'german', 'credit'}):
     raise Exception(f'{dataset_string} not supported.')
 
-  dataset_obj = loadData.loadDataset(dataset_string, return_one_hot = False, load_from_cache = True, debug_flag = False)
+  dataset_obj = loadData.loadDataset(dataset_string, return_one_hot = True, load_from_cache = True, debug_flag = False)
   X_train, X_test, y_train, y_test = loadData.getTrainTestData(dataset_obj, RANDOM_SEED, standardize_data = False)
 
   if model_class == 'lr':

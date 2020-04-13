@@ -96,15 +96,29 @@ class Dataset(object):
       np.array(self.getInputOutputAttributeNames('long'))
     )) == 0
 
-    # assert attributes and is_one_hot agree on one-hot-ness (i.e., if is_one_hot,
-    # then at least one attribute should be encoded as one-hot (w/ parent reference))
-    tmp_is_one_hot = False
-    for attr_name in attributes.keys():
-      attr_obj = attributes[attr_name]
-      # this simply checks to make sure that at least one elem is one-hot encoded
-      if attr_obj.parent_name_long != -1 or attr_obj.parent_name_kurz != -1:
-        tmp_is_one_hot = True
-    assert is_one_hot == tmp_is_one_hot, "Dataset object and actual attributes don't agree on one-hot"
+    # assert attribute type matches what is in the data frame
+    for attr_name in np.setdiff1d(
+      self.getInputAttributeNames('long'),
+      self.getRealBasedAttributeNames('long'),
+    ):
+      unique_values = np.unique(data_frame_long[attr_name].to_numpy())
+      # all non-numerical-real values should be integer or {0,1}
+      for value in unique_values:
+        assert value == np.floor(value)
+      if is_one_hot and attributes_long[attr_name].attr_type != 'numeric-int': # binary, sub-categorical, sub-ordinal
+        for value in unique_values:
+          assert value in {0, 1} # NOT BOTH... b/c the first sub-ordinal attribute is always 1
+
+    # # assert attributes and is_one_hot agree on one-hot-ness (i.e., if is_one_hot,
+    # # then at least one attribute should be encoded as one-hot (w/ parent reference))
+    # tmp_is_one_hot = False
+    # for attr_name in attributes.keys():
+    #   attr_obj = attributes[attr_name]
+    #   # this simply checks to make sure that at least one elem is one-hot encoded
+    #   if attr_obj.parent_name_long != -1 or attr_obj.parent_name_kurz != -1:
+    #     tmp_is_one_hot = True
+    # # TODO: assert only if there is a cat/ord variable!
+    # assert is_one_hot == tmp_is_one_hot, "Dataset object and actual attributes don't agree on one-hot"
 
     self.assertSiblingsShareAttributes('long')
     self.assertSiblingsShareAttributes('kurz')
@@ -470,7 +484,7 @@ def loadDataset(dataset_name, return_one_hot, load_from_cache = False, debug_fla
     #       of dataset variables. Then look through all defined variables for
     #       categorical or ordinal variables.
     if dataset_name in {'random', 'mortgage', 'twomoon', 'german'}:
-      return_one_hot = 0
+      return_one_hot = 1
 
   one_hot_string = 'one_hot' if return_one_hot else 'non_hot'
   save_file_path = os.path.join(
