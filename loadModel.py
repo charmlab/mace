@@ -26,7 +26,7 @@ def loadModelForDataset(model_class, dataset_string):
   if not (model_class in {'lr', 'mlp'}):
     raise Exception(f'{model_class} not supported.')
 
-  if not (dataset_string in {'random', 'mortgage', 'twomoon', 'german', 'credit'}):
+  if not (dataset_string in {'random', 'mortgage', 'twomoon', 'german', 'credit', 'compass', 'adult'}):
     raise Exception(f'{dataset_string} not supported.')
 
   dataset_obj = loadData.loadDataset(dataset_string, return_one_hot = True, load_from_cache = True, debug_flag = False)
@@ -47,7 +47,7 @@ def loadModelForDataset(model_class, dataset_string):
       mortgage_cutoff = -225000
       w = np.array([[1], [5]]).T
       b = np.ones(1) * mortgage_cutoff
-    elif dataset_string in {'random', 'twomoon', 'german', 'credit'}:
+    elif dataset_string in {'random', 'twomoon', 'german', 'credit', 'compass', 'adult'}:
       w = model_trained.coef_
       b = model_trained.intercept_
 

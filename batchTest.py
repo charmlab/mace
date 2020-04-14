@@ -245,21 +245,21 @@ def runExperiments(dataset_values, model_class_values, norm_values, approaches_v
               standard_deviations, # used solely for feature_tweaking method
             )
 
-            if 'MACE' in approach_string:
-              print(
-                f'\t- cfe_found: {explanation_object["cfe_found"]} -'
-                f'\t- cfe_plaus: {explanation_object["cfe_plausible"]} -'
-                f'\t- cfe_time: {explanation_object["cfe_time"]:.4f} -'
-                f'\t- int_dist: N/A -'
-                f'\t- cfe_dist: {explanation_object["cfe_distance"]:.4f} -'
-              ) # , file=log_file)
-            elif 'MINT' in approach_string:
+            if 'MINT' in approach_string:
               print(
                 f'\t- scf_found: {explanation_object["scf_found"]} -'
                 f'\t- scf_plaus: {explanation_object["scf_plausible"]} -'
                 f'\t- scf_time: {explanation_object["scf_time"]:.4f} -'
-                f'\t- int_dist: {explanation_object["int_distance"]:.4f} -'
+                f'\t- int_cost: {explanation_object["int_cost"]:.4f} -'
                 f'\t- scf_dist: {explanation_object["scf_distance"]:.4f} -'
+              ) # , file=log_file)
+            else: # 'MACE' or other..
+              print(
+                f'\t- cfe_found: {explanation_object["cfe_found"]} -'
+                f'\t- cfe_plaus: {explanation_object["cfe_plausible"]} -'
+                f'\t- cfe_time: {explanation_object["cfe_time"]:.4f} -'
+                f'\t- int_cost: N/A -'
+                f'\t- cfe_dist: {explanation_object["cfe_distance"]:.4f} -'
               ) # , file=log_file)
 
             all_minimum_distances[f'sample_{factual_sample_index}'] = explanation_object

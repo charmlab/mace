@@ -293,7 +293,6 @@ def getCausalConsistencyConstraints(model_symbols, dataset_obj, factual_sample):
     return getTwoMoonCausalConsistencyConstraints(model_symbols, factual_sample)
 
 
-
 def getPlausibilityFormula(model_symbols, dataset_obj, factual_sample, approach_string):
   # here is where the user specifies the following:
   #  1. data range plausibility
@@ -450,7 +449,7 @@ def getPlausibilityFormula(model_symbols, dataset_obj, factual_sample, approach_
       #            (i.e., a variable that can change due to it's ancerstors) does
       #            not even exist. Thus, non-actionable variables are supported
       #            by restricing the counterfactual symbols.
-      # TODO: perhaps a better way to strcuture this code is to completely get
+      # TODO: perhaps a better way to structure this code is to completely get
       #       rid of interventional symbols when calling genSATExp.py with MACE.
       if 'mace' in approach_string:
         actionability_mutability_plausibility.append(EqualsOrIff(
@@ -843,9 +842,11 @@ def genExp(
       'scf_time': end_time - start_time,
       'scf_sample': closest_interventional_sample['counterfactual_sample'],
       'scf_distance': closest_interventional_sample['counterfactual_distance'],
-      'int_sample': closest_interventional_sample['interventional_sample'],
-      'int_distance': closest_interventional_sample['interventional_distance'],
-      'action_set': action_set,
+      # 'int_sample': closest_interventional_sample['interventional_sample'],
+      # 'int_distance': closest_interventional_sample['interventional_distance'],
+      # 'action_set': action_set,
+      'int_set': action_set,
+      'int_cost': closest_interventional_sample['interventional_distance'],
       # 'all_counterfactuals': all_counterfactuals
     }
 

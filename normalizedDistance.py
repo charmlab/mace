@@ -69,7 +69,7 @@ def getDistanceBetweenSamples(sample_1, sample_2, norm_type, dataset_obj):
   # 4. sum up over everything allowed...
   zero_norm_distance = 1 / len(normalized_absolute_distances) * np.count_nonzero(normalized_absolute_distances)
   one_norm_distance = 1 / len(normalized_absolute_distances) * sum(normalized_absolute_distances)
-  two_norm_distance = np.sqrt(1 / len(normalized_squared_distances) * sum(normalized_squared_distances))
+  two_norm_distance = np.sqrt(1 / len(normalized_squared_distances) * sum(normalized_squared_distances)) # note the sqrt(1/len) guarantees dist \in [0,1]
   infty_norm_distance = 1 / len(normalized_absolute_distances) * max(normalized_absolute_distances)
 
   if norm_type == 'zero_norm':

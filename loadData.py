@@ -381,6 +381,16 @@ class Dataset(object):
     b = self.getOneHotAttributesNames(long_or_kurz)
     return np.setdiff1d(a,b)
 
+  def getVariableBounds(self):
+    bounds = []
+    for attr_name_kurz in self.getInputAttributeNames('kurz'):
+      attr_obj = self.attributes_kurz[attr_name_kurz]
+      bounds.append(
+        self.attributes_kurz[attr_name_kurz].upper_bound -
+        self.attributes_kurz[attr_name_kurz].lower_bound
+      )
+    return np.array(bounds)
+
   def printDataset(self, long_or_kurz = 'kurz'):
     if long_or_kurz == 'long':
       for attr_name_long in self.attributes_long:
