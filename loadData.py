@@ -106,8 +106,14 @@ class Dataset(object):
       for value in unique_values:
         assert value == np.floor(value)
       if is_one_hot and attributes_long[attr_name].attr_type != 'numeric-int': # binary, sub-categorical, sub-ordinal
-        for value in unique_values:
-          assert value in {0, 1} # NOT BOTH... b/c the first sub-ordinal attribute is always 1
+        try:
+          assert \
+            np.array_equal(unique_values, [0,1]) or \
+            np.array_equal(unique_values, [1,2]) or \
+            np.array_equal(unique_values, [1]) # the first sub-ordinal attribute is always 1
+            # race (binary) in compass is encoded as {1,2}
+        except:
+          ipsh()
 
     # # assert attributes and is_one_hot agree on one-hot-ness (i.e., if is_one_hot,
     # # then at least one attribute should be encoded as one-hot (w/ parent reference))
