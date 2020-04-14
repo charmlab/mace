@@ -453,7 +453,7 @@ class DatasetAttribute(object):
     # We have introduced 3 types of variables: (actionable and mutable, non-actionable but mutable, immutable and non-actionable)
     if actionability != 'none':
       assert mutability == True
-
+    # TODO: above/below seem contradictory... (2020.04.14)
     if mutability == False:
       assert actionability == 'none'
 
@@ -481,16 +481,6 @@ def getInputOutputColumns(data_frame):
 
 
 def loadDataset(dataset_name, return_one_hot, load_from_cache = False, debug_flag = True):
-
-  # Somebody may pass in return_one_hot = 1 even though the dataset does not
-  # contain any categorical or ordinal variables. If this is the case, then set
-  # return_one_hot = 0.
-  if return_one_hot:
-    # TODO: perhaps move this logic to later in the code, after the definition
-    #       of dataset variables. Then look through all defined variables for
-    #       categorical or ordinal variables.
-    if dataset_name in {'random', 'mortgage', 'twomoon', 'german'}:
-      return_one_hot = 1
 
   one_hot_string = 'one_hot' if return_one_hot else 'non_hot'
   save_file_path = os.path.join(
@@ -897,7 +887,10 @@ def loadDataset(dataset_name, return_one_hot, load_from_cache = False, debug_fla
 
   elif dataset_name == 'twomoon':
 
-    data_frame_non_hot = load_twomoon_data()
+    variable_type = 'real'
+    # variable_type = 'integer'
+
+    data_frame_non_hot = load_twomoon_data(variable_type)
     data_frame_non_hot = data_frame_non_hot.reset_index(drop=True)
     attributes_non_hot = {}
 
@@ -919,11 +912,11 @@ def loadDataset(dataset_name, return_one_hot, load_from_cache = False, debug_fla
     for col_idx, col_name in enumerate(input_cols):
 
       if col_name == 'x0':
-        attr_type = 'numeric-real'
+        attr_type = 'numeric-real' if variable_type == 'real' else 'numeric-int'
         actionability = 'any'
         mutability = True
       elif col_name == 'x1':
-        attr_type = 'numeric-real'
+        attr_type = 'numeric-real' if variable_type == 'real' else 'numeric-int'
         actionability = 'any'
         mutability = True
 
@@ -1047,7 +1040,7 @@ def getOneHotEquivalent(data_frame_non_hot, attributes_non_hot):
 
 # TODO: This should be used with caution... it messes things up in MACE as ranges
 # will differ between factual and counterfactual domains
-def normalizeData(X_train, X_test):
+def standardizeData(X_train, X_test):
     x_mean = X_train.mean()
     x_std = X_train.std()
     for index in x_std.index:
@@ -1095,7 +1088,7 @@ def getTrainTestData(dataset_obj, RANDOM_SEED, standardize_data = False):
     train_size=.7,
     random_state = RANDOM_SEED)
   if standardize_data == True:
-    X_train, X_test = normalizeData(X_train, X_test)
+    X_train, X_test = standardizeData(X_train, X_test)
   return X_train, X_test, y_train, y_test
 
 

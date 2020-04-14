@@ -12,10 +12,12 @@ np.random.seed(RANDOM_SEED)
 
 n_samples = 2000
 
-def load_twomoon_data():
+def load_twomoon_data(variable_type = 'real'):
 
   # https://rohitmidha23.github.io/Neural-Network-Decision-Boundary/
   X, y = datasets.make_moons(n_samples=n_samples, noise=0.1, random_state=0)
+  if variable_type == 'integer':
+    X = np.round(4 * X)
   y = y.reshape(-1,1)
   # X = processDataAccordingToGraph(X) # TODO...
 
