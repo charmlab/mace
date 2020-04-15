@@ -1088,6 +1088,9 @@ def getBalancedDataFrame(dataset_obj, RANDOM_SEED):
   return balanced_data_frame, input_cols, output_col
 
 
+# (2020.04.15) perhaps we need a memoize here... but I tried calling this function
+# multiple times in a row from another file and it always returned the same slice
+# of data...
 def getTrainTestData(dataset_obj, RANDOM_SEED, standardize_data = False):
   balanced_data_frame, input_cols, output_col = getBalancedDataFrame(dataset_obj, RANDOM_SEED)
   all_data = balanced_data_frame.loc[:,input_cols]

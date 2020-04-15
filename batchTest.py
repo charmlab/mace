@@ -9,7 +9,7 @@ from pprint import pprint
 from datetime import datetime
 
 import loadData
-import modelTraining
+import loadModel
 
 from debug import ipsh
 
@@ -172,20 +172,18 @@ def runExperiments(dataset_values, model_class_values, norm_values, approaches_v
           #     testing portion used to compute counterfactuals
           X_train, X_test, y_train, y_test = loadData.getTrainTestData(dataset_obj, RANDOM_SEED, standardize_data = False)
 
-          feature_names = dataset_obj.getInputAttributeNames('kurz') # easier to read (nothing to do with one-hot vs non-hit!)
           standard_deviations = list(X_train.std())
 
           # train the model
-          model_trained = modelTraining.trainAndSaveModels(
-            experiment_folder_name,
+          # model_trained = modelTraining.trainAndSaveModels(
+          #   model_class_string,
+          #   dataset_string,
+          #   experiment_folder_name,
+          # )
+          model_trained = loadModel.loadModelForDataset(
             model_class_string,
             dataset_string,
-            X_train,
-            X_test,
-            y_train,
-            y_test,
-            feature_names
-          )
+            experiment_folder_name)
 
           # get the predicted labels (only test set)
           # X_test = pd.concat([X_train, X_test]) # ONLY ACTIVATE THIS WHEN TEST SET IS NOT LARGE ENOUGH TO GEN' MODEL RECON DATASET
