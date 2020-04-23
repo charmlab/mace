@@ -5,6 +5,7 @@ import pickle
 import numpy as np
 import pandas as pd
 import normalizedDistance
+import torch
 
 from modelConversion import *
 from pysmt.shortcuts import *
@@ -17,6 +18,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.neural_network import MLPClassifier
 
 from loadCausalConstraints import *
+from network_linear_approximation import LinearizedNetwork
 
 from debug import ipsh
 
@@ -505,6 +507,65 @@ def getDiversityFormulaUpdate(model):
   )
 
 
+# TODO: Gurobi can also make use of past computations
+def getDeactiveReLUs(sklearn_model, dataset_obj, factual_sample, norm_type, norm_threshold):
+
+  # First, translate sklearn model to PyTorch model
+  input_attr_names_kurz = dataset_obj.getInputAttributeNames('kurz')
+  input_dim = len(input_attr_names_kurz)
+  model_width = 10  # TODO make more dynamic later and move to separate function
+  assert sklearn_model.hidden_layer_sizes == (model_width, model_width)
+  torch_model = torch.nn.Sequential(
+    torch.nn.Linear(input_dim, model_width),
+    torch.nn.ReLU(),
+    torch.nn.Linear(model_width, model_width),
+    torch.nn.ReLU(),
+    torch.nn.Linear(model_width, 1))
+
+  torch_model[0].weight = torch.nn.Parameter(torch.FloatTensor(sklearn_model.coefs_[0].astype('float32')).t(), requires_grad=False)
+  torch_model[2].weight = torch.nn.Parameter(torch.FloatTensor(sklearn_model.coefs_[1].astype('float32')).t(), requires_grad=False)
+  torch_model[4].weight = torch.nn.Parameter(torch.FloatTensor(sklearn_model.coefs_[2].astype('float32')).t(), requires_grad=False)
+  torch_model[0].bias = torch.nn.Parameter(torch.FloatTensor(sklearn_model.intercepts_[0].astype('float32')), requires_grad=False)
+  torch_model[2].bias = torch.nn.Parameter(torch.FloatTensor(sklearn_model.intercepts_[1].astype('float32')), requires_grad=False)
+  torch_model[4].bias = torch.nn.Parameter(torch.FloatTensor(sklearn_model.intercepts_[2].astype('float32')), requires_grad=False)
+
+  # Now create a linearized network
+  layers = [module for module in torch_model.modules() if type(module) != torch.nn.Sequential]
+  lin_net = LinearizedNetwork(layers)
+
+  # Get input domains
+  domains = np.zeros((input_dim, 2), dtype=np.float32)
+  for i, attr_name_kurz in enumerate(input_attr_names_kurz):
+    attr_obj = dataset_obj.attributes_kurz[attr_name_kurz]
+    domains[i][0] = attr_obj.lower_bound
+    domains[i][1] = attr_obj.upper_bound -1.
+
+  # Get lower and upper bounds on all neuron values
+  #TODO check factualsample.values() order
+  lin_net.define_linear_approximation(torch.from_numpy(domains), list(factual_sample.values()), norm_type, norm_threshold)
+
+  cnt = 0
+  # print("lower bounds:--------------")
+  for i, layer_bounds in enumerate(lin_net.lower_bounds):
+    # print(layer_bounds)
+    if i==2 or i==4:
+      for bnd in layer_bounds:
+        if bnd > 0:
+          cnt += 1
+
+  # print("upper bounds:--------------")
+  for i, layer_bounds in enumerate(lin_net.upper_bounds):
+    # print(layer_bounds)
+    if i==2 or i==4:
+      for bnd in layer_bounds:
+        if bnd == 0:
+          cnt += 1
+
+  # print("num of ReLUs with fixed state: ", cnt)
+
+  return cnt
+
+
 def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, factual_sample, norm_type, approach_string, epsilon, log_file):
 
   def getCenterNormThresholdInRange(lower_bound, upper_bound):
@@ -557,6 +618,9 @@ def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, f
 
   print('Solving (not searching) for closest counterfactual using various distance thresholds...', file = log_file)
 
+  tot_iters = 0
+  tot_deactive_relu = 0
+
   solver_name = "z3"
   with Solver(name=solver_name) as solver:
     formula = And(  # works for both initial iteration and all subsequent iterations
@@ -574,6 +638,10 @@ def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, f
     iteration_start_time, iteration_end_time = 0, 0
 
     while (not solved):
+
+      tot_deactive_relu += getDeactiveReLUs(model_trained, dataset_obj, factual_sample, norm_type, reverse_norm_threshold)
+      tot_iters += 1
+
       distance_formula = getDistanceFormula(model_symbols, dataset_obj, factual_pysmt_sample, norm_type,
                                             approach_string, reverse_norm_threshold)
       distance_formula = distance_formula.simplify()
@@ -613,6 +681,9 @@ def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, f
         iteration_start_time = time.time()
         solved = solver.solve()
         iteration_end_time = time.time()
+
+        tot_deactive_relu += getDeactiveReLUs(model_trained, dataset_obj, factual_sample, norm_type, curr_norm_threshold)
+        tot_iters += 1
 
       first_iter = False
 
@@ -704,6 +775,7 @@ def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, f
             break
       solver.pop()
 
+  print("\nmean number of deactive relus per iter: ", tot_deactive_relu/tot_iters)
   # IMPORTANT: there may be many more at this same distance! OR NONE! (what?? 2020.02.19)
   closest_counterfactual_sample = sorted(counterfactuals, key = lambda x: x['counterfactual_distance'])[0]
   closest_interventional_sample = sorted(counterfactuals, key = lambda x: x['interventional_distance'])[0]
