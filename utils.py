@@ -4,8 +4,10 @@ import inspect
 class Memoize:
 
   def __init__(self, fn):
+
     self.fn = fn
     self.memo = {}
+
   def __call__(self, *args, **kwargs):
 
     # to support default args: https://docs.python.org/3.3/library/inspect.html

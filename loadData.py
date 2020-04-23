@@ -8,6 +8,7 @@ from tqdm import tqdm
 from pprint import pprint
 from sklearn.model_selection import train_test_split
 
+import utils
 from debug import ipsh
 
 sys.path.insert(0, '_data_main')
@@ -66,6 +67,11 @@ VALID_MUTABILITY_TYPES = { \
   True,
   False,
 }
+
+from random import seed
+RANDOM_SEED = 54321
+seed(RANDOM_SEED) # set the random seed so that the random permutations can be reproduced again
+np.random.seed(RANDOM_SEED)
 
 
 class Dataset(object):
@@ -401,6 +407,68 @@ class Dataset(object):
     else:
       raise Exception(f'{long_or_kurz} not recognized as a valid `long_or_kurz`.')
 
+  def getBalancedDataFrame(self):
+    balanced_data_frame = copy.deepcopy(self.data_frame_kurz)
+
+    # get input and output columns
+    all_data_frame_cols = balanced_data_frame.columns.values
+
+    input_cols = [x for x in all_data_frame_cols if 'y' not in x.lower()]
+    output_col = [x for x in all_data_frame_cols if 'y' in x.lower()][0]
+
+    # assert only two classes in label (maybe relax later??)
+    assert np.array_equal(
+      np.unique(balanced_data_frame[output_col]),
+      np.array([0, 1]) # only allowing {0, 1} labels
+    )
+
+    # get balanced dataframe (take minimum of the count, then round down to nearest 250)
+    unique_values_and_count = balanced_data_frame[output_col].value_counts()
+    number_of_subsamples_in_each_class = unique_values_and_count.min() // 250 * 250
+    balanced_data_frame = pd.concat([
+        balanced_data_frame[balanced_data_frame.loc[:,output_col] == 0].sample(number_of_subsamples_in_each_class, random_state = RANDOM_SEED),
+        balanced_data_frame[balanced_data_frame.loc[:,output_col] == 1].sample(number_of_subsamples_in_each_class, random_state = RANDOM_SEED),
+    ]).sample(frac = 1, random_state = RANDOM_SEED)
+
+    return balanced_data_frame, input_cols, output_col
+
+
+  # (2020.04.15) perhaps we need a memoize here... but I tried calling this function
+  # multiple times in a row from another file and it always returned the same slice
+  # of data... weird.
+  def getTrainTestSplit(self, preprocessing = None):
+
+    # TODO: This should be used with caution... it messes things up in MACE as ranges
+    # will differ between factual and counterfactual domains
+    def standardizeData(X_train, X_test):
+        x_mean = X_train.mean()
+        x_std = X_train.std()
+        for index in x_std.index:
+            if '_ord_' in index or '_cat_' in index:
+                x_mean[index] = 0
+                x_std[index] = 1
+        X_train = (X_train - x_mean) / x_std
+        X_test = (X_test - x_mean) / x_std
+        return X_train, X_test
+
+    balanced_data_frame, input_cols, output_col = self.getBalancedDataFrame()
+    all_data = balanced_data_frame.loc[:,input_cols]
+    all_true_labels = balanced_data_frame.loc[:,output_col]
+
+    X_train, X_test, y_train, y_test = train_test_split(
+      all_data,
+      all_true_labels,
+      train_size=.7,
+      random_state = RANDOM_SEED)
+
+    if preprocessing == 'standardize':
+      X_train, X_test = standardizeData(X_train, X_test)
+    elif preprocessing == 'normalize':
+      # X_train, X_test = normalizeData(X_train, X_test)
+      pass
+
+    return X_train, X_test, y_train, y_test
+
 
 class DatasetAttribute(object):
 
@@ -482,17 +550,17 @@ class DatasetAttribute(object):
     self.upper_bound = upper_bound
 
 
-def getInputOutputColumns(data_frame):
-  all_data_frame_cols = data_frame.columns.values
-  input_cols = [x for x in all_data_frame_cols if 'label' not in x.lower()]
-  output_cols = [x for x in all_data_frame_cols if 'label' in x.lower()]
-  assert len(output_cols) == 1
-  return input_cols, output_cols[0]
-
-
 def loadDataset(dataset_name, return_one_hot, load_from_cache = False, debug_flag = True):
 
+  def getInputOutputColumns(data_frame):
+    all_data_frame_cols = data_frame.columns.values
+    input_cols = [x for x in all_data_frame_cols if 'label' not in x.lower()]
+    output_cols = [x for x in all_data_frame_cols if 'label' in x.lower()]
+    assert len(output_cols) == 1
+    return input_cols, output_cols[0]
+
   one_hot_string = 'one_hot' if return_one_hot else 'non_hot'
+
   save_file_path = os.path.join(
     os.path.dirname(__file__),
     f'_data_main/_cached/{dataset_name}_{one_hot_string}'
@@ -1046,67 +1114,6 @@ def getOneHotEquivalent(data_frame_non_hot, attributes_non_hot):
         upper_bound = data_frame[new_col_name_long].max())
 
   return data_frame, attributes
-
-
-# TODO: This should be used with caution... it messes things up in MACE as ranges
-# will differ between factual and counterfactual domains
-def standardizeData(X_train, X_test):
-    x_mean = X_train.mean()
-    x_std = X_train.std()
-    for index in x_std.index:
-        if '_ord_' in index or '_cat_' in index:
-            x_mean[index] = 0
-            x_std[index] = 1
-    X_train = (X_train - x_mean) / x_std
-    X_test = (X_test - x_mean) / x_std
-    return X_train, X_test
-
-
-def getBalancedDataFrame(dataset_obj, RANDOM_SEED):
-  balanced_data_frame = copy.deepcopy(dataset_obj.data_frame_kurz)
-
-  # get input and output columns
-  all_data_frame_cols = balanced_data_frame.columns.values
-
-  input_cols = [x for x in all_data_frame_cols if 'y' not in x.lower()]
-  output_col = [x for x in all_data_frame_cols if 'y' in x.lower()][0]
-
-  # assert only two classes in label (maybe relax later??)
-  assert np.array_equal(
-    np.unique(balanced_data_frame[output_col]),
-    np.array([0, 1]) # only allowing {0, 1} labels
-  )
-
-  # get balanced dataframe (take minimum of the count, then round down to nearest 250)
-  unique_values_and_count = balanced_data_frame[output_col].value_counts()
-  number_of_subsamples_in_each_class = unique_values_and_count.min() // 250 * 250
-  balanced_data_frame = pd.concat([
-      balanced_data_frame[balanced_data_frame.loc[:,output_col] == 0].sample(number_of_subsamples_in_each_class, random_state = RANDOM_SEED),
-      balanced_data_frame[balanced_data_frame.loc[:,output_col] == 1].sample(number_of_subsamples_in_each_class, random_state = RANDOM_SEED),
-  ]).sample(frac = 1, random_state = RANDOM_SEED)
-
-  return balanced_data_frame, input_cols, output_col
-
-
-# (2020.04.15) perhaps we need a memoize here... but I tried calling this function
-# multiple times in a row from another file and it always returned the same slice
-# of data...
-def getTrainTestData(dataset_obj, RANDOM_SEED, standardize_data = False):
-  balanced_data_frame, input_cols, output_col = getBalancedDataFrame(dataset_obj, RANDOM_SEED)
-  all_data = balanced_data_frame.loc[:,input_cols]
-  all_true_labels = balanced_data_frame.loc[:,output_col]
-  X_train, X_test, y_train, y_test = train_test_split(
-    all_data,
-    all_true_labels,
-    train_size=.7,
-    random_state = RANDOM_SEED)
-  if standardize_data == True:
-    X_train, X_test = standardizeData(X_train, X_test)
-  return X_train, X_test, y_train, y_test
-
-
-
-
 
 
 

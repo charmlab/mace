@@ -170,7 +170,7 @@ def runExperiments(dataset_values, model_class_values, norm_values, approaches_v
           pickle.dump(dataset_obj, open(f'{experiment_folder_name}/_dataset_obj', 'wb'))
           #     training portion used to train models
           #     testing portion used to compute counterfactuals
-          X_train, X_test, y_train, y_test = loadData.getTrainTestData(dataset_obj, RANDOM_SEED, standardize_data = False)
+          X_train, X_test, y_train, y_test = dataset_obj.getTrainTestSplit()
 
           standard_deviations = list(X_train.std())
 

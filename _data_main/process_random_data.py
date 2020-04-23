@@ -11,7 +11,7 @@ from debug import ipsh
 
 mu_x, sigma_x = 0, 1 # mean and standard deviation for data
 mu_w, sigma_w = 0, 1 # mean and standard deviation for weights
-n = 10000
+n = 2000
 d = 3
 
 w = np.random.normal(mu_w, sigma_w, (d, 1))
