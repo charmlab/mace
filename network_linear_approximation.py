@@ -104,7 +104,7 @@ class LinearizedNetwork:
 
         return self.gurobi_vars[-1][0].X
 
-    def define_linear_approximation(self, input_domain):
+    def define_linear_approximation(self, input_domain, factual_sample, norm_type, norm_threshold):
         '''
         input_domain: Tensor containing in each row the lower and upper bound
                       for the corresponding dimension
@@ -128,9 +128,52 @@ class LinearizedNetwork:
                                   vtype=grb.GRB.CONTINUOUS,
                                   name=f'inp_{dim}')
             inp_gurobi_vars.append(v)
+
+        # Add distance constraints and compute new input bounds w.r.t. distance TODO: add other norms
+        assert norm_type == 'two_norm'
+        self.model.addConstr(
+            (1 / len(inp_gurobi_vars))
+            *
+            grb.quicksum(
+                [(inp_gurobi_vars[i] / (input_domain[i][1] - input_domain[i][0]) -
+                  factual_sample[i] / (input_domain[i][1] - input_domain[i][0])) *
+                 (inp_gurobi_vars[i] / (input_domain[i][1] - input_domain[i][0]) -
+                  factual_sample[i] / (input_domain[i][1] - input_domain[i][0]))
+                for i in range(len(inp_gurobi_vars))]
+            )
+            <= norm_threshold
+        )
+
+        for i, inp_v in enumerate(inp_gurobi_vars):
+            # lower bound
+            self.model.setObjective(inp_v, grb.GRB.MINIMIZE)
+            self.model.update()
+            self.model.optimize()
+            if self.model.status != 2: # LP wasn't optimally solved TODO: can we still make use of it?
+                                                                # TODO: remove distance from constraints so that we can at least have the normal bounds later in the net
+                lb = input_domain[i][0]
+                inp_v.lb = lb
+            else:
+                lb = inp_v.X
+                inp_v.lb = lb
+
+            # upper bound
+            self.model.setObjective(inp_v, grb.GRB.MAXIMIZE)
+            self.model.update()
+            self.model.reset()
+            self.model.optimize()
+            if self.model.status != 2:  # LP wasn't optimally solved
+                ub = input_domain[i][1]
+                inp_v.ub = ub
+            else:
+                ub = inp_v.X
+                inp_v.ub = ub
+
             inp_lb.append(lb)
             inp_ub.append(ub)
+
         self.model.update()
+        self.model.reset()
 
         self.lower_bounds.append(inp_lb)
         self.upper_bounds.append(inp_ub)
@@ -165,19 +208,21 @@ class LinearizedNetwork:
 
                     self.model.setObjective(v, grb.GRB.MINIMIZE)
                     self.model.optimize()
-                    assert self.model.status == 2, "LP wasn't optimally solved"
+                    # assert self.model.status == 2, "LP wasn't optimally solved" TODO
                     # We have computed a lower bound
-                    lb = v.X
-                    v.lb = lb
+                    if self.model.status == 2:
+                        lb = v.X
+                        v.lb = lb
 
                     # Let's now compute an upper bound
                     self.model.setObjective(v, grb.GRB.MAXIMIZE)
                     self.model.update()
                     self.model.reset()
                     self.model.optimize()
-                    assert self.model.status == 2, "LP wasn't optimally solved"
-                    ub = v.X
-                    v.ub = ub
+                    # assert self.model.status == 2, "LP wasn't optimally solved" TODO
+                    if self.model.status == 2:
+                        ub = v.X
+                        v.ub = ub
 
                     new_layer_lb.append(lb)
                     new_layer_ub.append(ub)
