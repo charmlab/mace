@@ -489,7 +489,7 @@ class Dataset(object):
     if preprocessing == 'standardize':
       X_train, X_test = standardizeData(X_train, X_test)
     elif preprocessing == 'normalize':
-      X_train, X_test = normalizeData(X_train, X_tes)
+      X_train, X_test = normalizeData(X_train, X_test)
 
     return X_train, X_test, y_train, y_test
 
