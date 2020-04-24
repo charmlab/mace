@@ -432,7 +432,6 @@ class Dataset(object):
 
     return balanced_data_frame, input_cols, output_col
 
-
   # (2020.04.15) perhaps we need a memoize here... but I tried calling this function
   # multiple times in a row from another file and it always returned the same slice
   # of data... weird.
@@ -441,15 +440,41 @@ class Dataset(object):
     # TODO: This should be used with caution... it messes things up in MACE as ranges
     # will differ between factual and counterfactual domains
     def standardizeData(X_train, X_test):
-        x_mean = X_train.mean()
-        x_std = X_train.std()
-        for index in x_std.index:
-            if '_ord_' in index or '_cat_' in index:
-                x_mean[index] = 0
-                x_std[index] = 1
-        X_train = (X_train - x_mean) / x_std
-        X_test = (X_test - x_mean) / x_std
-        return X_train, X_test
+      x_mean = X_train.mean()
+      x_std = X_train.std()
+      for index in x_std.index:
+        if '_ord_' in index or '_cat_' in index:
+          x_mean[index] = 0
+          x_std[index] = 1
+      X_train = (X_train - x_mean) / x_std
+      X_test = (X_test - x_mean) / x_std
+      return X_train, X_test
+
+    # When working only with normalized data in [0, 1], data ranges must change to [0, 1] as well
+    # otherwise, in computing normalized distance we will normalize with intial ranges again!
+    def setBoundsToZeroOne():
+      for attr_name_kurz in self.getNonHotAttributesNames('kurz'):
+        attr_obj = self.attributes_kurz[attr_name_kurz]
+        attr_obj.lower_bound = 0.0
+        attr_obj.upper_bound = 1.0
+
+        attr_obj = self.attributes_long[attr_obj.attr_name_long]
+        attr_obj.lower_bound = 0.0
+        attr_obj.upper_bound = 1.0
+
+    # Normalize data: bring everything to [0, 1] - implemented for when feeding the model to DiCE
+    def normalizeData(X_train, X_test):
+      for attr_name_kurz in self.getNonHotAttributesNames('kurz'):
+        attr_obj = self.attributes_kurz[attr_name_kurz]
+        lower_bound = attr_obj.lower_bound
+        upper_bound =attr_obj.upper_bound
+        X_train[attr_name_kurz] = (X_train[attr_name_kurz] - lower_bound) / (upper_bound - lower_bound)
+        X_test[attr_name_kurz] = (X_test[attr_name_kurz] - lower_bound) / (upper_bound - lower_bound)
+
+      setBoundsToZeroOne()
+
+      return X_train, X_test
+
 
     balanced_data_frame, input_cols, output_col = self.getBalancedDataFrame()
     all_data = balanced_data_frame.loc[:,input_cols]
@@ -464,8 +489,7 @@ class Dataset(object):
     if preprocessing == 'standardize':
       X_train, X_test = standardizeData(X_train, X_test)
     elif preprocessing == 'normalize':
-      # X_train, X_test = normalizeData(X_train, X_test)
-      pass
+      X_train, X_test = normalizeData(X_train, X_tes)
 
     return X_train, X_test, y_train, y_test
 
@@ -1114,6 +1138,4 @@ def getOneHotEquivalent(data_frame_non_hot, attributes_non_hot):
         upper_bound = data_frame[new_col_name_long].max())
 
   return data_frame, attributes
-
-
 
