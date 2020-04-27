@@ -48,6 +48,11 @@ try:
 except:
   print('[ENV WARNING] process_twomoon_data not available')
 
+try:
+  from _data_main.process_test_data import *
+except:
+  print('[ENV WARNING] process_test_data not available')
+
 VALID_ATTRIBUTE_TYPES = { \
   'numeric-int', \
   'numeric-real', \
@@ -1019,6 +1024,46 @@ def loadDataset(dataset_name, return_one_hot, load_from_cache = False, debug_fla
         mutability = True
       elif col_name == 'x1':
         attr_type = 'numeric-real' if variable_type == 'real' else 'numeric-int'
+        actionability = 'any'
+        mutability = True
+
+      attributes_non_hot[col_name] = DatasetAttribute(
+        attr_name_long = col_name,
+        attr_name_kurz = f'x{col_idx}',
+        attr_type = attr_type,
+        is_input = True,
+        actionability = actionability,
+        mutability = mutability,
+        parent_name_long = -1,
+        parent_name_kurz = -1,
+        lower_bound = data_frame_non_hot[col_name].min(),
+        upper_bound = data_frame_non_hot[col_name].max())
+
+  elif dataset_name == 'test':
+
+    data_frame_non_hot = load_test_data()
+    data_frame_non_hot = data_frame_non_hot.reset_index(drop=True)
+    attributes_non_hot = {}
+
+    input_cols, output_col = getInputOutputColumns(data_frame_non_hot)
+
+    col_name = output_col
+    attributes_non_hot[col_name] = DatasetAttribute(
+      attr_name_long = col_name,
+      attr_name_kurz = 'y',
+      attr_type = 'binary',
+      is_input = False,
+      actionability = 'none',
+      mutability = False,
+      parent_name_long = -1,
+      parent_name_kurz = -1,
+      lower_bound = data_frame_non_hot[col_name].min(),
+      upper_bound = data_frame_non_hot[col_name].max())
+
+    for col_idx, col_name in enumerate(input_cols):
+
+      if col_name == 'x0':
+        attr_type = 'ordinal'
         actionability = 'any'
         mutability = True
 

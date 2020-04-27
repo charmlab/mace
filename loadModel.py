@@ -41,7 +41,7 @@ def loadModelForDataset(model_class, dataset_string, experiment_folder_name = No
   if not (model_class in {'lr', 'mlp', 'tree', 'forest'}):
     raise Exception(f'{model_class} not supported.')
 
-  if not (dataset_string in {'random', 'mortgage', 'twomoon', 'german', 'credit', 'compass', 'adult'}):
+  if not (dataset_string in {'random', 'mortgage', 'twomoon', 'german', 'credit', 'compass', 'adult', 'test'}):
     raise Exception(f'{dataset_string} not supported.')
 
   dataset_obj = loadData.loadDataset(dataset_string, return_one_hot = True, load_from_cache = True, debug_flag = False)
