@@ -2,11 +2,12 @@
 
 This repository provides code and examples for generating nearest counterfactual explanations and minimal consequential interventions. The following papers are supported:
 
-- https://arxiv.org/abs/1706.06691
-- https://arxiv.org/abs/1905.11190
-- https://arxiv.org/abs/1907.04135
-- https://arxiv.org/abs/1905.11190
-- https://arxiv.org/abs/2002.06278
+- [2017.06 Feature Tweaking](https://arxiv.org/abs/1706.06691) (4c691b4 @ https://github.com/upura/featureTweakPy)
+- [2019.01 Actionable Recourse](https://arxiv.org/pdf/1809.06514) (9387e6c @ https://github.com/ustunb/actionable-recourse)
+- [2019.07 Minimum  Observable](https://arxiv.org/abs/1907.04135)
+- [2019.05 MACE](https://arxiv.org/abs/1905.11190)
+- [2020.02 MINT](https://arxiv.org/abs/2002.06278)
+
 
 
 # Code Pre-requisites
