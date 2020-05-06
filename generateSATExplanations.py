@@ -31,7 +31,7 @@ np.random.seed(RANDOM_SEED)
 DEBUG_FLAG = False
 
 
-def getModelFormula(model_symbols, model_trained):
+def getModelFormula(model_symbols, model_trained, mlp_lbs=None, mlp_ubs=None):
   if isinstance(model_trained, DecisionTreeClassifier):
     model2formula = lambda a,b : tree2formula(a,b)
   elif isinstance(model_trained, LogisticRegression):
@@ -39,7 +39,8 @@ def getModelFormula(model_symbols, model_trained):
   elif isinstance(model_trained, RandomForestClassifier):
     model2formula = lambda a,b : forest2formula(a,b)
   elif isinstance(model_trained, MLPClassifier):
-    model2formula = lambda a,b : mlp2formula(a,b)
+    # model2formula = lambda a,b : mlp2formula(a,b)
+    return mlp2formula(model_trained, model_symbols, mlp_lbs, mlp_ubs)
 
   return model2formula(
     model_trained,
@@ -508,26 +509,35 @@ def getDiversityFormulaUpdate(model):
 
 
 # TODO: Gurobi can also make use of past computations
-def getDeactiveReLUs(sklearn_model, dataset_obj, factual_sample, norm_type, norm_threshold):
+def getNetworkBounds(sklearn_model, dataset_obj, factual_sample, norm_type, norm_threshold):
 
   # First, translate sklearn model to PyTorch model
   input_attr_names_kurz = dataset_obj.getInputAttributeNames('kurz')
   input_dim = len(input_attr_names_kurz)
   model_width = 10  # TODO make more dynamic later and move to separate function
-  assert sklearn_model.hidden_layer_sizes == (model_width, model_width)
+  assert sklearn_model.hidden_layer_sizes == (model_width, model_width, model_width, model_width)
   torch_model = torch.nn.Sequential(
     torch.nn.Linear(input_dim, model_width),
     torch.nn.ReLU(),
     torch.nn.Linear(model_width, model_width),
     torch.nn.ReLU(),
-    torch.nn.Linear(model_width, 1))
+    torch.nn.Linear(model_width, model_width),
+    torch.nn.ReLU(),
+    torch.nn.Linear(model_width, model_width),
+    torch.nn.ReLU(),
+    torch.nn.Linear(model_width, 1),
+    torch.nn.ReLU())
 
   torch_model[0].weight = torch.nn.Parameter(torch.FloatTensor(sklearn_model.coefs_[0].astype('float32')).t(), requires_grad=False)
   torch_model[2].weight = torch.nn.Parameter(torch.FloatTensor(sklearn_model.coefs_[1].astype('float32')).t(), requires_grad=False)
   torch_model[4].weight = torch.nn.Parameter(torch.FloatTensor(sklearn_model.coefs_[2].astype('float32')).t(), requires_grad=False)
+  torch_model[6].weight = torch.nn.Parameter(torch.FloatTensor(sklearn_model.coefs_[3].astype('float32')).t(), requires_grad=False)
+  torch_model[8].weight = torch.nn.Parameter(torch.FloatTensor(sklearn_model.coefs_[4].astype('float32')).t(), requires_grad=False)
   torch_model[0].bias = torch.nn.Parameter(torch.FloatTensor(sklearn_model.intercepts_[0].astype('float32')), requires_grad=False)
   torch_model[2].bias = torch.nn.Parameter(torch.FloatTensor(sklearn_model.intercepts_[1].astype('float32')), requires_grad=False)
   torch_model[4].bias = torch.nn.Parameter(torch.FloatTensor(sklearn_model.intercepts_[2].astype('float32')), requires_grad=False)
+  torch_model[6].bias = torch.nn.Parameter(torch.FloatTensor(sklearn_model.intercepts_[3].astype('float32')), requires_grad=False)
+  torch_model[8].bias = torch.nn.Parameter(torch.FloatTensor(sklearn_model.intercepts_[4].astype('float32')), requires_grad=False)
 
   # Now create a linearized network
   layers = [module for module in torch_model.modules() if type(module) != torch.nn.Sequential]
@@ -544,26 +554,26 @@ def getDeactiveReLUs(sklearn_model, dataset_obj, factual_sample, norm_type, norm
   #TODO check factualsample.values() order
   lin_net.define_linear_approximation(torch.from_numpy(domains), list(factual_sample.values()), norm_type, norm_threshold)
 
-  cnt = 0
+  # cnt = 0
   # print("lower bounds:--------------")
-  for i, layer_bounds in enumerate(lin_net.lower_bounds):
-    # print(layer_bounds)
-    if i==2 or i==4:
-      for bnd in layer_bounds:
-        if bnd > 0:
-          cnt += 1
-
+  # for i, layer_bounds in enumerate(lin_net.lower_bounds):
+  #   print(layer_bounds)
+  #   if i==2 or i==4:
+  #     for bnd in layer_bounds:
+  #       if bnd > 0:
+  #         cnt += 1
+  #
   # print("upper bounds:--------------")
-  for i, layer_bounds in enumerate(lin_net.upper_bounds):
-    # print(layer_bounds)
-    if i==2 or i==4:
-      for bnd in layer_bounds:
-        if bnd == 0:
-          cnt += 1
+  # for i, layer_bounds in enumerate(lin_net.upper_bounds):
+  #   print(layer_bounds)
+  #   if i==2 or i==4:
+  #     for bnd in layer_bounds:
+  #       if bnd == 0:
+  #         cnt += 1
 
   # print("num of ReLUs with fixed state: ", cnt)
 
-  return cnt
+  return lin_net.lower_bounds, lin_net.upper_bounds
 
 
 def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, factual_sample, norm_type, approach_string, epsilon, log_file):
@@ -618,77 +628,93 @@ def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, f
 
   print('Solving (not searching) for closest counterfactual using various distance thresholds...', file = log_file)
 
-  tot_iters = 0
-  tot_deactive_relu = 0
-
   solver_name = "z3"
-  with Solver(name=solver_name) as solver:
+
+  ###### Reverse BS Begin #########
+  reverse_norm_threshold = epsilon
+  solved = False
+  rev_bs_model = None
+  iteration_start_time, iteration_end_time = 0, 0
+
+  while (not solved):
+
+    mlp_lbs, mlp_ubs = getNetworkBounds(model_trained, dataset_obj, factual_sample, norm_type, reverse_norm_threshold)
+    model_formula = getModelFormula(model_symbols, model_trained, mlp_lbs, mlp_ubs)
+    # model_formula = getModelFormula(model_symbols, model_trained)
+    distance_formula = getDistanceFormula(model_symbols, dataset_obj, factual_pysmt_sample, norm_type,
+                                          approach_string, reverse_norm_threshold)
+    # distance_formula = distance_formula.simplify()
     formula = And(  # works for both initial iteration and all subsequent iterations
       model_formula,
       counterfactual_formula,
       plausibility_formula,
+      distance_formula,
       diversity_formula,
     )
-    formula = formula.simplify()
-    solver.add_assertion(formula)
+    # formula = formula.simplify()
 
-    ###### Reverse BS Begin #########
-    reverse_norm_threshold = epsilon
-    solved = False
-    iteration_start_time, iteration_end_time = 0, 0
-
-    while (not solved):
-
-      tot_deactive_relu += getDeactiveReLUs(model_trained, dataset_obj, factual_sample, norm_type, reverse_norm_threshold)
-      tot_iters += 1
-
-      distance_formula = getDistanceFormula(model_symbols, dataset_obj, factual_pysmt_sample, norm_type,
-                                            approach_string, reverse_norm_threshold)
-      distance_formula = distance_formula.simplify()
-
-      solver.push()
-      solver.add_assertion(distance_formula)
+    with Solver(name=solver_name) as solver:
+      solver.add_assertion(formula)
       iteration_start_time = time.time()
       solved = solver.solve()
       iteration_end_time = time.time()
+      if solved:
+        rev_bs_model = solver.get_model()
 
-      if not solved:
-        reverse_norm_threshold *= 2.0
-        solver.pop()
+    if not solved:
+      reverse_norm_threshold *= 2.0
 
-    norm_upper_bound = reverse_norm_threshold
-    if reverse_norm_threshold == epsilon:
-      norm_lower_bound = 0.
-    else:
-      norm_lower_bound = reverse_norm_threshold/2.0
+  norm_upper_bound = reverse_norm_threshold
+  if reverse_norm_threshold == epsilon:
+    norm_lower_bound = 0.
+  else:
+    norm_lower_bound = reverse_norm_threshold/2.0
 
-    curr_norm_threshold = (norm_lower_bound + norm_upper_bound)/2.0
-    distance_formula = getDistanceFormula(model_symbols, dataset_obj, factual_pysmt_sample, norm_type, approach_string,
-                                          curr_norm_threshold)
-    first_iter = True
-    ###### Reverse BS End #########
+  curr_norm_threshold = (norm_lower_bound + norm_upper_bound)/2.0
+  distance_formula = getDistanceFormula(model_symbols, dataset_obj, factual_pysmt_sample, norm_type, approach_string,
+                                        curr_norm_threshold)
+  first_iter = True
+  ###### Reverse BS End #########
 
-    while iters < max_iters and norm_upper_bound - norm_lower_bound >= epsilon:
+  while iters < max_iters and norm_upper_bound - norm_lower_bound >= epsilon:
 
-      print(f'\tIteration #{iters:03d}: testing norm threshold {curr_norm_threshold:.6f} in range [{norm_lower_bound:.6f}, {norm_upper_bound:.6f}]...\t', end = '', file = log_file)
-      iters = iters + 1
+    print(f'\tIteration #{iters:03d}: testing norm threshold {curr_norm_threshold:.6f} in range [{norm_lower_bound:.6f}, {norm_upper_bound:.6f}]...\t', end = '', file = log_file)
+    iters = iters + 1
 
-      if not first_iter: # I want it to save the last CFE in previous loop first
-                         # Upper-bound becomes equal to the CFE distance so BS doesn't corrupt
-        solver.push()
-        distance_formula = distance_formula.simplify()
-        solver.add_assertion(distance_formula)
+    with Solver(name=solver_name) as solver:
+
+      if not first_iter:# I want it to save the last CFE in previous loop first
+        # Upper-bound becomes equal to the CFE distance so BS doesn't corrupt
+
+        mlp_lbs, mlp_ubs = getNetworkBounds(model_trained, dataset_obj, factual_sample, norm_type,
+                                            curr_norm_threshold)
+        model_formula = getModelFormula(model_symbols, model_trained, mlp_lbs, mlp_ubs)
+        # model_formula = getModelFormula(model_symbols, model_trained)
+
+        formula = And(  # works for both initial iteration and all subsequent iterations
+          model_formula,
+          counterfactual_formula,
+          plausibility_formula,
+          distance_formula,
+          diversity_formula,
+        )
+        # formula = formula.simplify()
+
+        solver.add_assertion(formula)
         iteration_start_time = time.time()
         solved = solver.solve()
         iteration_end_time = time.time()
 
-        tot_deactive_relu += getDeactiveReLUs(model_trained, dataset_obj, factual_sample, norm_type, curr_norm_threshold)
-        tot_iters += 1
-
-      first_iter = False
+      else:
+        assert solved, 'last iter of reverse BS must have had solved the formula!'
+        assert rev_bs_model is not None, 'last iter of reverse BS must have had solved the formula!'
 
       if solved: # joint formula is satisfiable
-        model = solver.get_model()
+        if first_iter is True:
+          model = rev_bs_model
+          first_iter = False
+        else:
+          model = solver.get_model()
         print('solution exists & found.', file = log_file)
         counterfactual_pysmt_sample = {}
         interventional_pysmt_sample = {}
@@ -760,7 +786,7 @@ def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, f
       else: # no solution found in the assigned norm range --> update range and try again
         # TODO: find a way to implement assertion boost for the negated case
         with Solver(name=solver_name) as neg_solver:
-          neg_formula = Not(And(formula, distance_formula))
+          neg_formula = Not(formula)
           neg_solver.add_assertion(neg_formula)
           neg_solved = neg_solver.solve()
           if neg_solved:
@@ -773,9 +799,7 @@ def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, f
             print('no solution found (SMT issue).', file = log_file)
             quit()
             break
-      solver.pop()
 
-  print("\nmean number of deactive relus per iter: ", tot_deactive_relu/tot_iters)
   # IMPORTANT: there may be many more at this same distance! OR NONE! (what?? 2020.02.19)
   closest_counterfactual_sample = sorted(counterfactuals, key = lambda x: x['counterfactual_distance'])[0]
   closest_interventional_sample = sorted(counterfactuals, key = lambda x: x['interventional_distance'])[0]
