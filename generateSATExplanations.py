@@ -515,29 +515,29 @@ def getNetworkBounds(sklearn_model, dataset_obj, factual_sample, norm_type, norm
   input_attr_names_kurz = dataset_obj.getInputAttributeNames('kurz')
   input_dim = len(input_attr_names_kurz)
   model_width = 10  # TODO make more dynamic later and move to separate function
-  assert sklearn_model.hidden_layer_sizes == (model_width, model_width, model_width, model_width)
+  assert sklearn_model.hidden_layer_sizes == (model_width, model_width)
   torch_model = torch.nn.Sequential(
     torch.nn.Linear(input_dim, model_width),
     torch.nn.ReLU(),
     torch.nn.Linear(model_width, model_width),
     torch.nn.ReLU(),
-    torch.nn.Linear(model_width, model_width),
-    torch.nn.ReLU(),
-    torch.nn.Linear(model_width, model_width),
-    torch.nn.ReLU(),
+    # torch.nn.Linear(model_width, model_width),
+    # torch.nn.ReLU(),
+    # torch.nn.Linear(model_width, model_width),
+    # torch.nn.ReLU(),
     torch.nn.Linear(model_width, 1),
     torch.nn.ReLU())
 
   torch_model[0].weight = torch.nn.Parameter(torch.FloatTensor(sklearn_model.coefs_[0].astype('float32')).t(), requires_grad=False)
   torch_model[2].weight = torch.nn.Parameter(torch.FloatTensor(sklearn_model.coefs_[1].astype('float32')).t(), requires_grad=False)
   torch_model[4].weight = torch.nn.Parameter(torch.FloatTensor(sklearn_model.coefs_[2].astype('float32')).t(), requires_grad=False)
-  torch_model[6].weight = torch.nn.Parameter(torch.FloatTensor(sklearn_model.coefs_[3].astype('float32')).t(), requires_grad=False)
-  torch_model[8].weight = torch.nn.Parameter(torch.FloatTensor(sklearn_model.coefs_[4].astype('float32')).t(), requires_grad=False)
+  # torch_model[6].weight = torch.nn.Parameter(torch.FloatTensor(sklearn_model.coefs_[3].astype('float32')).t(), requires_grad=False)
+  # torch_model[8].weight = torch.nn.Parameter(torch.FloatTensor(sklearn_model.coefs_[4].astype('float32')).t(), requires_grad=False)
   torch_model[0].bias = torch.nn.Parameter(torch.FloatTensor(sklearn_model.intercepts_[0].astype('float32')), requires_grad=False)
   torch_model[2].bias = torch.nn.Parameter(torch.FloatTensor(sklearn_model.intercepts_[1].astype('float32')), requires_grad=False)
   torch_model[4].bias = torch.nn.Parameter(torch.FloatTensor(sklearn_model.intercepts_[2].astype('float32')), requires_grad=False)
-  torch_model[6].bias = torch.nn.Parameter(torch.FloatTensor(sklearn_model.intercepts_[3].astype('float32')), requires_grad=False)
-  torch_model[8].bias = torch.nn.Parameter(torch.FloatTensor(sklearn_model.intercepts_[4].astype('float32')), requires_grad=False)
+  # torch_model[6].bias = torch.nn.Parameter(torch.FloatTensor(sklearn_model.intercepts_[3].astype('float32')), requires_grad=False)
+  # torch_model[8].bias = torch.nn.Parameter(torch.FloatTensor(sklearn_model.intercepts_[4].astype('float32')), requires_grad=False)
 
   # Now create a linearized network
   layers = [module for module in torch_model.modules() if type(module) != torch.nn.Sequential]
