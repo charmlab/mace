@@ -404,7 +404,7 @@ def mlp2c(model, feature_names):
     return '\n'.join(lines)
 
 
-def mlp2formula(model, model_symbols):
+def mlp2formula(model, model_symbols, lower_bnds=None, upper_bnds=None):
 
     model_symbols['aux'] = {}
     layer_widths = []
@@ -425,6 +425,14 @@ def mlp2formula(model, model_symbols):
     for layer_idx in range(1, len(layer_widths)):
 
         interlayer_weight_matrix = model.coefs_[layer_idx - 1]
+
+        if lower_bnds is not None:
+            ############################################
+            lin_layer_idx_in_bnds = 2 * layer_idx - 1
+            relu_layer_idx_in_bnds = 2 * layer_idx
+            relu_lbs = lower_bnds[relu_layer_idx_in_bnds]
+            relu_ubs = upper_bnds[relu_layer_idx_in_bnds]
+            #############################################
 
         for curr_layer_feature_idx in range(layer_widths[layer_idx]):
 
@@ -463,17 +471,38 @@ def mlp2formula(model, model_symbols):
                 )
             )
 
-            formula_assign_feature_values.append(
-                EqualsOrIff(
-                    model_symbols['aux'][curr_layer_feature_string_2]['symbol'],
-                    Ite(
-                        GE(model_symbols['aux'][curr_layer_feature_string_1]['symbol'], Real(0)),
-                        model_symbols['aux'][curr_layer_feature_string_1]['symbol'],
+            if lower_bnds is not None:
+                assert relu_ubs[curr_layer_feature_idx] >= relu_lbs[curr_layer_feature_idx]
+
+            # ReLU is always in-active:
+            if lower_bnds is not None and relu_ubs[curr_layer_feature_idx] == 0:
+                assert relu_lbs[curr_layer_feature_idx] == 0
+                formula_assign_feature_values.append(
+                    EqualsOrIff(
+                        model_symbols['aux'][curr_layer_feature_string_2]['symbol'],
                         Real(0)
                     )
                 )
-
-            )
+            # ReLU is always active:
+            elif lower_bnds is not None and relu_lbs[curr_layer_feature_idx] > 0:
+                formula_assign_feature_values.append(
+                    EqualsOrIff(
+                        model_symbols['aux'][curr_layer_feature_string_2]['symbol'],
+                        model_symbols['aux'][curr_layer_feature_string_1]['symbol']
+                    )
+                )
+            # ReLU state is uknown:
+            else:
+                formula_assign_feature_values.append(
+                    EqualsOrIff(
+                        model_symbols['aux'][curr_layer_feature_string_2]['symbol'],
+                        Ite(
+                            GE(model_symbols['aux'][curr_layer_feature_string_1]['symbol'], Real(0)),
+                            model_symbols['aux'][curr_layer_feature_string_1]['symbol'],
+                            Real(0)
+                        )
+                    )
+                )
 
     final_layer_binary_feature_string = f'f_{len(layer_widths) - 1}_0_post_nonlin'
     output_formula = Ite(
