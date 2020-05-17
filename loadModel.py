@@ -29,7 +29,7 @@ np.random.seed(RANDOM_SEED)
 try:
   import treeUtils
 except:
-  print('[ENV WARNING] fair_adult_data not available')
+  print('[ENV WARNING] treeUtils not available')
 
 SIMPLIFY_TREES = False
 
