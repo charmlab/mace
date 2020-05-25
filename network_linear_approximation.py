@@ -130,20 +130,39 @@ class LinearizedNetwork:
             inp_gurobi_vars.append(v)
 
         # Add distance constraints and compute new input bounds w.r.t. distance TODO: add other norms
-        assert norm_type == 'two_norm'
-        self.model.addQConstr(
+        # assert norm_type == 'two_norm'
+        # self.model.addQConstr(
+        #     (1 / len(inp_gurobi_vars))
+        #     *
+        #     grb.quicksum(
+        #         ((inp_gurobi_vars[i] - factual_sample[i]) / (input_domain[i][1] - input_domain[i][0])) *
+        #         ((inp_gurobi_vars[i] - factual_sample[i]) / (input_domain[i][1] - input_domain[i][0]))
+        #         for i in range(len(inp_gurobi_vars))
+        #     )
+        #     <= norm_threshold ** 2
+        # )
+
+        assert norm_type == 'one_norm'
+        abs_diffs_normalized = []
+        for i, v in enumerate(inp_gurobi_vars):
+            diff_normalized = self.model.addVar(lb=-1.0, ub=1.0, obj=0,
+                                  vtype=grb.GRB.CONTINUOUS, name=f'diff_{i}')
+            self.model.addConstr(
+                diff_normalized == (v - factual_sample[i]) / (input_domain[i][1] - input_domain[i][0])
+            )
+            abs_diff_normalized = self.model.addVar(lb=0.0, ub=1.0, obj=0,
+                                  vtype=grb.GRB.CONTINUOUS, name=f'abs_{i}')
+            self.model.addConstr(
+                abs_diff_normalized == grb.abs_(diff_normalized)
+            )
+            abs_diffs_normalized.append(abs_diff_normalized)
+
+        self.model.addConstr(
             (1 / len(inp_gurobi_vars))
             *
-            grb.quicksum(
-                ((inp_gurobi_vars[i] - factual_sample[i]) / (input_domain[i][1] - input_domain[i][0])) *
-                ((inp_gurobi_vars[i] - factual_sample[i]) / (input_domain[i][1] - input_domain[i][0]))
-                for i in range(len(inp_gurobi_vars))
-            )
-            <= norm_threshold ** 2
+            grb.quicksum(abs_diffs_normalized)
+            <= norm_threshold
         )
-
-        # print(factual_sample)
-        # print(norm_threshold)
 
         optimal_not_possible = False
         non_opt = 0
@@ -159,8 +178,8 @@ class LinearizedNetwork:
                 inp_v.lb = lb
                 optimal_not_possible = True
                 non_opt += 1
+                print(f'LP not optimally solved, status: {self.model.status}')
                 break
-
             else:
                 lb = inp_v.X
                 inp_v.lb = lb
@@ -175,6 +194,7 @@ class LinearizedNetwork:
                 inp_v.ub = ub
                 optimal_not_possible = True
                 non_opt += 1
+                print(f'LP not optimally solved, status: {self.model.status}')
                 break
             else:
                 ub = inp_v.X
@@ -185,7 +205,8 @@ class LinearizedNetwork:
 
         if optimal_not_possible:
             self.model.remove(self.model.getQConstrs())
-            # print("total non-optimally solved: ", non_opt)
+            self.model.remove(self.model.getConstrs())
+            print("total non-optimally solved: ", non_opt)
             inp_lb = []
             inp_ub = []
             for i, inp_v in enumerate(inp_gurobi_vars):
@@ -197,6 +218,7 @@ class LinearizedNetwork:
                 inp_ub.append(ub)
         else:
             self.model.remove(self.model.getQConstrs())
+            self.model.remove(self.model.getConstrs())
             # print(inp_lb)
             # print(inp_ub)
             # print("optimaly solved!")

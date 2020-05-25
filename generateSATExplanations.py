@@ -548,30 +548,30 @@ def getNetworkBounds(sklearn_model, dataset_obj, factual_sample, norm_type, norm
   for i, attr_name_kurz in enumerate(input_attr_names_kurz):
     attr_obj = dataset_obj.attributes_kurz[attr_name_kurz]
     domains[i][0] = attr_obj.lower_bound
-    domains[i][1] = attr_obj.upper_bound -1.
+    domains[i][1] = attr_obj.upper_bound
 
   # Get lower and upper bounds on all neuron values
   #TODO check factualsample.values() order
   lin_net.define_linear_approximation(torch.from_numpy(domains), list(factual_sample.values()), norm_type, norm_threshold)
 
-  # cnt = 0
+  cnt = 0
   # print("lower bounds:--------------")
-  # for i, layer_bounds in enumerate(lin_net.lower_bounds):
-  #   print(layer_bounds)
-  #   if i==2 or i==4:
-  #     for bnd in layer_bounds:
-  #       if bnd > 0:
-  #         cnt += 1
-  #
-  # print("upper bounds:--------------")
-  # for i, layer_bounds in enumerate(lin_net.upper_bounds):
-  #   print(layer_bounds)
-  #   if i==2 or i==4:
-  #     for bnd in layer_bounds:
-  #       if bnd == 0:
-  #         cnt += 1
+  for i, layer_bounds in enumerate(lin_net.lower_bounds):
+    # print(layer_bounds)
+    if i==2 or i==4:
+      for bnd in layer_bounds:
+        if bnd > 0:
+          cnt += 1
 
-  # print("num of ReLUs with fixed state: ", cnt)
+  # print("upper bounds:--------------")
+  for i, layer_bounds in enumerate(lin_net.upper_bounds):
+    # print(layer_bounds)
+    if i==2 or i==4:
+      for bnd in layer_bounds:
+        if bnd == 0:
+          cnt += 1
+
+  print("num of ReLUs with fixed state: ", cnt)
 
   return lin_net.lower_bounds, lin_net.upper_bounds
 
