@@ -4,6 +4,8 @@ import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
 
+all_dists = []
+
 N_SAMPLES = 10
 
 def getDesiredKeyVals(desired_key, path, orders=None):
@@ -20,6 +22,7 @@ def getDesiredKeyVals(desired_key, path, orders=None):
         else:
             desired[orders[sample_idx]] = curr
 
+    all_dists.append(desired)
     return desired
 
 def getPlottingOrder(path, desired_key):
@@ -49,48 +52,51 @@ def plotScatterDesiredKey(ax, label, path, orders, desired_key):
     ax.legend()
 
 if __name__ == "__main__":
-    mace_path = '_experiments/MACE__twomoon__mlp2x10__two_norm__MACE_eps_1e-3__batch0__samples10__pid0/_minimum_distances'
-    RevBS_path = '_experiments/justRevBS__twomoon__mlp2x10__two_norm__MACE_eps_1e-3__batch0__samples10__pid0/_minimum_distances'
-    noLP_path = '_experiments/noInputLP__twomoon__mlp2x10__two_norm__MACE_eps_1e-3__batch0__samples10__pid0/_minimum_distances'
-    LP_path = '_experiments/inputLP__twomoon__mlp2x10__two_norm__MACE_eps_1e-3__batch0__samples10__pid0/_minimum_distances'
+    mace_path = '_experiments/LP_one-norm/MACE__twomoon__mlp2x10__one_norm__MACE_eps_1e-5__batch0__samples10__pid0/_minimum_distances'
+    # RevBS_path = '_experiments/justRevBS__twomoon__mlp2x10__two_norm__MACE_eps_1e-3__batch0__samples10__pid0/_minimum_distances'
+    # noLP_path = '_experiments/noInputLP__twomoon__mlp2x10__two_norm__MACE_eps_1e-3__batch0__samples10__pid0/_minimum_distances'
+    LP_path = '_experiments/LP_one-norm/inputLP__twomoon__mlp2x10__one_norm__MACE_eps_1e-5__batch0__samples10__pid0/_minimum_distances'
 
     N_SAMPLES = 10
 
     fig = plt.figure(figsize=(16.0, 8.0))
 
-    key = 'cfe_time'
+    key = 'cfe_distance'
     ax1 = plt.subplot(1, 2, 1)
-    runtime_orders = getPlottingOrder(mace_path, key)
+    runtime_orders = getPlottingOrder(LP_path, key)
     plotScatterDesiredKey(ax1, "MACE", mace_path, runtime_orders, key)
-    plotScatterDesiredKey(ax1, "onlyRevBS", RevBS_path, runtime_orders, key)
-    plotScatterDesiredKey(ax1, "noInputLP", noLP_path, runtime_orders, key)
+    # plotScatterDesiredKey(ax1, "onlyRevBS", RevBS_path, runtime_orders, key)
+    # plotScatterDesiredKey(ax1, "noInputLP", noLP_path, runtime_orders, key)
     plotScatterDesiredKey(ax1, "inputLP", LP_path, runtime_orders, key)
     ax1.set_xlabel("Time to find nearest counterfactual on 10 samples")
     ax1.set_ylabel("Time in seconds")
     ax1.set_title("MLP 2x10")
-    ax1.set_yscale("log")
-    ax1.set_yticks([3, 5, 7, 10, 500])
+    # ax1.set_yscale("log")
     # ax1.get_yaxis().set_major_formatter(matplotlib.ticker.ScalarFormatter())
     ax1.grid()
 
-    mace_path = mace_path.replace("mlp2x10", "mlp3x10")
-    RevBS_path = RevBS_path.replace("mlp2x10", "mlp3x10")
-    noLP_path = noLP_path.replace("mlp2x10", "mlp3x10")
-    LP_path = LP_path.replace("mlp2x10", "mlp3x10")
-
-    ax2 = plt.subplot(1, 2, 2)
-    runtime_orders = getPlottingOrder(mace_path, key)
-    plotScatterDesiredKey(ax2, "MACE", mace_path, runtime_orders, key)
-    plotScatterDesiredKey(ax2, "onlyRevBS", RevBS_path, runtime_orders, key)
-    plotScatterDesiredKey(ax2, "noInputLP", noLP_path, runtime_orders, key)
-    plotScatterDesiredKey(ax2, "inputLP", LP_path, runtime_orders, key)
-    ax2.set_xlabel("Time to find nearest counterfactual on 10 samples")
-    ax2.set_ylabel("Time in seconds")
-    ax2.set_title("MLP 3x10")
-    ax2.set_yscale("log")
-    ax2.grid()
+    # mace_path = mace_path.replace("mlp2x10", "mlp3x10")
+    # # RevBS_path = RevBS_path.replace("mlp2x10", "mlp3x10")
+    # # noLP_path = noLP_path.replace("mlp2x10", "mlp3x10")
+    # LP_path = LP_path.replace("mlp2x10", "mlp3x10")
+    #
+    # ax2 = plt.subplot(1, 2, 2)
+    # runtime_orders = getPlottingOrder(mace_path, key)
+    # plotScatterDesiredKey(ax2, "MACE", mace_path, runtime_orders, key)
+    # # plotScatterDesiredKey(ax2, "onlyRevBS", RevBS_path, runtime_orders, key)
+    # # plotScatterDesiredKey(ax2, "noInputLP", noLP_path, runtime_orders, key)
+    # plotScatterDesiredKey(ax2, "inputLP", LP_path, runtime_orders, key)
+    # ax2.set_xlabel("Time to find nearest counterfactual on 10 samples")
+    # ax2.set_ylabel("Time in seconds")
+    # ax2.set_title("MLP 3x10")
+    # ax2.set_yscale("log")
+    # ax2.grid()
 
     plt.tight_layout()
     plt.subplots_adjust(hspace=0.3)
-    # plt.show()
-    plt.savefig('comp.png', bboc_inches='tight', pad_inches=0)
+    plt.show()
+
+    a = np.array(all_dists)
+    print(abs(a[0]-a[1]))
+
+    # plt.savefig('comp.png', bboc_inches='tight', pad_inches=0)
