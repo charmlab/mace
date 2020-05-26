@@ -660,6 +660,11 @@ def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, f
       iteration_end_time = time.time()
       if solved:
         rev_bs_model = solver.get_model()
+      else:
+        assert is_sat(And(plausibility_formula, distance_formula, diversity_formula), solver_name=solver_name)
+        f = Implies(And(plausibility_formula, distance_formula, diversity_formula),
+                    And(model_formula, Not(counterfactual_formula)))
+        assert is_sat(f, solver_name=solver_name), 'no solution found (SMT issue).'
 
     if not solved:
       reverse_norm_threshold *= 2.0
@@ -784,7 +789,12 @@ def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, f
         distance_formula = getDistanceFormula(model_symbols, dataset_obj, factual_pysmt_sample, norm_type, approach_string, curr_norm_threshold)
 
       else: # no solution found in the assigned norm range --> update range and try again
-        # TODO: find a way to implement assertion boost for the negated case
+
+        assert is_sat(And(plausibility_formula, distance_formula, diversity_formula), solver_name=solver_name)
+        f = Implies(And(plausibility_formula, distance_formula, diversity_formula),
+                    And(model_formula, Not(counterfactual_formula)))
+        assert is_sat(f, solver_name=solver_name), 'no solution found (SMT issue).'
+
         with Solver(name=solver_name) as neg_solver:
           neg_formula = Not(formula)
           neg_solver.add_assertion(neg_formula)
