@@ -104,7 +104,7 @@ class LinearizedNetwork:
 
         return self.gurobi_vars[-1][0].X
 
-    def define_linear_approximation(self, input_domain, factual_sample, norm_type, norm_threshold):
+    def define_linear_approximation(self, input_domain, factual_sample, norm_type, norm_lower, norm_upper):
         '''
         input_domain: Tensor containing in each row the lower and upper bound
                       for the corresponding dimension
@@ -148,7 +148,7 @@ class LinearizedNetwork:
             diff_normalized = self.model.addVar(lb=-1.0, ub=1.0, obj=0,
                                   vtype=grb.GRB.CONTINUOUS, name=f'diff_{i}')
             self.model.addConstr(
-                diff_normalized == (v - factual_sample[i]) / (input_domain[i][1] - input_domain[i][0])
+                diff_normalized == (v - factual_sample[i]) / ((input_domain[i][1] - input_domain[i][0]) * len(inp_gurobi_vars))
             )
             abs_diff_normalized = self.model.addVar(lb=0.0, ub=1.0, obj=0,
                                   vtype=grb.GRB.CONTINUOUS, name=f'abs_{i}')
@@ -158,11 +158,15 @@ class LinearizedNetwork:
             abs_diffs_normalized.append(abs_diff_normalized)
 
         self.model.addConstr(
-            (1 / len(inp_gurobi_vars))
-            *
             grb.quicksum(abs_diffs_normalized)
-            <= norm_threshold
+            <= norm_upper
         )
+        if norm_lower != 0.0:
+            self.model.addConstr(
+                grb.quicksum(abs_diffs_normalized)
+                >= norm_lower
+            )
+
 
         optimal_not_possible = False
         non_opt = 0
@@ -217,8 +221,10 @@ class LinearizedNetwork:
                 inp_lb.append(lb)
                 inp_ub.append(ub)
         else:
-            self.model.remove(self.model.getQConstrs())
-            self.model.remove(self.model.getConstrs())
+            # TODO: keep 'em?!
+            # self.model.remove(self.model.getQConstrs())
+            # self.model.remove(self.model.getConstrs())
+            pass
             # print(inp_lb)
             # print(inp_ub)
             # print("optimaly solved!")
