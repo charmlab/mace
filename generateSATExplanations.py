@@ -54,7 +54,7 @@ def getCounterfactualFormula(model_symbols, factual_sample):
   ) # meaning we want the decision to be flipped.
 
 
-def getDistanceFormula(model_symbols, dataset_obj, factual_sample, norm_type, approach_string, norm_threshold):
+def getDistanceFormula(model_symbols, dataset_obj, factual_sample, norm_type, approach_string, norm_lower_threshold, norm_upper_threshold):
 
   if 'mace' in approach_string:
     variable_to_compute_distance_on = 'counterfactual'
@@ -253,13 +253,26 @@ def getDistanceFormula(model_symbols, dataset_obj, factual_sample, norm_type, ap
       Real(norm_threshold)
     )
   elif norm_type == 'one_norm':
-    distance_formula = LE(
-      Times(
+    normalized_sum = Times(
         Real(1 / len(normalized_absolute_distances)),
         ToReal(Plus(normalized_absolute_distances))
-      ),
-      Real(norm_threshold)
-    )
+      )
+    if norm_lower_threshold == 0.0:
+      distance_formula = LE(
+          normalized_sum,
+          Real(norm_upper_threshold)
+        )
+    else:
+      distance_formula = And(
+        GE(
+          normalized_sum,
+          Real(norm_lower_threshold)
+        ),
+        LE(
+          normalized_sum,
+          Real(norm_upper_threshold)
+        )
+      )
   elif norm_type == 'two_norm':
     distance_formula = LE(
       Times(
@@ -509,13 +522,13 @@ def getDiversityFormulaUpdate(model):
 
 
 # TODO: Gurobi can also make use of past computations
-def getNetworkBounds(sklearn_model, dataset_obj, factual_sample, norm_type, norm_threshold):
+def getNetworkBounds(sklearn_model, dataset_obj, factual_sample, norm_type, norm_lower, norm_upper):
 
   # First, translate sklearn model to PyTorch model
   input_attr_names_kurz = dataset_obj.getInputAttributeNames('kurz')
   input_dim = len(input_attr_names_kurz)
   model_width = 10  # TODO make more dynamic later and move to separate function
-  assert sklearn_model.hidden_layer_sizes == (model_width, model_width)
+  # assert sklearn_model.hidden_layer_sizes == (model_width, model_width)
   torch_model = torch.nn.Sequential(
     torch.nn.Linear(input_dim, model_width),
     torch.nn.ReLU(),
@@ -552,13 +565,13 @@ def getNetworkBounds(sklearn_model, dataset_obj, factual_sample, norm_type, norm
 
   # Get lower and upper bounds on all neuron values
   #TODO check factualsample.values() order
-  lin_net.define_linear_approximation(torch.from_numpy(domains), list(factual_sample.values()), norm_type, norm_threshold)
+  lin_net.define_linear_approximation(torch.from_numpy(domains), list(factual_sample.values()), norm_type, norm_lower, norm_upper)
 
   cnt = 0
   # print("lower bounds:--------------")
   for i, layer_bounds in enumerate(lin_net.lower_bounds):
     # print(layer_bounds)
-    if i==2 or i==4:
+    if i %2 == 0:
       for bnd in layer_bounds:
         if bnd > 0:
           cnt += 1
@@ -566,7 +579,7 @@ def getNetworkBounds(sklearn_model, dataset_obj, factual_sample, norm_type, norm
   # print("upper bounds:--------------")
   for i, layer_bounds in enumerate(lin_net.upper_bounds):
     # print(layer_bounds)
-    if i==2 or i==4:
+    if i%2 == 0:
       for bnd in layer_bounds:
         if bnd == 0:
           cnt += 1
@@ -609,7 +622,7 @@ def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, f
   model_formula = getModelFormula(model_symbols, model_trained)
   counterfactual_formula = getCounterfactualFormula(model_symbols, factual_pysmt_sample)
   plausibility_formula = getPlausibilityFormula(model_symbols, dataset_obj, factual_pysmt_sample, approach_string)
-  distance_formula = getDistanceFormula(model_symbols, dataset_obj, factual_pysmt_sample, norm_type, approach_string, curr_norm_threshold)
+  distance_formula = getDistanceFormula(model_symbols, dataset_obj, factual_pysmt_sample, norm_type, approach_string, norm_lower_bound, curr_norm_threshold)
   diversity_formula = TRUE() # simply initialize and modify later as new counterfactuals come in
   print('done.', file = log_file)
 
@@ -637,12 +650,12 @@ def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, f
   iteration_start_time, iteration_end_time = 0, 0
 
   while (not solved):
-
-    mlp_lbs, mlp_ubs = getNetworkBounds(model_trained, dataset_obj, factual_sample, norm_type, reverse_norm_threshold)
+    lower = reverse_norm_threshold/2.0 if reverse_norm_threshold != epsilon else 0.0
+    mlp_lbs, mlp_ubs = getNetworkBounds(model_trained, dataset_obj, factual_sample, norm_type, lower, reverse_norm_threshold)
     model_formula = getModelFormula(model_symbols, model_trained, mlp_lbs, mlp_ubs)
     # model_formula = getModelFormula(model_symbols, model_trained)
     distance_formula = getDistanceFormula(model_symbols, dataset_obj, factual_pysmt_sample, norm_type,
-                                          approach_string, reverse_norm_threshold)
+                                          approach_string, lower, reverse_norm_threshold)
     # distance_formula = distance_formula.simplify()
     formula = And(  # works for both initial iteration and all subsequent iterations
       model_formula,
@@ -677,7 +690,7 @@ def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, f
 
   curr_norm_threshold = (norm_lower_bound + norm_upper_bound)/2.0
   distance_formula = getDistanceFormula(model_symbols, dataset_obj, factual_pysmt_sample, norm_type, approach_string,
-                                        curr_norm_threshold)
+                                        norm_lower_bound, curr_norm_threshold)
   first_iter = True
   ###### Reverse BS End #########
 
@@ -692,7 +705,7 @@ def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, f
         # Upper-bound becomes equal to the CFE distance so BS doesn't corrupt
 
         mlp_lbs, mlp_ubs = getNetworkBounds(model_trained, dataset_obj, factual_sample, norm_type,
-                                            curr_norm_threshold)
+                                            norm_lower_bound, curr_norm_threshold)
         model_formula = getModelFormula(model_symbols, model_trained, mlp_lbs, mlp_ubs)
         # model_formula = getModelFormula(model_symbols, model_trained)
 
@@ -786,7 +799,7 @@ def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, f
         elif 'mint' in approach_string:
           norm_upper_bound = float(interventional_distance + epsilon / 100) # not float64
         curr_norm_threshold = getCenterNormThresholdInRange(norm_lower_bound, norm_upper_bound)
-        distance_formula = getDistanceFormula(model_symbols, dataset_obj, factual_pysmt_sample, norm_type, approach_string, curr_norm_threshold)
+        distance_formula = getDistanceFormula(model_symbols, dataset_obj, factual_pysmt_sample, norm_type, approach_string, norm_lower_bound, curr_norm_threshold)
 
       else: # no solution found in the assigned norm range --> update range and try again
 
@@ -804,7 +817,7 @@ def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, f
             norm_lower_bound = curr_norm_threshold
             norm_upper_bound = norm_upper_bound
             curr_norm_threshold = getCenterNormThresholdInRange(norm_lower_bound, norm_upper_bound)
-            distance_formula = getDistanceFormula(model_symbols, dataset_obj, factual_pysmt_sample, norm_type, approach_string, curr_norm_threshold)
+            distance_formula = getDistanceFormula(model_symbols, dataset_obj, factual_pysmt_sample, norm_type, approach_string, norm_lower_bound, curr_norm_threshold)
           else:
             print('no solution found (SMT issue).', file = log_file)
             quit()
