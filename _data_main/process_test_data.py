@@ -12,19 +12,19 @@ np.random.seed(RANDOM_SEED)
 
 n_samples = 2000
 
-def load_twomoon_data(variable_type = 'real'):
+def load_test_data(variable_type = 'real'):
 
-  # https://rohitmidha23.github.io/Neural-Network-Decision-Boundary/
-  X, y = datasets.make_moons(n_samples=n_samples, noise=0.1, random_state=0)
-  if variable_type == 'integer':
-    X = np.round(4 * X)
-  y = y.reshape(-1,1)
-  # X = processDataAccordingToGraph(X) # TODO...
+  X = np.random.randint(1, 5, n_samples)
+  y = np.array([1 if x % 2 else 0 for x in X]) # y = 1 for even values, y = 0 for odd values
 
-  X_train = X[ : n_samples // 2, :]
-  X_test = X[n_samples // 2 : , :]
-  y_train = y[ : n_samples // 2, :]
-  y_test = y[n_samples // 2 : , :]
+  # make 2D
+  X = X.reshape(X.shape[0], -1)
+  y = y.reshape(y.shape[0], -1)
+
+  X_train = X[ : n_samples // 2]
+  X_test = X[n_samples // 2 : ]
+  y_train = y[ : n_samples // 2]
+  y_test = y[n_samples // 2 : ]
 
 
   data_frame_non_hot = pd.DataFrame(
@@ -34,7 +34,7 @@ def load_twomoon_data(variable_type = 'real'):
       ),
       axis = 0,
     ),
-    columns=['label', 'x0', 'x1']
+    columns=['label', 'x0']
   )
   return data_frame_non_hot.astype('float64')
 

@@ -8,6 +8,7 @@ from tqdm import tqdm
 from pprint import pprint
 from sklearn.model_selection import train_test_split
 
+import utils
 from debug import ipsh
 
 sys.path.insert(0, '_data_main')
@@ -47,7 +48,12 @@ try:
 except:
   print('[ENV WARNING] process_twomoon_data not available')
 
-VALID_ATTRIBUTE_TYPES = { \
+try:
+  from _data_main.process_test_data import *
+except:
+  print('[ENV WARNING] process_test_data not available')
+
+VALID_ATTRIBUTE_DATA_TYPES = { \
   'numeric-int', \
   'numeric-real', \
   'binary', \
@@ -55,17 +61,23 @@ VALID_ATTRIBUTE_TYPES = { \
   'sub-categorical', \
   'ordinal', \
   'sub-ordinal'}
-VALID_IS_INPUT_TYPES = {True, False}
+VALID_ATTRIBUTE_NODE_TYPES = { \
+  'meta', \
+  'input', \
+  'output'}
 VALID_ACTIONABILITY_TYPES = { \
   'none', \
   'any', \
   'same-or-increase', \
-  'same-or-decrease', \
-}
+  'same-or-decrease'}
 VALID_MUTABILITY_TYPES = { \
-  True,
-  False,
-}
+  True, \
+  False}
+
+from random import seed
+RANDOM_SEED = 54321
+seed(RANDOM_SEED) # set the random seed so that the random permutations can be reproduced again
+np.random.seed(RANDOM_SEED)
 
 
 class Dataset(object):
@@ -86,52 +98,55 @@ class Dataset(object):
 
     attributes_kurz = dict((attributes[key].attr_name_kurz, value) for (key, value) in attributes_long.items())
     data_frame_kurz = copy.deepcopy(data_frame_long)
-    data_frame_kurz.columns = self.getInputOutputAttributeNames('kurz')
+    data_frame_kurz.columns = self.getAllAttributeNames('kurz')
     self.data_frame_kurz = data_frame_kurz # i.e., data_frame is indexed by attr_name_kurz
     self.attributes_kurz = attributes_kurz # i.e., attributes is indexed by attr_name_kurz
 
     # assert that data_frame and attributes match on variable names (long)
     assert len(np.setdiff1d(
       data_frame.columns.values,
-      np.array(self.getInputOutputAttributeNames('long'))
+      np.array(self.getAllAttributeNames('long'))
     )) == 0
 
-    # assert attributes and is_one_hot agree on one-hot-ness (i.e., if is_one_hot,
-    # then at least one attribute should be encoded as one-hot (w/ parent reference))
-    tmp_is_one_hot = False
-    for attr_name in attributes.keys():
-      attr_obj = attributes[attr_name]
-      # this simply checks to make sure that at least one elem is one-hot encoded
-      if attr_obj.parent_name_long != -1 or attr_obj.parent_name_kurz != -1:
-        tmp_is_one_hot = True
-    assert is_one_hot == tmp_is_one_hot, "Dataset object and actual attributes don't agree on one-hot"
+    # assert attribute type matches what is in the data frame
+    for attr_name in np.setdiff1d(
+      self.getInputAttributeNames('long'),
+      self.getRealBasedAttributeNames('long'),
+    ):
+      unique_values = np.unique(data_frame_long[attr_name].to_numpy())
+      # all non-numerical-real values should be integer or {0,1}
+      for value in unique_values:
+        assert value == np.floor(value)
+      if is_one_hot and attributes_long[attr_name].attr_type != 'numeric-int': # binary, sub-categorical, sub-ordinal
+        try:
+          assert \
+            np.array_equal(unique_values, [0,1]) or \
+            np.array_equal(unique_values, [1,2]) or \
+            np.array_equal(unique_values, [1]) # the first sub-ordinal attribute is always 1
+            # race (binary) in compass is encoded as {1,2}
+        except:
+          ipsh()
+
+    # # assert attributes and is_one_hot agree on one-hot-ness (i.e., if is_one_hot,
+    # # then at least one attribute should be encoded as one-hot (w/ parent reference))
+    # tmp_is_one_hot = False
+    # for attr_name in attributes.keys():
+    #   attr_obj = attributes[attr_name]
+    #   # this simply checks to make sure that at least one elem is one-hot encoded
+    #   if attr_obj.parent_name_long != -1 or attr_obj.parent_name_kurz != -1:
+    #     tmp_is_one_hot = True
+    # # TODO: assert only if there is a cat/ord variable!
+    # assert is_one_hot == tmp_is_one_hot, "Dataset object and actual attributes don't agree on one-hot"
 
     self.assertSiblingsShareAttributes('long')
     self.assertSiblingsShareAttributes('kurz')
 
-  def getInputOutputAttributeNames(self, long_or_kurz = 'kurz'):
+  def getAttributeNames(self, allowed_node_types, long_or_kurz = 'kurz'):
     names = []
-    # We must loop through all attributes and check is_input and attr_name,
-    # doesn't matter if we loop through self.attributes_long or
-    # self.attributes_kurz as they share the same values.
+    # We must loop through all attributes and check attr_name
     for attr_name in self.attributes_long.keys():
       attr_obj = self.attributes_long[attr_name]
-      if long_or_kurz == 'long':
-        names.append(attr_obj.attr_name_long)
-      elif long_or_kurz == 'kurz':
-        names.append(attr_obj.attr_name_kurz)
-      else:
-        raise Exception(f'{long_or_kurz} not recognized as a valid `long_or_kurz`.')
-    return np.array(names)
-
-  def getInputAttributeNames(self, long_or_kurz = 'kurz'):
-    names = []
-    # We must loop through all attributes and check attr_name, doesn't matter
-    # if we loop through self.attributes_long or self.attributes_kurz as they
-    # share the same values.
-    for attr_name in self.attributes_long.keys():
-      attr_obj = self.attributes_long[attr_name]
-      if attr_obj.is_input == False:
+      if attr_obj.node_type not in allowed_node_types:
         continue
       if long_or_kurz == 'long':
         names.append(attr_obj.attr_name_long)
@@ -141,19 +156,30 @@ class Dataset(object):
         raise Exception(f'{long_or_kurz} not recognized as a valid `long_or_kurz`.')
     return np.array(names)
 
+  def getAllAttributeNames(self, long_or_kurz = 'kurz'):
+    return self.getAttributeNames({'meta', 'input', 'output'}, long_or_kurz)
+
+  def getInputOutputAttributeNames(self, long_or_kurz = 'kurz'):
+    return self.getAttributeNames({'input', 'output'}, long_or_kurz)
+
+  def getMetaInputAttributeNames(self, long_or_kurz = 'kurz'):
+    return self.getAttributeNames({'meta', 'input'}, long_or_kurz)
+
+  def getMetaAttributeNames(self, long_or_kurz = 'kurz'):
+    return self.getAttributeNames({'meta'}, long_or_kurz)
+
+  def getInputAttributeNames(self, long_or_kurz = 'kurz'):
+    return self.getAttributeNames({'input'}, long_or_kurz)
+
   def getOutputAttributeNames(self, long_or_kurz = 'kurz'):
-    a = self.getInputOutputAttributeNames(long_or_kurz)
-    b = self.getInputAttributeNames(long_or_kurz)
-    return np.setdiff1d(a,b)
+    return self.getAttributeNames({'output'}, long_or_kurz)
 
   def getBinaryAttributeNames(self, long_or_kurz = 'kurz'):
     names = []
-    # We must loop through all attributes and check binary, doesn't matter
-    # if we loop through self.attributes_long or self.attributes_kurz as they
-    # share the same values.
+    # We must loop through all attributes and check binary
     for attr_name_long in self.getInputAttributeNames('long'):
       attr_obj = self.attributes_long[attr_name_long]
-      if attr_obj.is_input and attr_obj.attr_type == 'binary':
+      if attr_obj.node_type == 'input' and attr_obj.attr_type == 'binary':
         if long_or_kurz == 'long':
           names.append(attr_obj.attr_name_long)
         elif long_or_kurz == 'kurz':
@@ -164,12 +190,10 @@ class Dataset(object):
 
   def getActionableAttributeNames(self, long_or_kurz = 'kurz'):
     names = []
-    # We must loop through all attributes and check actionability, doesn't matter
-    # if we loop through self.attributes_long or self.attributes_kurz as they
-    # share the same values.
+    # We must loop through all attributes and check actionability
     for attr_name_long in self.getInputAttributeNames('long'):
       attr_obj = self.attributes_long[attr_name_long]
-      if attr_obj.is_input and attr_obj.actionability != 'none':
+      if attr_obj.node_type == 'input' and attr_obj.actionability != 'none':
         if long_or_kurz == 'long':
           names.append(attr_obj.attr_name_long)
         elif long_or_kurz == 'kurz':
@@ -185,12 +209,10 @@ class Dataset(object):
 
   def getMutableAttributeNames(self, long_or_kurz = 'kurz'):
     names = []
-    # We must loop through all attributes and check mutability, doesn't matter
-    # if we loop through self.attributes_long or self.attributes_kurz as they
-    # share the same values.
+    # We must loop through all attributes and check mutability
     for attr_name_long in self.getInputAttributeNames('long'):
       attr_obj = self.attributes_long[attr_name_long]
-      if attr_obj.is_input and attr_obj.mutability != False:
+      if attr_obj.node_type == 'input' and attr_obj.mutability != False:
         if long_or_kurz == 'long':
           names.append(attr_obj.attr_name_long)
         elif long_or_kurz == 'kurz':
@@ -206,9 +228,7 @@ class Dataset(object):
 
   def getIntegerBasedAttributeNames(self, long_or_kurz = 'kurz'):
     names = []
-    # We must loop through all attributes and check attr_type, doesn't matter
-    # if we loop through self.attributes_long or self.attributes_kurz as they
-    # share the same values.
+    # We must loop through all attributes and check attr_type
     for attr_name_long in self.getInputAttributeNames('long'):
       attr_obj = self.attributes_long[attr_name_long]
       if attr_obj.attr_type == 'numeric-int':
@@ -222,9 +242,7 @@ class Dataset(object):
 
   def getRealBasedAttributeNames(self, long_or_kurz = 'kurz'):
     names = []
-    # We must loop through all attributes and check attr_type, doesn't matter
-    # if we loop through self.attributes_long or self.attributes_kurz as they
-    # share the same values.
+    # We must loop through all attributes and check attr_type
     for attr_name_long in self.getInputAttributeNames('long'):
       attr_obj = self.attributes_long[attr_name_long]
       if attr_obj.attr_type == 'numeric-real':
@@ -237,7 +255,7 @@ class Dataset(object):
     return np.array(names)
 
   def assertSiblingsShareAttributes(self, long_or_kurz = 'kurz'):
-    # assert elems of dictOfSiblings share attr_type, parent, is_input-ness, actionability, and mutability
+    # assert elems of dictOfSiblings share attr_type, node_type, parent, actionability, and mutability
     dict_of_siblings = self.getDictOfSiblings(long_or_kurz)
     for parent_name in dict_of_siblings['cat'].keys():
       siblings = dict_of_siblings['cat'][parent_name]
@@ -245,14 +263,14 @@ class Dataset(object):
       for sibling in siblings:
         if long_or_kurz == 'long':
           self.attributes_long[sibling].attr_type = self.attributes_long[siblings[0]].attr_type
-          self.attributes_long[sibling].is_input = self.attributes_long[siblings[0]].is_input
+          self.attributes_long[sibling].node_type = self.attributes_long[siblings[0]].node_type
           self.attributes_long[sibling].actionability = self.attributes_long[siblings[0]].actionability
           self.attributes_long[sibling].mutability = self.attributes_long[siblings[0]].mutability
           self.attributes_long[sibling].parent_name_long = self.attributes_long[siblings[0]].parent_name_long
           self.attributes_long[sibling].parent_name_kurz = self.attributes_long[siblings[0]].parent_name_kurz
         elif long_or_kurz == 'kurz':
           self.attributes_kurz[sibling].attr_type = self.attributes_kurz[siblings[0]].attr_type
-          self.attributes_kurz[sibling].is_input = self.attributes_kurz[siblings[0]].is_input
+          self.attributes_kurz[sibling].node_type = self.attributes_kurz[siblings[0]].node_type
           self.attributes_kurz[sibling].actionability = self.attributes_kurz[siblings[0]].actionability
           self.attributes_kurz[sibling].mutability = self.attributes_kurz[siblings[0]].mutability
           self.attributes_kurz[sibling].parent_name_long = self.attributes_kurz[siblings[0]].parent_name_long
@@ -361,6 +379,16 @@ class Dataset(object):
     b = self.getOneHotAttributesNames(long_or_kurz)
     return np.setdiff1d(a,b)
 
+  def getVariableRanges(self):
+    return dict(zip(
+      self.getInputAttributeNames('kurz'),
+      [
+        self.attributes_kurz[attr_name_kurz].upper_bound -
+        self.attributes_kurz[attr_name_kurz].lower_bound
+        for attr_name_kurz in self.getInputAttributeNames('kurz')
+      ],
+    ))
+
   def printDataset(self, long_or_kurz = 'kurz'):
     if long_or_kurz == 'long':
       for attr_name_long in self.attributes_long:
@@ -371,6 +399,114 @@ class Dataset(object):
     else:
       raise Exception(f'{long_or_kurz} not recognized as a valid `long_or_kurz`.')
 
+  def getBalancedDataFrame(self):
+    balanced_data_frame = copy.deepcopy(self.data_frame_kurz)
+
+    meta_cols = self.getMetaAttributeNames()
+    input_cols = self.getInputAttributeNames()
+    output_col = self.getOutputAttributeNames()[0]
+
+    # assert only two classes in label (maybe relax later??)
+    assert np.array_equal(
+      np.unique(balanced_data_frame[output_col]),
+      np.array([0, 1]) # only allowing {0, 1} labels
+    )
+
+    # get balanced dataframe (take minimum of the count, then round down to nearest 250)
+    unique_values_and_count = balanced_data_frame[output_col].value_counts()
+    number_of_subsamples_in_each_class = unique_values_and_count.min() // 250 * 250
+    balanced_data_frame = pd.concat([
+        balanced_data_frame[balanced_data_frame.loc[:,output_col] == 0].sample(number_of_subsamples_in_each_class, random_state = RANDOM_SEED),
+        balanced_data_frame[balanced_data_frame.loc[:,output_col] == 1].sample(number_of_subsamples_in_each_class, random_state = RANDOM_SEED),
+    ]).sample(frac = 1, random_state = RANDOM_SEED)
+
+    return balanced_data_frame, meta_cols, input_cols, output_col
+
+  # (2020.04.15) perhaps we need a memoize here... but I tried calling this function
+  # multiple times in a row from another file and it always returned the same slice
+  # of data... weird.
+  def getTrainTestSplit(self, preprocessing = None, with_meta = False):
+
+    # When working only with normalized data in [0, 1], data ranges must change to [0, 1] as well
+    # otherwise, in computing normalized distance we will normalize with intial ranges again!
+    # AMIR (2020.05.17) does this work with cat/ord and sub-cat/sub-ord data???
+    def setBoundsToZeroOne():
+      for attr_name_kurz in self.getNonHotAttributesNames('kurz'):
+        attr_obj = self.attributes_kurz[attr_name_kurz]
+        attr_obj.lower_bound = 0.0
+        attr_obj.upper_bound = 1.0
+
+        attr_obj = self.attributes_long[attr_obj.attr_name_long]
+        attr_obj.lower_bound = 0.0
+        attr_obj.upper_bound = 1.0
+
+    # Normalize data: bring everything to [0, 1] - implemented for when feeding the model to DiCE
+    def normalizeData(X_train, X_test):
+      for attr_name_kurz in self.getNonHotAttributesNames('kurz'):
+        attr_obj = self.attributes_kurz[attr_name_kurz]
+        lower_bound = attr_obj.lower_bound
+        upper_bound =attr_obj.upper_bound
+        X_train[attr_name_kurz] = (X_train[attr_name_kurz] - lower_bound) / (upper_bound - lower_bound)
+        X_test[attr_name_kurz] = (X_test[attr_name_kurz] - lower_bound) / (upper_bound - lower_bound)
+
+      setBoundsToZeroOne()
+
+      return X_train, X_test
+
+    # TODO: This should be used with caution... it messes things up in MACE as ranges
+    # will differ between factual and counterfactual domains
+    def standardizeData(X_train, X_test):
+      x_mean = X_train.mean()
+      x_std = X_train.std()
+      for index in x_std.index:
+        if '_ord_' in index or '_cat_' in index:
+          x_mean[index] = 0
+          x_std[index] = 1
+      X_train = (X_train - x_mean) / x_std
+      X_test = (X_test - x_mean) / x_std
+      return X_train, X_test
+
+    balanced_data_frame, meta_cols, input_cols, output_col = self.getBalancedDataFrame()
+
+    if with_meta:
+      all_data = balanced_data_frame.loc[:,np.array((input_cols, meta_cols)).flatten()]
+      all_true_labels = balanced_data_frame.loc[:,output_col]
+      if preprocessing is not None:
+        assert with_meta == False, 'This feature is not built yet...'
+
+      X_train, X_test, y_train, y_test = train_test_split(
+        all_data,
+        all_true_labels,
+        train_size=.7,
+        random_state = RANDOM_SEED)
+
+      # ordering of next two lines matters (shouldn't overwrite input_cols); silly code... :|
+      U_train = X_train[self.getMetaAttributeNames()]
+      U_test = X_test[self.getMetaAttributeNames()]
+      X_train = X_train[self.getInputAttributeNames()]
+      X_test = X_test[self.getInputAttributeNames()]
+      y_train = y_train # noop
+      y_test = y_test # noop
+
+      return X_train, X_test, U_train, U_test, y_train, y_test
+    else:
+      all_data = balanced_data_frame.loc[:,input_cols]
+      all_true_labels = balanced_data_frame.loc[:,output_col]
+
+      X_train, X_test, y_train, y_test = train_test_split(
+        all_data,
+        all_true_labels,
+        train_size=.7,
+        random_state = RANDOM_SEED)
+
+      # TODO (2020.05.18): this should be updated so as NOT to update meta variables
+      if preprocessing == 'standardize':
+        X_train, X_test = standardizeData(X_train, X_test)
+      elif preprocessing == 'normalize':
+        X_train, X_test = normalizeData(X_train, X_test)
+
+      return X_train, X_test, y_train, y_test
+
 
 class DatasetAttribute(object):
 
@@ -379,7 +515,7 @@ class DatasetAttribute(object):
     attr_name_long,
     attr_name_kurz,
     attr_type,
-    is_input,
+    node_type,
     actionability,
     mutability,
     parent_name_long,
@@ -387,11 +523,11 @@ class DatasetAttribute(object):
     lower_bound,
     upper_bound):
 
-    if attr_type not in VALID_ATTRIBUTE_TYPES:
-      raise Exception("`attr_type` must be one of %r." % VALID_ATTRIBUTE_TYPES)
+    if attr_type not in VALID_ATTRIBUTE_DATA_TYPES:
+      raise Exception("`attr_type` must be one of %r." % VALID_ATTRIBUTE_DATA_TYPES)
 
-    if is_input not in VALID_IS_INPUT_TYPES:
-      raise Exception("`is_input` must be one of %r." % VALID_IS_INPUT_TYPES)
+    if node_type not in VALID_ATTRIBUTE_NODE_TYPES:
+      raise Exception("`node_type` must be one of %r." % VALID_ATTRIBUTE_NODE_TYPES)
 
     if actionability not in VALID_ACTIONABILITY_TYPES:
       raise Exception("`actionability` must be one of %r." % VALID_ACTIONABILITY_TYPES)
@@ -426,14 +562,14 @@ class DatasetAttribute(object):
       #            the same or increase. It works :)
       assert actionability in {'none', 'any'}, f"{attr_type}'s actionability can only be in {'none', 'any'}, not `{actionability}`."
 
-    if not is_input:
-      assert actionability == 'none', 'Output attribute is not actionable.'
-      assert mutability == False, 'Output attribute is not mutable.'
+    if node_type != 'input':
+      assert actionability == 'none', f'{node_type} attribute is not actionable.'
+      assert mutability == False, f'{node_type} attribute is not mutable.'
 
     # We have introduced 3 types of variables: (actionable and mutable, non-actionable but mutable, immutable and non-actionable)
     if actionability != 'none':
       assert mutability == True
-
+    # TODO: above/below seem contradictory... (2020.04.14)
     if mutability == False:
       assert actionability == 'none'
 
@@ -443,7 +579,7 @@ class DatasetAttribute(object):
     self.attr_name_long = attr_name_long
     self.attr_name_kurz = attr_name_kurz
     self.attr_type = attr_type
-    self.is_input = is_input
+    self.node_type = node_type
     self.actionability = actionability
     self.mutability = mutability
     self.parent_name_long = parent_name_long
@@ -452,27 +588,17 @@ class DatasetAttribute(object):
     self.upper_bound = upper_bound
 
 
-def getInputOutputColumns(data_frame):
-  all_data_frame_cols = data_frame.columns.values
-  input_cols = [x for x in all_data_frame_cols if 'label' not in x.lower()]
-  output_cols = [x for x in all_data_frame_cols if 'label' in x.lower()]
-  assert len(output_cols) == 1
-  return input_cols, output_cols[0]
-
-
 def loadDataset(dataset_name, return_one_hot, load_from_cache = False, debug_flag = True):
 
-  # Somebody may pass in return_one_hot = 1 even though the dataset does not
-  # contain any categorical or ordinal variables. If this is the case, then set
-  # return_one_hot = 0.
-  if return_one_hot:
-    # TODO: perhaps move this logic to later in the code, after the definition
-    #       of dataset variables. Then look through all defined variables for
-    #       categorical or ordinal variables.
-    if dataset_name in {'random', 'mortgage', 'twomoon', 'german'}:
-      return_one_hot = 0
+  def getInputOutputColumns(data_frame):
+    all_data_frame_cols = data_frame.columns.values
+    input_cols = [x for x in all_data_frame_cols if 'label' not in x.lower()]
+    output_cols = [x for x in all_data_frame_cols if 'label' in x.lower()]
+    assert len(output_cols) == 1
+    return input_cols, output_cols[0]
 
   one_hot_string = 'one_hot' if return_one_hot else 'non_hot'
+
   save_file_path = os.path.join(
     os.path.dirname(__file__),
     f'_data_main/_cached/{dataset_name}_{one_hot_string}'
@@ -500,7 +626,7 @@ def loadDataset(dataset_name, return_one_hot, load_from_cache = False, debug_fla
       attr_name_long = col_name,
       attr_name_kurz = 'y',
       attr_type = 'binary',
-      is_input = False,
+      node_type = 'output',
       actionability = 'none',
       mutability = False,
       parent_name_long = -1,
@@ -563,7 +689,7 @@ def loadDataset(dataset_name, return_one_hot, load_from_cache = False, debug_fla
         attr_name_long = col_name,
         attr_name_kurz = f'x{col_idx}',
         attr_type = attr_type,
-        is_input = True,
+        node_type = 'input',
         actionability = actionability,
         mutability = mutability,
         parent_name_long = -1,
@@ -584,7 +710,7 @@ def loadDataset(dataset_name, return_one_hot, load_from_cache = False, debug_fla
       attr_name_long = col_name,
       attr_name_kurz = 'y',
       attr_type = 'binary',
-      is_input = False,
+      node_type = 'output',
       actionability = 'none',
       mutability = False,
       parent_name_long = -1,
@@ -627,7 +753,7 @@ def loadDataset(dataset_name, return_one_hot, load_from_cache = False, debug_fla
         attr_name_long = col_name,
         attr_name_kurz = f'x{col_idx}',
         attr_type = attr_type,
-        is_input = True,
+        node_type = 'input',
         actionability = actionability,
         mutability = mutability,
         parent_name_long = -1,
@@ -648,7 +774,7 @@ def loadDataset(dataset_name, return_one_hot, load_from_cache = False, debug_fla
       attr_name_long = col_name,
       attr_name_kurz = 'y',
       attr_type = 'binary',
-      is_input = False,
+      node_type = 'output',
       actionability = 'none',
       mutability = False,
       parent_name_long = -1,
@@ -719,7 +845,7 @@ def loadDataset(dataset_name, return_one_hot, load_from_cache = False, debug_fla
         attr_name_long = col_name,
         attr_name_kurz = f'x{col_idx}',
         attr_type = attr_type,
-        is_input = True,
+        node_type = 'input',
         actionability = actionability,
         mutability = mutability,
         parent_name_long = -1,
@@ -740,7 +866,7 @@ def loadDataset(dataset_name, return_one_hot, load_from_cache = False, debug_fla
       attr_name_long = col_name,
       attr_name_kurz = 'y',
       attr_type = 'binary',
-      is_input = False,
+      node_type = 'output',
       actionability = 'none',
       mutability = False,
       parent_name_long = -1,
@@ -775,7 +901,7 @@ def loadDataset(dataset_name, return_one_hot, load_from_cache = False, debug_fla
         attr_name_long = col_name,
         attr_name_kurz = f'x{col_idx}',
         attr_type = attr_type,
-        is_input = True,
+        node_type = 'input',
         actionability = actionability,
         mutability = mutability,
         parent_name_long = -1,
@@ -785,18 +911,24 @@ def loadDataset(dataset_name, return_one_hot, load_from_cache = False, debug_fla
 
   elif dataset_name == 'random':
 
-    data_frame_non_hot = load_random_data()
+    variable_type = 'real'
+    # variable_type = 'integer'
+
+    data_frame_non_hot = load_random_data(variable_type)
     data_frame_non_hot = data_frame_non_hot.reset_index(drop=True)
     attributes_non_hot = {}
 
     input_cols, output_col = getInputOutputColumns(data_frame_non_hot)
+    # ordering of next two lines matters (shouldn't overwrite input_cols); silly code... :|
+    meta_cols = [col_name for col_name in input_cols if 'u' in col_name]
+    input_cols = [col_name for col_name in input_cols if 'x' in col_name]
 
     col_name = output_col
     attributes_non_hot[col_name] = DatasetAttribute(
       attr_name_long = col_name,
       attr_name_kurz = 'y',
       attr_type = 'binary',
-      is_input = False,
+      node_type = 'output',
       actionability = 'none',
       mutability = False,
       parent_name_long = -1,
@@ -806,24 +938,35 @@ def loadDataset(dataset_name, return_one_hot, load_from_cache = False, debug_fla
 
     for col_idx, col_name in enumerate(input_cols):
 
-      if col_name == 'x0':
-        attr_type = 'numeric-real'
-        actionability = 'any'
-        mutability = True
-      elif col_name == 'x1':
-        attr_type = 'numeric-real'
-        actionability = 'any'
-        mutability = True
-      elif col_name == 'x2':
-        attr_type = 'numeric-real'
-        actionability = 'any'
-        mutability = True
+      attr_type = 'numeric-real' if variable_type == 'real' else 'numeric-int'
+      node_type = 'input'
+      actionability = 'any'
+      mutability = True
 
       attributes_non_hot[col_name] = DatasetAttribute(
         attr_name_long = col_name,
-        attr_name_kurz = f'x{col_idx}',
+        attr_name_kurz = col_name,
         attr_type = attr_type,
-        is_input = True,
+        node_type = node_type,
+        actionability = actionability,
+        mutability = mutability,
+        parent_name_long = -1,
+        parent_name_kurz = -1,
+        lower_bound = data_frame_non_hot[col_name].min(),
+        upper_bound = data_frame_non_hot[col_name].max())
+
+    for col_idx, col_name in enumerate(meta_cols):
+
+      attr_type = 'numeric-real'
+      node_type = 'meta'
+      actionability = 'none'
+      mutability = False
+
+      attributes_non_hot[col_name] = DatasetAttribute(
+        attr_name_long = col_name,
+        attr_name_kurz = col_name,
+        attr_type = attr_type,
+        node_type = node_type,
         actionability = actionability,
         mutability = mutability,
         parent_name_long = -1,
@@ -844,7 +987,7 @@ def loadDataset(dataset_name, return_one_hot, load_from_cache = False, debug_fla
       attr_name_long = col_name,
       attr_name_kurz = 'y',
       attr_type = 'binary',
-      is_input = False,
+      node_type = 'output',
       actionability = 'none',
       mutability = False,
       parent_name_long = -1,
@@ -867,7 +1010,7 @@ def loadDataset(dataset_name, return_one_hot, load_from_cache = False, debug_fla
         attr_name_long = col_name,
         attr_name_kurz = f'x{col_idx}',
         attr_type = attr_type,
-        is_input = True,
+        node_type = 'input',
         actionability = actionability,
         mutability = mutability,
         parent_name_long = -1,
@@ -877,7 +1020,10 @@ def loadDataset(dataset_name, return_one_hot, load_from_cache = False, debug_fla
 
   elif dataset_name == 'twomoon':
 
-    data_frame_non_hot = load_twomoon_data()
+    variable_type = 'real'
+    # variable_type = 'integer'
+
+    data_frame_non_hot = load_twomoon_data(variable_type)
     data_frame_non_hot = data_frame_non_hot.reset_index(drop=True)
     attributes_non_hot = {}
 
@@ -888,7 +1034,7 @@ def loadDataset(dataset_name, return_one_hot, load_from_cache = False, debug_fla
       attr_name_long = col_name,
       attr_name_kurz = 'y',
       attr_type = 'binary',
-      is_input = False,
+      node_type = 'output',
       actionability = 'none',
       mutability = False,
       parent_name_long = -1,
@@ -899,11 +1045,11 @@ def loadDataset(dataset_name, return_one_hot, load_from_cache = False, debug_fla
     for col_idx, col_name in enumerate(input_cols):
 
       if col_name == 'x0':
-        attr_type = 'numeric-real'
+        attr_type = 'numeric-real' if variable_type == 'real' else 'numeric-int'
         actionability = 'any'
         mutability = True
       elif col_name == 'x1':
-        attr_type = 'numeric-real'
+        attr_type = 'numeric-real' if variable_type == 'real' else 'numeric-int'
         actionability = 'any'
         mutability = True
 
@@ -911,7 +1057,47 @@ def loadDataset(dataset_name, return_one_hot, load_from_cache = False, debug_fla
         attr_name_long = col_name,
         attr_name_kurz = f'x{col_idx}',
         attr_type = attr_type,
-        is_input = True,
+        node_type = 'input',
+        actionability = actionability,
+        mutability = mutability,
+        parent_name_long = -1,
+        parent_name_kurz = -1,
+        lower_bound = data_frame_non_hot[col_name].min(),
+        upper_bound = data_frame_non_hot[col_name].max())
+
+  elif dataset_name == 'test':
+
+    data_frame_non_hot = load_test_data()
+    data_frame_non_hot = data_frame_non_hot.reset_index(drop=True)
+    attributes_non_hot = {}
+
+    input_cols, output_col = getInputOutputColumns(data_frame_non_hot)
+
+    col_name = output_col
+    attributes_non_hot[col_name] = DatasetAttribute(
+      attr_name_long = col_name,
+      attr_name_kurz = 'y',
+      attr_type = 'binary',
+      node_type = 'output',
+      actionability = 'none',
+      mutability = False,
+      parent_name_long = -1,
+      parent_name_kurz = -1,
+      lower_bound = data_frame_non_hot[col_name].min(),
+      upper_bound = data_frame_non_hot[col_name].max())
+
+    for col_idx, col_name in enumerate(input_cols):
+
+      if col_name == 'x0':
+        attr_type = 'categorical'
+        actionability = 'any'
+        mutability = True
+
+      attributes_non_hot[col_name] = DatasetAttribute(
+        attr_name_long = col_name,
+        attr_name_kurz = f'x{col_idx}',
+        attr_type = attr_type,
+        node_type = 'input',
         actionability = actionability,
         mutability = mutability,
         parent_name_long = -1,
@@ -968,7 +1154,7 @@ def getOneHotEquivalent(data_frame_non_hot, attributes_non_hot):
     old_attr_name_long = attributes[old_col_name_long].attr_name_long
     old_attr_name_kurz = attributes[old_col_name_long].attr_name_kurz
     old_attr_type = attributes[old_col_name_long].attr_type
-    old_is_input = attributes[old_col_name_long].is_input
+    old_node_type = attributes[old_col_name_long].node_type
     old_actionability = attributes[old_col_name_long].actionability
     old_mutability = attributes[old_col_name_long].mutability
     old_lower_bound = attributes[old_col_name_long].lower_bound
@@ -979,7 +1165,7 @@ def getOneHotEquivalent(data_frame_non_hot, attributes_non_hot):
     assert old_col_name_long == old_attr_name_long
 
     new_attr_type = 'sub-' + old_attr_type
-    new_is_input = old_is_input
+    new_node_type = old_node_type
     new_actionability = old_actionability
     new_mutability = old_mutability
     new_parent_name_long = old_attr_name_long
@@ -1014,7 +1200,7 @@ def getOneHotEquivalent(data_frame_non_hot, attributes_non_hot):
         attr_name_long = new_col_name_long,
         attr_name_kurz = new_col_name_kurz,
         attr_type = new_attr_type,
-        is_input = new_is_input,
+        node_type = new_node_type,
         actionability = new_actionability,
         mutability = new_mutability,
         parent_name_long = new_parent_name_long,
@@ -1023,64 +1209,4 @@ def getOneHotEquivalent(data_frame_non_hot, attributes_non_hot):
         upper_bound = data_frame[new_col_name_long].max())
 
   return data_frame, attributes
-
-
-# TODO: This should be used with caution... it messes things up in MACE as ranges
-# will differ between factual and counterfactual domains
-def normalizeData(X_train, X_test):
-    x_mean = X_train.mean()
-    x_std = X_train.std()
-    for index in x_std.index:
-        if '_ord_' in index or '_cat_' in index:
-            x_mean[index] = 0
-            x_std[index] = 1
-    X_train = (X_train - x_mean) / x_std
-    X_test = (X_test - x_mean) / x_std
-    return X_train, X_test
-
-
-def getBalancedDataFrame(dataset_obj, RANDOM_SEED):
-  balanced_data_frame = copy.deepcopy(dataset_obj.data_frame_kurz)
-
-  # get input and output columns
-  all_data_frame_cols = balanced_data_frame.columns.values
-
-  input_cols = [x for x in all_data_frame_cols if 'y' not in x.lower()]
-  output_col = [x for x in all_data_frame_cols if 'y' in x.lower()][0]
-
-  # assert only two classes in label (maybe relax later??)
-  assert np.array_equal(
-    np.unique(balanced_data_frame[output_col]),
-    np.array([0, 1]) # only allowing {0, 1} labels
-  )
-
-  # get balanced dataframe (take minimum of the count, then round down to nearest 250)
-  unique_values_and_count = balanced_data_frame[output_col].value_counts()
-  number_of_subsamples_in_each_class = unique_values_and_count.min() // 250 * 250
-  balanced_data_frame = pd.concat([
-      balanced_data_frame[balanced_data_frame.loc[:,output_col] == 0].sample(number_of_subsamples_in_each_class, random_state = RANDOM_SEED),
-      balanced_data_frame[balanced_data_frame.loc[:,output_col] == 1].sample(number_of_subsamples_in_each_class, random_state = RANDOM_SEED),
-  ]).sample(frac = 1, random_state = RANDOM_SEED)
-
-  return balanced_data_frame, input_cols, output_col
-
-
-def getTrainTestData(dataset_obj, RANDOM_SEED, standardize_data = False):
-  balanced_data_frame, input_cols, output_col = getBalancedDataFrame(dataset_obj, RANDOM_SEED)
-  all_data = balanced_data_frame.loc[:,input_cols]
-  all_true_labels = balanced_data_frame.loc[:,output_col]
-  X_train, X_test, y_train, y_test = train_test_split(
-    all_data,
-    all_true_labels,
-    train_size=.7,
-    random_state = RANDOM_SEED)
-  if standardize_data == True:
-    X_train, X_test = normalizeData(X_train, X_test)
-  return X_train, X_test, y_train, y_test
-
-
-
-
-
-
 

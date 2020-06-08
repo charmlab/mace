@@ -9,7 +9,7 @@ from pprint import pprint
 from datetime import datetime
 
 import loadData
-import modelTraining
+import loadModel
 
 from debug import ipsh
 
@@ -170,22 +170,20 @@ def runExperiments(dataset_values, model_class_values, norm_values, approaches_v
           pickle.dump(dataset_obj, open(f'{experiment_folder_name}/_dataset_obj', 'wb'))
           #     training portion used to train models
           #     testing portion used to compute counterfactuals
-          X_train, X_test, y_train, y_test = loadData.getTrainTestData(dataset_obj, RANDOM_SEED, standardize_data = False)
+          X_train, X_test, y_train, y_test = dataset_obj.getTrainTestSplit()
 
-          feature_names = dataset_obj.getInputAttributeNames('kurz') # easier to read (nothing to do with one-hot vs non-hit!)
           standard_deviations = list(X_train.std())
 
           # train the model
-          model_trained = modelTraining.trainAndSaveModels(
-            experiment_folder_name,
+          # model_trained = modelTraining.trainAndSaveModels(
+          #   model_class_string,
+          #   dataset_string,
+          #   experiment_folder_name,
+          # )
+          model_trained = loadModel.loadModelForDataset(
             model_class_string,
             dataset_string,
-            X_train,
-            X_test,
-            y_train,
-            y_test,
-            feature_names
-          )
+            experiment_folder_name)
 
           # get the predicted labels (only test set)
           # X_test = pd.concat([X_train, X_test]) # ONLY ACTIVATE THIS WHEN TEST SET IS NOT LARGE ENOUGH TO GEN' MODEL RECON DATASET
@@ -245,21 +243,21 @@ def runExperiments(dataset_values, model_class_values, norm_values, approaches_v
               standard_deviations, # used solely for feature_tweaking method
             )
 
-            if 'MACE' in approach_string:
-              print(
-                f'\t- cfe_found: {explanation_object["cfe_found"]} -'
-                f'\t- cfe_plaus: {explanation_object["cfe_plausible"]} -'
-                f'\t- cfe_time: {explanation_object["cfe_time"]:.4f} -'
-                f'\t- int_dist: N/A -'
-                f'\t- cfe_dist: {explanation_object["cfe_distance"]:.4f} -'
-              ) # , file=log_file)
-            elif 'MINT' in approach_string:
+            if 'MINT' in approach_string:
               print(
                 f'\t- scf_found: {explanation_object["scf_found"]} -'
                 f'\t- scf_plaus: {explanation_object["scf_plausible"]} -'
                 f'\t- scf_time: {explanation_object["scf_time"]:.4f} -'
-                f'\t- int_dist: {explanation_object["int_distance"]:.4f} -'
+                f'\t- int_cost: {explanation_object["int_cost"]:.4f} -'
                 f'\t- scf_dist: {explanation_object["scf_distance"]:.4f} -'
+              ) # , file=log_file)
+            else: # 'MACE' or other..
+              print(
+                f'\t- cfe_found: {explanation_object["cfe_found"]} -'
+                f'\t- cfe_plaus: {explanation_object["cfe_plausible"]} -'
+                f'\t- cfe_time: {explanation_object["cfe_time"]:.4f} -'
+                f'\t- int_cost: N/A -'
+                f'\t- cfe_dist: {explanation_object["cfe_distance"]:.4f} -'
               ) # , file=log_file)
 
             all_minimum_distances[f'sample_{factual_sample_index}'] = explanation_object

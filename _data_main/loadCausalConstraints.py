@@ -340,3 +340,113 @@ def getMortgageCausalConsistencyConstraints(model_symbols, factual_sample):
   )
 
   return And([a,b])
+
+
+def getTwoMoonCausalConsistencyConstraints(model_symbols, factual_sample):
+  a = Ite(
+    Not( # if YES intervened
+      EqualsOrIff(
+        ToReal(model_symbols['interventional']['x0']['symbol']),
+        ToReal(factual_sample['x0']),
+      )
+    ),
+    EqualsOrIff( # set value of X^CF to the intervened value
+      ToReal(model_symbols['counterfactual']['x0']['symbol']),
+      ToReal(model_symbols['interventional']['x0']['symbol']),
+    ),
+    EqualsOrIff( # else, set value of X^CF to (8) from paper
+      ToReal(model_symbols['counterfactual']['x0']['symbol']),
+      ToReal(factual_sample['x0']),
+    ),
+  )
+
+  b = Ite(
+    Not( # if YES intervened
+      EqualsOrIff(
+        ToReal(model_symbols['interventional']['x1']['symbol']),
+        ToReal(factual_sample['x1']),
+      )
+    ),
+    EqualsOrIff( # set value of X^CF to the intervened value
+      ToReal(model_symbols['counterfactual']['x1']['symbol']),
+      ToReal(model_symbols['interventional']['x1']['symbol']),
+    ),
+    EqualsOrIff( # else, set value of X^CF to (8) from paper
+      ToReal(model_symbols['counterfactual']['x1']['symbol']),
+      ToReal(factual_sample['x1']),
+    ),
+  )
+
+  return And([a,b])
+
+
+def getTestCausalConsistencyConstraints(model_symbols, factual_sample):
+  a = Ite(
+    Not( # if YES intervened
+      EqualsOrIff(
+        ToReal(model_symbols['interventional']['x0_ord_0']['symbol']),
+        ToReal(factual_sample['x0_ord_0']),
+      )
+    ),
+    EqualsOrIff( # set value of X^CF to the intervened value
+      ToReal(model_symbols['counterfactual']['x0_ord_0']['symbol']),
+      ToReal(model_symbols['interventional']['x0_ord_0']['symbol']),
+    ),
+    EqualsOrIff( # else, set value of X^CF to (8) from paper
+      ToReal(model_symbols['counterfactual']['x0_ord_0']['symbol']),
+      ToReal(factual_sample['x0_ord_0']),
+    ),
+  )
+
+  b = Ite(
+    Not( # if YES intervened
+      EqualsOrIff(
+        ToReal(model_symbols['interventional']['x0_ord_1']['symbol']),
+        ToReal(factual_sample['x0_ord_1']),
+      )
+    ),
+    EqualsOrIff( # set value of X^CF to the intervened value
+      ToReal(model_symbols['counterfactual']['x0_ord_1']['symbol']),
+      ToReal(model_symbols['interventional']['x0_ord_1']['symbol']),
+    ),
+    EqualsOrIff( # else, set value of X^CF to (8) from paper
+      ToReal(model_symbols['counterfactual']['x0_ord_1']['symbol']),
+      ToReal(factual_sample['x0_ord_1']),
+    ),
+  )
+
+  c = Ite(
+    Not( # if YES intervened
+      EqualsOrIff(
+        ToReal(model_symbols['interventional']['x0_ord_2']['symbol']),
+        ToReal(factual_sample['x0_ord_2']),
+      )
+    ),
+    EqualsOrIff( # set value of X^CF to the intervened value
+      ToReal(model_symbols['counterfactual']['x0_ord_2']['symbol']),
+      ToReal(model_symbols['interventional']['x0_ord_2']['symbol']),
+    ),
+    EqualsOrIff( # else, set value of X^CF to (8) from paper
+      ToReal(model_symbols['counterfactual']['x0_ord_2']['symbol']),
+      ToReal(factual_sample['x0_ord_2']),
+    ),
+  )
+
+  d = Ite(
+    Not( # if YES intervened
+      EqualsOrIff(
+        ToReal(model_symbols['interventional']['x0_ord_3']['symbol']),
+        ToReal(factual_sample['x0_ord_3']),
+      )
+    ),
+    EqualsOrIff( # set value of X^CF to the intervened value
+      ToReal(model_symbols['counterfactual']['x0_ord_3']['symbol']),
+      ToReal(model_symbols['interventional']['x0_ord_3']['symbol']),
+    ),
+    EqualsOrIff( # else, set value of X^CF to (8) from paper
+      ToReal(model_symbols['counterfactual']['x0_ord_3']['symbol']),
+      ToReal(factual_sample['x0_ord_3']),
+    ),
+  )
+
+  return And([a,b,c,d])
