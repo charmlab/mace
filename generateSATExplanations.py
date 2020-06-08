@@ -520,37 +520,73 @@ def getDiversityFormulaUpdate(model):
     ])
   )
 
+def getTorchFromSklearn(sklearn_model, input_dim):
+  model_width = 10  # TODO make more dynamic later and move to separate function
+  if sklearn_model.hidden_layer_sizes == model_width:
+    n_hidden_layers = 1
+  else:
+    n_hidden_layers = len(sklearn_model.hidden_layer_sizes)
+
+  if n_hidden_layers == 1:
+    assert sklearn_model.hidden_layer_sizes == (model_width)
+    torch_model = torch.nn.Sequential(
+      torch.nn.Linear(input_dim, model_width),
+      torch.nn.ReLU(),
+      torch.nn.Linear(model_width, 1),
+      torch.nn.ReLU())
+  elif n_hidden_layers == 2:
+    assert sklearn_model.hidden_layer_sizes == (model_width, model_width)
+    torch_model = torch.nn.Sequential(
+      torch.nn.Linear(input_dim, model_width),
+      torch.nn.ReLU(),
+      torch.nn.Linear(model_width, model_width),
+      torch.nn.ReLU(),
+      torch.nn.Linear(model_width, 1),
+      torch.nn.ReLU())
+  elif n_hidden_layers == 3:
+    assert sklearn_model.hidden_layer_sizes == (model_width, model_width, model_width)
+    torch_model = torch.nn.Sequential(
+      torch.nn.Linear(input_dim, model_width),
+      torch.nn.ReLU(),
+      torch.nn.Linear(model_width, model_width),
+      torch.nn.ReLU(),
+      torch.nn.Linear(model_width, model_width),
+      torch.nn.ReLU(),
+      torch.nn.Linear(model_width, 1),
+      torch.nn.ReLU())
+  elif n_hidden_layers == 4:
+    assert sklearn_model.hidden_layer_sizes == (model_width, model_width, model_width, model_width)
+    torch_model = torch.nn.Sequential(
+      torch.nn.Linear(input_dim, model_width),
+      torch.nn.ReLU(),
+      torch.nn.Linear(model_width, model_width),
+      torch.nn.ReLU(),
+      torch.nn.Linear(model_width, model_width),
+      torch.nn.ReLU(),
+      torch.nn.Linear(model_width, model_width),
+      torch.nn.ReLU(),
+      torch.nn.Linear(model_width, 1),
+      torch.nn.ReLU())
+  else:
+    raise Exception("MLP model not supported")
+
+  for i in range(n_hidden_layers + 1):
+    print(i)
+    torch_model[2*i].weight = torch.nn.Parameter(torch.FloatTensor(sklearn_model.coefs_[i].astype('float32')).t(),
+                                                 requires_grad=False)
+  for i in range(n_hidden_layers + 1):
+    torch_model[2*i].bias = torch.nn.Parameter(torch.FloatTensor(sklearn_model.intercepts_[i].astype('float32')),
+                                             requires_grad=False)
+
+  return torch_model
 
 # TODO: Gurobi can also make use of past computations
 def getNetworkBounds(sklearn_model, dataset_obj, factual_sample, norm_type, norm_lower, norm_upper):
+  assert isinstance(sklearn_model, MLPClassifier), "Only MLP model supports the linear relaxation."
+  input_dim = len(dataset_obj.getInputAttributeNames('kurz'))
 
   # First, translate sklearn model to PyTorch model
-  input_attr_names_kurz = dataset_obj.getInputAttributeNames('kurz')
-  input_dim = len(input_attr_names_kurz)
-  model_width = 10  # TODO make more dynamic later and move to separate function
-  # assert sklearn_model.hidden_layer_sizes == (model_width, model_width)
-  torch_model = torch.nn.Sequential(
-    torch.nn.Linear(input_dim, model_width),
-    torch.nn.ReLU(),
-    torch.nn.Linear(model_width, model_width),
-    torch.nn.ReLU(),
-    # torch.nn.Linear(model_width, model_width),
-    # torch.nn.ReLU(),
-    # torch.nn.Linear(model_width, model_width),
-    # torch.nn.ReLU(),
-    torch.nn.Linear(model_width, 1),
-    torch.nn.ReLU())
-
-  torch_model[0].weight = torch.nn.Parameter(torch.FloatTensor(sklearn_model.coefs_[0].astype('float32')).t(), requires_grad=False)
-  torch_model[2].weight = torch.nn.Parameter(torch.FloatTensor(sklearn_model.coefs_[1].astype('float32')).t(), requires_grad=False)
-  torch_model[4].weight = torch.nn.Parameter(torch.FloatTensor(sklearn_model.coefs_[2].astype('float32')).t(), requires_grad=False)
-  # torch_model[6].weight = torch.nn.Parameter(torch.FloatTensor(sklearn_model.coefs_[3].astype('float32')).t(), requires_grad=False)
-  # torch_model[8].weight = torch.nn.Parameter(torch.FloatTensor(sklearn_model.coefs_[4].astype('float32')).t(), requires_grad=False)
-  torch_model[0].bias = torch.nn.Parameter(torch.FloatTensor(sklearn_model.intercepts_[0].astype('float32')), requires_grad=False)
-  torch_model[2].bias = torch.nn.Parameter(torch.FloatTensor(sklearn_model.intercepts_[1].astype('float32')), requires_grad=False)
-  torch_model[4].bias = torch.nn.Parameter(torch.FloatTensor(sklearn_model.intercepts_[2].astype('float32')), requires_grad=False)
-  # torch_model[6].bias = torch.nn.Parameter(torch.FloatTensor(sklearn_model.intercepts_[3].astype('float32')), requires_grad=False)
-  # torch_model[8].bias = torch.nn.Parameter(torch.FloatTensor(sklearn_model.intercepts_[4].astype('float32')), requires_grad=False)
+  torch_model = getTorchFromSklearn(sklearn_model, input_dim)
 
   # Now create a linearized network
   layers = [module for module in torch_model.modules() if type(module) != torch.nn.Sequential]
@@ -558,10 +594,11 @@ def getNetworkBounds(sklearn_model, dataset_obj, factual_sample, norm_type, norm
 
   # Get input domains
   domains = np.zeros((input_dim, 2), dtype=np.float32)
-  for i, attr_name_kurz in enumerate(input_attr_names_kurz):
+  for i, attr_name_kurz in enumerate(dataset_obj.getInputAttributeNames('kurz')):
     attr_obj = dataset_obj.attributes_kurz[attr_name_kurz]
     domains[i][0] = attr_obj.lower_bound
     domains[i][1] = attr_obj.upper_bound
+    print(attr_name_kurz, f" ({attr_obj.lower_bound}, {attr_obj.upper_bound})")
 
   # Get lower and upper bounds on all neuron values
   #TODO check factualsample.values() order

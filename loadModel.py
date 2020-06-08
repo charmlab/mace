@@ -22,7 +22,7 @@ def convertSklearnDtypeToPytorch(input_obj):
 
 def loadModelForDataset(model_class, dataset_string):
 
-  if not (model_class in {'lr', 'mlp'}):
+  if not (model_class in {'lr', 'mlp', 'mlp1x10', 'mlp2x10', 'mlp3x10'}):
     raise Exception(f'{model_class} not supported.')
 
   if not (dataset_string in {'random', 'mortgage', 'twomoon', 'german', 'credit'}):
@@ -35,6 +35,12 @@ def loadModelForDataset(model_class, dataset_string):
     model_pretrain = LogisticRegression()
   elif model_class == 'mlp':
     model_pretrain = MLPClassifier(hidden_layer_sizes = (10, 10))
+  elif model_class == 'mlp1x10':
+    model_pretrain = MLPClassifier(hidden_layer_sizes = (10))
+  elif model_class == 'mlp2x10':
+    model_pretrain = MLPClassifier(hidden_layer_sizes = (10, 10))
+  elif model_class == 'mlp3x10':
+    model_pretrain = MLPClassifier(hidden_layer_sizes = (10, 10, 10))
 
   model_trained = model_pretrain.fit(X_train, y_train)
 
@@ -53,7 +59,7 @@ def loadModelForDataset(model_class, dataset_string):
     model_trained.coef_ = convertSklearnDtypeToPytorch(w)
     model_trained.intercept_ = convertSklearnDtypeToPytorch(b)
 
-  elif model_class == 'mlp':
+  elif 'mlp' in model_class:
 
     for i in range(len(model_trained.coefs_)):
       model_trained.coefs_[i] = convertSklearnDtypeToPytorch(model_trained.coefs_[i])
