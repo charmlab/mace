@@ -228,9 +228,9 @@ class LinearizedNetwork:
                 v = self.model.addVar(lb=lb, ub=ub, obj=0,
                                       vtype=grb.GRB.BINARY,
                                       name=attr_name)
-            elif attr_type == 'binary': #TODO: fix binaries in datasets to really be 0,1 not 1,2
+            elif attr_type == 'binary':
                 v = self.model.addVar(lb=lb, ub=ub, obj=0,
-                                      vtype=grb.GRB.INTEGER,
+                                      vtype=grb.GRB.BINARY,
                                       name=attr_name)
             else:
                 raise Exception(f'Uknonwn attribute type {attr_name}: {attr_type}')
@@ -297,7 +297,7 @@ class LinearizedNetwork:
                 inp_lb.append(lb)
                 inp_ub.append(ub)
         else:
-            # TODO: keep 'em?!
+            # TODO: keep 'em?! yes, for now.
             # self.model.remove(self.model.getQConstrs())
             # self.model.remove(self.model.getConstrs())
             pass
