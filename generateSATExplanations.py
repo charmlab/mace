@@ -611,18 +611,18 @@ def getNetworkBounds(sklearn_model, dataset_obj, factual_sample, norm_type, norm
     return False, None, None
 
   cnt = 0
-  print("lower bounds:--------------")
+  # print("lower bounds:--------------")
   for i, layer_bounds in enumerate(lin_net.lower_bounds):
-    print(layer_bounds)
-    if i %2 == 0:
+    # print(layer_bounds)
+    if i %2 == 0 and i > 0:
       for bnd in layer_bounds:
         if bnd > 0:
           cnt += 1
 
-  print("upper bounds:--------------")
+  # print("upper bounds:--------------")
   for i, layer_bounds in enumerate(lin_net.upper_bounds):
-    print(layer_bounds)
-    if i%2 == 0:
+    # print(layer_bounds)
+    if i%2 == 0 and i > 0:
       for bnd in layer_bounds:
         if bnd == 0:
           cnt += 1
