@@ -38,7 +38,7 @@ def loadModelForDataset(model_class, dataset_string, experiment_folder_name = No
 
   log_file = sys.stdout if experiment_folder_name == None else open(f'{experiment_folder_name}/log_training.txt','w')
 
-  if not (model_class in {'lr', 'mlp', 'tree', 'forest'}):
+  if not (model_class in {'lr', 'mlp', 'tree', 'forest', 'mlp1x10', 'mlp2x10', 'mlp3x10'}):
     raise Exception(f'{model_class} not supported.')
 
   if not (dataset_string in {'random', 'mortgage', 'twomoon', 'german', 'credit', 'compass', 'adult', 'test'}):
@@ -59,6 +59,14 @@ def loadModelForDataset(model_class, dataset_string, experiment_folder_name = No
     model_pretrain = LogisticRegression() # default penalty='l2', i.e., ridge
   elif model_class == 'mlp':
     model_pretrain = MLPClassifier(hidden_layer_sizes = (10, 10))
+  elif model_class == 'mlp1x10':
+    model_pretrain = MLPClassifier(hidden_layer_sizes = (10))
+  elif model_class == 'mlp2x10':
+    model_pretrain = MLPClassifier(hidden_layer_sizes = (10, 10))
+  elif model_class == 'mlp3x10':
+    model_pretrain = MLPClassifier(hidden_layer_sizes = (10, 10, 10))
+  else:
+    raise Exception(f"Model type {model_class} not supported.")
 
   print(
     f'[INFO] Training `{model_class}` on {X_train.shape[0]:,} samples ' +

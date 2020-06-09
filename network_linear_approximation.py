@@ -1,5 +1,6 @@
 import gurobipy as grb
 import torch
+import numpy as np
 
 from torch import nn
 from torch.autograd import Variable
@@ -104,7 +105,95 @@ class LinearizedNetwork:
 
         return self.gurobi_vars[-1][0].X
 
-    def define_linear_approximation(self, input_domain, factual_sample, norm_type, norm_lower, norm_upper):
+    def applyDistanceConstrs(self, dataset_obj, factual_sample, norm_type, norm_lower, norm_upper):
+
+        # # Two-norm:
+        # assert norm_type == 'two_norm'
+        # self.model.addQConstr(
+        #     (1 / len(inp_gurobi_vars))
+        #     *
+        #     grb.quicksum(
+        #         ((inp_gurobi_vars[i] - factual_sample[i]) / (input_domain[i][1] - input_domain[i][0])) *
+        #         ((inp_gurobi_vars[i] - factual_sample[i]) / (input_domain[i][1] - input_domain[i][0]))
+        #         for i in range(len(inp_gurobi_vars))
+        #     )
+        #     <= norm_threshold ** 2
+        # )
+
+        mutables = dataset_obj.getMutableAttributeNames('kurz')
+        one_hots= dataset_obj.getOneHotAttributesNames('kurz')
+        non_hots = dataset_obj.getNonHotAttributesNames('kurz')
+
+        assert norm_type == 'one_norm'
+        abs_diffs_normalized = []
+
+        # TODO: should these intermediate variables also have the same type as input vars?
+
+        # 1. mutable & non-hot
+        for attr_name_kurz in np.intersect1d(mutables, non_hots):
+            v = self.model.getVarByName(attr_name_kurz)
+            diff_normalized = self.model.addVar(lb=-1.0, ub=1.0, obj=0,
+                                                vtype=grb.GRB.CONTINUOUS, name=f'diff_{attr_name_kurz}')
+            self.model.addConstr(
+                diff_normalized == (v - factual_sample[attr_name_kurz]) / (v.ub - v.lb)
+            )
+            abs_diff_normalized = self.model.addVar(lb=0.0, ub=1.0, obj=0,
+                                                    vtype=grb.GRB.CONTINUOUS, name=f'abs_{attr_name_kurz}')
+            self.model.addConstr(
+                abs_diff_normalized == grb.abs_(diff_normalized)
+            )
+            abs_diffs_normalized.append(abs_diff_normalized)
+
+        # 2. mutable & integer-based & one-hot
+        already_considered = []
+        for attr_name_kurz in np.intersect1d(mutables, one_hots):
+            if attr_name_kurz not in already_considered:
+                siblings_kurz = dataset_obj.getSiblingsFor(attr_name_kurz)
+                if 'cat' in dataset_obj.attributes_kurz[attr_name_kurz].attr_type:
+
+                    diff_normalized = self.model.addVar(lb=-1.0, ub=1.0, obj=0, vtype=grb.GRB.CONTINUOUS,
+                                             name=f'diff_{attr_name_kurz}')
+                    self.model.addConstr(
+                        diff_normalized == grb.max_(self.model.getVarByName(sib_name_kurz) - factual_sample[sib_name_kurz]
+                                                    for sib_name_kurz in siblings_kurz)
+                    )
+                    # It's either 0 or 1, so no need for grb.abs_()
+                    abs_diffs_normalized.append(diff_normalized)
+
+                elif 'ord' in dataset_obj.attributes_kurz[attr_name_kurz].attr_type:
+                    diff_normalized = self.model.addVar(lb=-1.0, ub=1.0, obj=0, vtype=grb.GRB.CONTINUOUS,
+                                             name=f'diff_{attr_name_kurz}')
+                    self.model.addConstr(
+                        diff_normalized == (grb.quicksum(
+                            self.model.getVarByName(sib_name_kurz) for sib_name_kurz in siblings_kurz
+                        )
+                        -
+                        sum(factual_sample[sib_name_kurz] for sib_name_kurz in siblings_kurz))
+                        /
+                        len(siblings_kurz)
+                    )
+                    abs_diff_normalized = self.model.addVar(lb=0.0, ub=1.0, obj=0,
+                                                            vtype=grb.GRB.CONTINUOUS, name=f'abs_{attr_name_kurz}')
+                    self.model.addConstr(
+                        abs_diff_normalized == grb.abs_(diff_normalized)
+                    )
+                    abs_diffs_normalized.append(abs_diff_normalized)
+                else:
+                    raise Exception(f'{attr_name_kurz} must include either `cat` or `ord`.')
+                already_considered.extend(siblings_kurz)
+
+        self.model.addConstr(
+            grb.quicksum(abs_diffs_normalized) / len(abs_diffs_normalized)
+            <= norm_upper
+        )
+        if norm_lower != 0.0:
+            self.model.addConstr(
+                grb.quicksum(abs_diffs_normalized) / len(abs_diffs_normalized)
+                >= norm_lower
+            )
+        self.model.update()
+
+    def define_linear_approximation(self, input_domain, factual_sample, dataset_obj, norm_type, norm_lower, norm_upper):
         '''
         input_domain: Tensor containing in each row the lower and upper bound
                       for the corresponding dimension
@@ -123,50 +212,33 @@ class LinearizedNetwork:
         inp_lb = []
         inp_ub = []
         inp_gurobi_vars = []
+        attr_names = list(factual_sample.keys())
         for dim, (lb, ub) in enumerate(input_domain):
-            v = self.model.addVar(lb=lb, ub=ub, obj=0,
-                                  vtype=grb.GRB.CONTINUOUS,
-                                  name=f'inp_{dim}')
+            attr_name = attr_names[dim]
+            attr_type = dataset_obj.attributes_kurz[attr_name].attr_type
+            if attr_type == 'numeric-real':
+                v = self.model.addVar(lb=lb, ub=ub, obj=0,
+                                      vtype=grb.GRB.CONTINUOUS,
+                                      name=attr_name)
+            elif attr_type == 'numeric-int':
+                v = self.model.addVar(lb=lb, ub=ub, obj=0,
+                                      vtype=grb.GRB.INTEGER,
+                                      name=attr_name)
+            elif 'cat' in attr_type or 'ord' in attr_type:
+                v = self.model.addVar(lb=lb, ub=ub, obj=0,
+                                      vtype=grb.GRB.BINARY,
+                                      name=attr_name)
+            elif attr_type == 'binary': #TODO: fix binaries in datasets to really be 0,1 not 1,2
+                v = self.model.addVar(lb=lb, ub=ub, obj=0,
+                                      vtype=grb.GRB.INTEGER,
+                                      name=attr_name)
+            else:
+                raise Exception(f'Uknonwn attribute type {attr_name}: {attr_type}')
             inp_gurobi_vars.append(v)
 
-        # Add distance constraints and compute new input bounds w.r.t. distance TODO: add other norms
-        # assert norm_type == 'two_norm'
-        # self.model.addQConstr(
-        #     (1 / len(inp_gurobi_vars))
-        #     *
-        #     grb.quicksum(
-        #         ((inp_gurobi_vars[i] - factual_sample[i]) / (input_domain[i][1] - input_domain[i][0])) *
-        #         ((inp_gurobi_vars[i] - factual_sample[i]) / (input_domain[i][1] - input_domain[i][0]))
-        #         for i in range(len(inp_gurobi_vars))
-        #     )
-        #     <= norm_threshold ** 2
-        # )
+        self.model.update()
 
-        assert norm_type == 'one_norm'
-        abs_diffs_normalized = []
-        for i, v in enumerate(inp_gurobi_vars):
-            diff_normalized = self.model.addVar(lb=-1.0, ub=1.0, obj=0,
-                                  vtype=grb.GRB.CONTINUOUS, name=f'diff_{i}')
-            self.model.addConstr(
-                diff_normalized == (v - factual_sample[i]) / ((input_domain[i][1] - input_domain[i][0]) * len(inp_gurobi_vars))
-            )
-            abs_diff_normalized = self.model.addVar(lb=0.0, ub=1.0, obj=0,
-                                  vtype=grb.GRB.CONTINUOUS, name=f'abs_{i}')
-            self.model.addConstr(
-                abs_diff_normalized == grb.abs_(diff_normalized)
-            )
-            abs_diffs_normalized.append(abs_diff_normalized)
-
-        self.model.addConstr(
-            grb.quicksum(abs_diffs_normalized)
-            <= norm_upper
-        )
-        if norm_lower != 0.0:
-            self.model.addConstr(
-                grb.quicksum(abs_diffs_normalized)
-                >= norm_lower
-            )
-
+        self.applyDistanceConstrs(dataset_obj, factual_sample, norm_type, norm_lower, norm_upper)
 
         optimal_not_possible = False
         non_opt = 0
@@ -183,6 +255,8 @@ class LinearizedNetwork:
                 optimal_not_possible = True
                 non_opt += 1
                 print(f'LP not optimally solved, status: {self.model.status}')
+                if self.model.status == 3: # Infeasible
+                    return False
                 break
             else:
                 lb = inp_v.X
@@ -199,6 +273,8 @@ class LinearizedNetwork:
                 optimal_not_possible = True
                 non_opt += 1
                 print(f'LP not optimally solved, status: {self.model.status}')
+                if self.model.status == 3: # Infeasible
+                    return False
                 break
             else:
                 ub = inp_v.X
@@ -364,3 +440,5 @@ class LinearizedNetwork:
         assert len(self.gurobi_vars[-1]) == 1, "Network doesn't have scalar output"
 
         self.model.update()
+
+        return True

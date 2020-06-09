@@ -575,7 +575,6 @@ def getTorchFromSklearn(sklearn_model, input_dim):
     raise Exception("MLP model not supported")
 
   for i in range(n_hidden_layers + 1):
-    print(i)
     torch_model[2*i].weight = torch.nn.Parameter(torch.FloatTensor(sklearn_model.coefs_[i].astype('float32')).t(),
                                                  requires_grad=False)
   for i in range(n_hidden_layers + 1):
@@ -602,24 +601,27 @@ def getNetworkBounds(sklearn_model, dataset_obj, factual_sample, norm_type, norm
     attr_obj = dataset_obj.attributes_kurz[attr_name_kurz]
     domains[i][0] = attr_obj.lower_bound
     domains[i][1] = attr_obj.upper_bound
-    print(attr_name_kurz, f" ({attr_obj.lower_bound}, {attr_obj.upper_bound})")
+    # print(attr_name_kurz, f" ({attr_obj.lower_bound}, {attr_obj.upper_bound})")
 
   # Get lower and upper bounds on all neuron values
   #TODO check factualsample.values() order
-  lin_net.define_linear_approximation(torch.from_numpy(domains), list(factual_sample.values()), norm_type, norm_lower, norm_upper)
+  feasible = lin_net.define_linear_approximation(torch.from_numpy(domains), factual_sample, dataset_obj, norm_type,
+                                                 norm_lower, norm_upper)
+  if not feasible:
+    return False, None, None
 
   cnt = 0
-  # print("lower bounds:--------------")
+  print("lower bounds:--------------")
   for i, layer_bounds in enumerate(lin_net.lower_bounds):
-    # print(layer_bounds)
+    print(layer_bounds)
     if i %2 == 0:
       for bnd in layer_bounds:
         if bnd > 0:
           cnt += 1
 
-  # print("upper bounds:--------------")
+  print("upper bounds:--------------")
   for i, layer_bounds in enumerate(lin_net.upper_bounds):
-    # print(layer_bounds)
+    print(layer_bounds)
     if i%2 == 0:
       for bnd in layer_bounds:
         if bnd == 0:
@@ -627,7 +629,7 @@ def getNetworkBounds(sklearn_model, dataset_obj, factual_sample, norm_type, norm
 
   print("num of ReLUs with fixed state: ", cnt)
 
-  return lin_net.lower_bounds, lin_net.upper_bounds
+  return True, lin_net.lower_bounds, lin_net.upper_bounds
 
 
 def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, factual_sample, norm_type, approach_string, epsilon, log_file):
@@ -692,7 +694,10 @@ def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, f
 
   while (not solved):
     lower = reverse_norm_threshold/2.0 if reverse_norm_threshold != epsilon else 0.0
-    mlp_lbs, mlp_ubs = getNetworkBounds(model_trained, dataset_obj, factual_sample, norm_type, lower, reverse_norm_threshold)
+    feasible, mlp_lbs, mlp_ubs = getNetworkBounds(model_trained, dataset_obj, factual_sample, norm_type, lower, reverse_norm_threshold)
+    if not feasible:
+      reverse_norm_threshold *= 2.0
+      continue
     model_formula = getModelFormula(model_symbols, model_trained, mlp_lbs, mlp_ubs)
     # model_formula = getModelFormula(model_symbols, model_trained)
     distance_formula = getDistanceFormula(model_symbols, dataset_obj, factual_pysmt_sample, norm_type,
@@ -715,7 +720,7 @@ def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, f
       if solved:
         rev_bs_model = solver.get_model()
       else:
-        assert is_sat(And(plausibility_formula, distance_formula, diversity_formula), solver_name=solver_name)
+        # assert is_sat(And(plausibility_formula, distance_formula, diversity_formula), solver_name=solver_name)
         f = Implies(And(plausibility_formula, distance_formula, diversity_formula),
                     And(model_formula, Not(counterfactual_formula)))
         assert is_sat(f, solver_name=solver_name), 'no solution found (SMT issue).'
@@ -745,24 +750,27 @@ def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, f
       if not first_iter:# I want it to save the last CFE in previous loop first
         # Upper-bound becomes equal to the CFE distance so BS doesn't corrupt
 
-        mlp_lbs, mlp_ubs = getNetworkBounds(model_trained, dataset_obj, factual_sample, norm_type,
+        feasible, mlp_lbs, mlp_ubs = getNetworkBounds(model_trained, dataset_obj, factual_sample, norm_type,
                                             norm_lower_bound, curr_norm_threshold)
-        model_formula = getModelFormula(model_symbols, model_trained, mlp_lbs, mlp_ubs)
-        # model_formula = getModelFormula(model_symbols, model_trained)
+        if feasible:
+          model_formula = getModelFormula(model_symbols, model_trained, mlp_lbs, mlp_ubs)
+          # model_formula = getModelFormula(model_symbols, model_trained)
 
-        formula = And(  # works for both initial iteration and all subsequent iterations
-          model_formula,
-          counterfactual_formula,
-          plausibility_formula,
-          distance_formula,
-          diversity_formula,
-        )
-        # formula = formula.simplify()
+          formula = And(  # works for both initial iteration and all subsequent iterations
+            model_formula,
+            counterfactual_formula,
+            plausibility_formula,
+            distance_formula,
+            diversity_formula,
+          )
+          # formula = formula.simplify()
 
-        solver.add_assertion(formula)
-        iteration_start_time = time.time()
-        solved = solver.solve()
-        iteration_end_time = time.time()
+          solver.add_assertion(formula)
+          iteration_start_time = time.time()
+          solved = solver.solve()
+          iteration_end_time = time.time()
+        else:
+          solved = False
 
       else:
         assert solved, 'last iter of reverse BS must have had solved the formula!'
@@ -844,25 +852,15 @@ def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, f
 
       else: # no solution found in the assigned norm range --> update range and try again
 
-        assert is_sat(And(plausibility_formula, distance_formula, diversity_formula), solver_name=solver_name)
+        # assert is_sat(And(plausibility_formula, distance_formula, diversity_formula), solver_name=solver_name)
         f = Implies(And(plausibility_formula, distance_formula, diversity_formula),
                     And(model_formula, Not(counterfactual_formula)))
         assert is_sat(f, solver_name=solver_name), 'no solution found (SMT issue).'
-
-        with Solver(name=solver_name) as neg_solver:
-          neg_formula = Not(formula)
-          neg_solver.add_assertion(neg_formula)
-          neg_solved = neg_solver.solve()
-          if neg_solved:
-            print('no solution exists.', file = log_file)
-            norm_lower_bound = curr_norm_threshold
-            norm_upper_bound = norm_upper_bound
-            curr_norm_threshold = getCenterNormThresholdInRange(norm_lower_bound, norm_upper_bound)
-            distance_formula = getDistanceFormula(model_symbols, dataset_obj, factual_pysmt_sample, norm_type, approach_string, norm_lower_bound, curr_norm_threshold)
-          else:
-            print('no solution found (SMT issue).', file = log_file)
-            quit()
-            break
+        print('no solution exists.', file = log_file)
+        norm_lower_bound = curr_norm_threshold
+        norm_upper_bound = norm_upper_bound
+        curr_norm_threshold = getCenterNormThresholdInRange(norm_lower_bound, norm_upper_bound)
+        distance_formula = getDistanceFormula(model_symbols, dataset_obj, factual_pysmt_sample, norm_type, approach_string, norm_lower_bound, curr_norm_threshold)
 
   # IMPORTANT: there may be many more at this same distance! OR NONE! (what?? 2020.02.19)
   closest_counterfactual_sample = sorted(counterfactuals, key = lambda x: x['counterfactual_distance'])[0]
