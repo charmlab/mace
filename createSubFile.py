@@ -6,15 +6,16 @@
 # ls -1 | grep 2019.05 | xargs rm -rf
 # scp -r amir@login.cluster.is.localnet:~/dev/mace/_experiments/__merged _results/
 
-DATASET_VALUES = ['random', 'twomoon'] #, 'twomoon', 'credit']
-MODEL_CLASS_VALUES = ['lr', 'mlp']
-NORM_VALUES = ['two_norm']
+DATASET_VALUES = ['compass', 'credit', 'adult'] #, 'twomoon', 'credit']
+MODEL_CLASS_VALUES = ['mlp1x10', 'mlp2x10', 'mlp3x10']
+NORM_VALUES = ['one_norm']
 # APPROACHES_VALUES = ['MACE_eps_1e-3']
-APPROACHES_VALUES = ['MACE_eps_1e-5', 'MINT_eps_1e-5']
+APPROACHES_VALUES = ['MACE_eps_1e-5']
 
 NUM_BATCHES = 100
 NUM_NEG_SAMPLES_PER_BATCH = 1
 GEN_CF_FOR = 'neg_and_pos'
+# REPEAT = 10
 
 # NUM_BATCHES = 100
 # NUM_NEG_SAMPLES_PER_BATCH = 5
@@ -22,7 +23,7 @@ GEN_CF_FOR = 'neg_and_pos'
 request_memory = 8192
 
 sub_file = open('test.sub','w')
-print('executable = /home/amir/dev/mace/_venv/bin/python', file=sub_file)
+print('executable = /home/kmohammadi/anaconda3/venvs/_mip_smt/bin/python', file=sub_file)
 print('error = _cluster_logs/test.$(Process).err', file=sub_file)
 print('output = _cluster_logs/test.$(Process).out', file=sub_file)
 print('log = _cluster_logs/test.$(Process).log', file=sub_file)
@@ -52,7 +53,8 @@ for dataset_string in DATASET_VALUES:
              f' -g {GEN_CF_FOR}', \
              f' -p $(Process)', \
           file=sub_file)
-          print('queue', file=sub_file)
+          print(f'requirements = CpuModel =?= \"Intel(R) Xeon(R) Gold 5220 CPU @ 2.20GHz\"', file=sub_file)
+          print(f'queue', file=sub_file)
           print('\n', file=sub_file)
 
 

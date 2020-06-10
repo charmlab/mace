@@ -610,24 +610,24 @@ def getNetworkBounds(sklearn_model, dataset_obj, factual_sample, norm_type, norm
   if not feasible:
     return False, None, None
 
-  cnt = 0
-  # print("lower bounds:--------------")
-  for i, layer_bounds in enumerate(lin_net.lower_bounds):
-    # print(layer_bounds)
-    if i %2 == 0 and i > 0:
-      for bnd in layer_bounds:
-        if bnd > 0:
-          cnt += 1
-
-  # print("upper bounds:--------------")
-  for i, layer_bounds in enumerate(lin_net.upper_bounds):
-    # print(layer_bounds)
-    if i%2 == 0 and i > 0:
-      for bnd in layer_bounds:
-        if bnd == 0:
-          cnt += 1
-
-  print("num of ReLUs with fixed state: ", cnt)
+  # cnt = 0
+  # # print("lower bounds:--------------")
+  # for i, layer_bounds in enumerate(lin_net.lower_bounds):
+  #   # print(layer_bounds)
+  #   if i %2 == 0 and i > 0:
+  #     for bnd in layer_bounds:
+  #       if bnd > 0:
+  #         cnt += 1
+  #
+  # # print("upper bounds:--------------")
+  # for i, layer_bounds in enumerate(lin_net.upper_bounds):
+  #   # print(layer_bounds)
+  #   if i%2 == 0 and i > 0:
+  #     for bnd in layer_bounds:
+  #       if bnd == 0:
+  #         cnt += 1
+  #
+  # print("num of ReLUs with fixed state: ", cnt)
 
   return True, lin_net.lower_bounds, lin_net.upper_bounds
 
@@ -853,9 +853,10 @@ def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, f
       else: # no solution found in the assigned norm range --> update range and try again
 
         # assert is_sat(And(plausibility_formula, distance_formula, diversity_formula), solver_name=solver_name)
-        f = Implies(And(plausibility_formula, distance_formula, diversity_formula),
-                    And(model_formula, Not(counterfactual_formula)))
-        assert is_sat(f, solver_name=solver_name), 'no solution found (SMT issue).'
+        if feasible:
+          f = Implies(And(plausibility_formula, distance_formula, diversity_formula),
+                      And(model_formula, Not(counterfactual_formula)))
+          assert is_sat(f, solver_name=solver_name), 'no solution found (SMT issue).'
         print('no solution exists.', file = log_file)
         norm_lower_bound = curr_norm_threshold
         norm_upper_bound = norm_upper_bound
