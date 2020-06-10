@@ -23,7 +23,7 @@ GEN_CF_FOR = 'neg_and_pos'
 request_memory = 8192
 
 sub_file = open('test.sub','w')
-print('executable = /home/kmohammadi/anaconda3/venvs/_mip_smt/bin/python', file=sub_file)
+print('executable = /home/kmohammadi/anaconda3/envs/_mip_smt/bin/python', file=sub_file)
 print('error = _cluster_logs/test.$(Process).err', file=sub_file)
 print('output = _cluster_logs/test.$(Process).out', file=sub_file)
 print('log = _cluster_logs/test.$(Process).log', file=sub_file)
@@ -53,7 +53,7 @@ for dataset_string in DATASET_VALUES:
              f' -g {GEN_CF_FOR}', \
              f' -p $(Process)', \
           file=sub_file)
-          print(f'requirements = CpuModel =?= \"Intel(R) Xeon(R) Gold 5220 CPU @ 2.20GHz\"', file=sub_file)
+          print(f'requirements = CPUFamily =?= 6', file=sub_file)
           print(f'queue', file=sub_file)
           print('\n', file=sub_file)
 

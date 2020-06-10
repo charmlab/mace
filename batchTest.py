@@ -156,7 +156,7 @@ def runExperiments(dataset_values, model_class_values, norm_values, approaches_v
             raise Exception(f'{model_class_string} not recognized as a valid `model_class_string`.')
 
           # prepare experiment folder
-          experiment_name = f'{dataset_string}__{model_class_string}__{norm_type_string}__{approach_string}__batch{batch_number}__samples{sample_count}__pid{process_id}'
+          experiment_name = f'{dataset_string}__{model_class_string}__{norm_type_string}__MIP_{approach_string}__batch{batch_number}__samples{sample_count}__pid{process_id}'
           experiment_folder_name = f"_experiments/{datetime.now().strftime('%Y.%m.%d_%H.%M.%S')}__{experiment_name}"
           explanation_folder_name = f'{experiment_folder_name}/__explanation_log'
           minimum_distance_folder_name = f'{experiment_folder_name}/__minimum_distances'

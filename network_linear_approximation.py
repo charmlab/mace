@@ -254,7 +254,7 @@ class LinearizedNetwork:
                 inp_v.lb = lb
                 optimal_not_possible = True
                 non_opt += 1
-                print(f'LP not optimally solved, status: {self.model.status}')
+                # print(f'LP not optimally solved, status: {self.model.status}')
                 if self.model.status == 3: # Infeasible
                     return False
                 break
@@ -272,7 +272,7 @@ class LinearizedNetwork:
                 inp_v.ub = ub
                 optimal_not_possible = True
                 non_opt += 1
-                print(f'LP not optimally solved, status: {self.model.status}')
+                # print(f'LP not optimally solved, status: {self.model.status}')
                 if self.model.status == 3: # Infeasible
                     return False
                 break
@@ -286,7 +286,7 @@ class LinearizedNetwork:
         if optimal_not_possible:
             self.model.remove(self.model.getQConstrs())
             self.model.remove(self.model.getConstrs())
-            print("total non-optimally solved: ", non_opt)
+            print(f"Non-optimal with status {self.model.status} **other than infeasible**!")
             inp_lb = []
             inp_ub = []
             for i, inp_v in enumerate(inp_gurobi_vars):
