@@ -19,6 +19,7 @@ from sklearn.neural_network import MLPClassifier
 
 from loadCausalConstraints import *
 from network_linear_approximation import LinearizedNetwork
+from mip_solver import MIPNetwork
 
 from debug import ipsh
 
@@ -524,7 +525,7 @@ def getDiversityFormulaUpdate(model):
     ])
   )
 
-def getTorchFromSklearn(sklearn_model, input_dim):
+def getTorchFromSklearn(sklearn_model, input_dim, no_relu=False):
   model_width = 10  # TODO make more dynamic later and move to separate function
   if sklearn_model.hidden_layer_sizes == model_width:
     n_hidden_layers = 1
@@ -533,52 +534,92 @@ def getTorchFromSklearn(sklearn_model, input_dim):
 
   if n_hidden_layers == 1:
     assert sklearn_model.hidden_layer_sizes == (model_width)
-    torch_model = torch.nn.Sequential(
-      torch.nn.Linear(input_dim, model_width),
-      torch.nn.ReLU(),
-      torch.nn.Linear(model_width, 1),
-      torch.nn.ReLU())
+    if no_relu:
+      torch_model = torch.nn.Sequential(
+        torch.nn.Linear(input_dim, model_width),
+        torch.nn.ReLU(),
+        torch.nn.Linear(model_width, 1))
+    else:
+      torch_model = torch.nn.Sequential(
+        torch.nn.Linear(input_dim, model_width),
+        torch.nn.ReLU(),
+        torch.nn.Linear(model_width, 1),
+        torch.nn.ReLU())
+
   elif n_hidden_layers == 2:
     assert sklearn_model.hidden_layer_sizes == (model_width, model_width)
-    torch_model = torch.nn.Sequential(
-      torch.nn.Linear(input_dim, model_width),
-      torch.nn.ReLU(),
-      torch.nn.Linear(model_width, model_width),
-      torch.nn.ReLU(),
-      torch.nn.Linear(model_width, 1),
-      torch.nn.ReLU())
+    if no_relu:
+      torch_model = torch.nn.Sequential(
+        torch.nn.Linear(input_dim, model_width),
+        torch.nn.ReLU(),
+        torch.nn.Linear(model_width, model_width),
+        torch.nn.ReLU(),
+        torch.nn.Linear(model_width, 1))
+    else:
+      torch_model = torch.nn.Sequential(
+        torch.nn.Linear(input_dim, model_width),
+        torch.nn.ReLU(),
+        torch.nn.Linear(model_width, model_width),
+        torch.nn.ReLU(),
+        torch.nn.Linear(model_width, 1),
+        torch.nn.ReLU())
+
   elif n_hidden_layers == 3:
     assert sklearn_model.hidden_layer_sizes == (model_width, model_width, model_width)
-    torch_model = torch.nn.Sequential(
-      torch.nn.Linear(input_dim, model_width),
-      torch.nn.ReLU(),
-      torch.nn.Linear(model_width, model_width),
-      torch.nn.ReLU(),
-      torch.nn.Linear(model_width, model_width),
-      torch.nn.ReLU(),
-      torch.nn.Linear(model_width, 1),
-      torch.nn.ReLU())
+    if no_relu:
+      torch_model = torch.nn.Sequential(
+        torch.nn.Linear(input_dim, model_width),
+        torch.nn.ReLU(),
+        torch.nn.Linear(model_width, model_width),
+        torch.nn.ReLU(),
+        torch.nn.Linear(model_width, model_width),
+        torch.nn.ReLU(),
+        torch.nn.Linear(model_width, 1))
+    else:
+      torch_model = torch.nn.Sequential(
+        torch.nn.Linear(input_dim, model_width),
+        torch.nn.ReLU(),
+        torch.nn.Linear(model_width, model_width),
+        torch.nn.ReLU(),
+        torch.nn.Linear(model_width, model_width),
+        torch.nn.ReLU(),
+        torch.nn.Linear(model_width, 1),
+        torch.nn.ReLU())
+
   elif n_hidden_layers == 4:
     assert sklearn_model.hidden_layer_sizes == (model_width, model_width, model_width, model_width)
-    torch_model = torch.nn.Sequential(
-      torch.nn.Linear(input_dim, model_width),
-      torch.nn.ReLU(),
-      torch.nn.Linear(model_width, model_width),
-      torch.nn.ReLU(),
-      torch.nn.Linear(model_width, model_width),
-      torch.nn.ReLU(),
-      torch.nn.Linear(model_width, model_width),
-      torch.nn.ReLU(),
-      torch.nn.Linear(model_width, 1),
-      torch.nn.ReLU())
+    if no_relu:
+      torch_model = torch.nn.Sequential(
+        torch.nn.Linear(input_dim, model_width),
+        torch.nn.ReLU(),
+        torch.nn.Linear(model_width, model_width),
+        torch.nn.ReLU(),
+        torch.nn.Linear(model_width, model_width),
+        torch.nn.ReLU(),
+        torch.nn.Linear(model_width, model_width),
+        torch.nn.ReLU(),
+        torch.nn.Linear(model_width, 1))
+    else:
+      torch_model = torch.nn.Sequential(
+        torch.nn.Linear(input_dim, model_width),
+        torch.nn.ReLU(),
+        torch.nn.Linear(model_width, model_width),
+        torch.nn.ReLU(),
+        torch.nn.Linear(model_width, model_width),
+        torch.nn.ReLU(),
+        torch.nn.Linear(model_width, model_width),
+        torch.nn.ReLU(),
+        torch.nn.Linear(model_width, 1),
+        torch.nn.ReLU())
+
   else:
     raise Exception("MLP model not supported")
 
   for i in range(n_hidden_layers + 1):
-    torch_model[2*i].weight = torch.nn.Parameter(torch.FloatTensor(sklearn_model.coefs_[i].astype('float32')).t(),
+    torch_model[2*i].weight = torch.nn.Parameter(torch.FloatTensor(sklearn_model.coefs_[i].astype('float64')).t(),
                                                  requires_grad=False)
   for i in range(n_hidden_layers + 1):
-    torch_model[2*i].bias = torch.nn.Parameter(torch.FloatTensor(sklearn_model.intercepts_[i].astype('float32')),
+    torch_model[2*i].bias = torch.nn.Parameter(torch.FloatTensor(sklearn_model.intercepts_[i].astype('float64')),
                                              requires_grad=False)
 
   return torch_model
@@ -601,12 +642,11 @@ def getNetworkBounds(sklearn_model, dataset_obj, factual_sample, norm_type, norm
     attr_obj = dataset_obj.attributes_kurz[attr_name_kurz]
     domains[i][0] = attr_obj.lower_bound
     domains[i][1] = attr_obj.upper_bound
-    # print(attr_name_kurz, f" ({attr_obj.lower_bound}, {attr_obj.upper_bound})")
+  domains = torch.from_numpy(domains)
 
   # Get lower and upper bounds on all neuron values
   #TODO check factualsample.values() order
-  feasible = lin_net.define_linear_approximation(torch.from_numpy(domains), factual_sample, dataset_obj, norm_type,
-                                                 norm_lower, norm_upper)
+  feasible = lin_net.define_linear_approximation(domains, factual_sample, dataset_obj, norm_type, norm_lower, norm_upper)
   if not feasible:
     return False, None, None
 
@@ -630,6 +670,36 @@ def getNetworkBounds(sklearn_model, dataset_obj, factual_sample, norm_type, norm
   # print("num of ReLUs with fixed state: ", cnt)
 
   return True, lin_net.lower_bounds, lin_net.upper_bounds
+
+def solveMIP(sklearn_model, dataset_obj, factual_sample, norm_type, norm_lower, norm_upper):
+  assert isinstance(sklearn_model, MLPClassifier), "Only MLP model supports the linear relaxation."
+  input_dim = len(dataset_obj.getInputAttributeNames('kurz'))
+
+  # First, translate sklearn model to PyTorch model
+  torch_model = getTorchFromSklearn(sklearn_model, input_dim, no_relu=True)
+
+  # Now create a linearized network
+  layers = [module for module in torch_model.modules() if type(module) != torch.nn.Sequential]
+  mip_net = MIPNetwork(layers)
+
+  # Get input domains
+  domains = np.zeros((input_dim, 2), dtype=np.float32)
+  for i, attr_name_kurz in enumerate(dataset_obj.getInputAttributeNames('kurz')):
+    attr_obj = dataset_obj.attributes_kurz[attr_name_kurz]
+    domains[i][0] = attr_obj.lower_bound
+    domains[i][1] = attr_obj.upper_bound
+  domains = torch.from_numpy(domains)
+
+  # Setup MIP model and check bounds feasibility w.r.t. distance formula
+  feasible = mip_net.setup_model(domains, factual_sample, dataset_obj, norm_type, norm_lower, norm_upper,
+             sym_bounds=False, use_obj_function=True, bounds='opt')
+  if not feasible:
+    return False, None
+
+  # Solve the MIP
+  solved, sol, _ = mip_net.solve(domains, factual_sample)
+
+  return solved, sol
 
 
 def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, factual_sample, norm_type, approach_string, epsilon, log_file):
@@ -694,36 +764,44 @@ def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, f
 
   while (not solved):
     lower = reverse_norm_threshold/2.0 if reverse_norm_threshold != epsilon else 0.0
-    feasible, mlp_lbs, mlp_ubs = getNetworkBounds(model_trained, dataset_obj, factual_sample, norm_type, lower, reverse_norm_threshold)
-    if not feasible:
-      reverse_norm_threshold *= 2.0
-      continue
-    model_formula = getModelFormula(model_symbols, model_trained, mlp_lbs, mlp_ubs)
-    # model_formula = getModelFormula(model_symbols, model_trained)
-    distance_formula = getDistanceFormula(model_symbols, dataset_obj, factual_pysmt_sample, norm_type,
-                                          approach_string, lower, reverse_norm_threshold)
-    # distance_formula = distance_formula.simplify()
-    formula = And(  # works for both initial iteration and all subsequent iterations
-      model_formula,
-      counterfactual_formula,
-      plausibility_formula,
-      distance_formula,
-      diversity_formula,
-    )
-    # formula = formula.simplify()
+    if 'mace_MIP_MACE' in approach_string:
+      feasible, mlp_lbs, mlp_ubs = getNetworkBounds(model_trained, dataset_obj, factual_sample, norm_type, lower, reverse_norm_threshold)
+      if not feasible:
+        reverse_norm_threshold *= 2.0
+        continue
+      model_formula = getModelFormula(model_symbols, model_trained, mlp_lbs, mlp_ubs)
+      # model_formula = getModelFormula(model_symbols, model_trained)
+      distance_formula = getDistanceFormula(model_symbols, dataset_obj, factual_pysmt_sample, norm_type,
+                                            approach_string, lower, reverse_norm_threshold)
+      # distance_formula = distance_formula.simplify()
+      formula = And(  # works for both initial iteration and all subsequent iterations
+        model_formula,
+        counterfactual_formula,
+        plausibility_formula,
+        distance_formula,
+        diversity_formula,
+      )
+      # formula = formula.simplify()
 
-    with Solver(name=solver_name) as solver:
-      solver.add_assertion(formula)
-      iteration_start_time = time.time()
-      solved = solver.solve()
-      iteration_end_time = time.time()
+      with Solver(name=solver_name) as solver:
+        solver.add_assertion(formula)
+        iteration_start_time = time.time()
+        solved = solver.solve()
+        iteration_end_time = time.time()
+        if solved:
+          rev_bs_model = solver.get_model()
+        else:
+          # assert is_sat(And(plausibility_formula, distance_formula, diversity_formula), solver_name=solver_name)
+          f = Implies(And(plausibility_formula, distance_formula, diversity_formula),
+                      And(model_formula, Not(counterfactual_formula)))
+          assert is_sat(f, solver_name=solver_name), 'no solution found (SMT issue).'
+    elif 'mace_MIP' in approach_string:
+      solved, sol = solveMIP(model_trained, dataset_obj, factual_sample, norm_type, lower, reverse_norm_threshold)
+      # TODO: assert check_with_SMT if solved=True (for plausibilities)
       if solved:
-        rev_bs_model = solver.get_model()
-      else:
-        # assert is_sat(And(plausibility_formula, distance_formula, diversity_formula), solver_name=solver_name)
-        f = Implies(And(plausibility_formula, distance_formula, diversity_formula),
-                    And(model_formula, Not(counterfactual_formula)))
-        assert is_sat(f, solver_name=solver_name), 'no solution found (SMT issue).'
+        rev_bs_model = sol
+    else:
+      raise Exception(f"Invalid approach string: {approach_string}")
 
     if not solved:
       reverse_norm_threshold *= 2.0
@@ -745,68 +823,144 @@ def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, f
     print(f'\tIteration #{iters:03d}: testing norm threshold {curr_norm_threshold:.6f} in range [{norm_lower_bound:.6f}, {norm_upper_bound:.6f}]...\t', end = '', file = log_file)
     iters = iters + 1
 
-    with Solver(name=solver_name) as solver:
+    if 'mace_MIP_MACE' in approach_string:
 
-      if not first_iter:# I want it to save the last CFE in previous loop first
-        # Upper-bound becomes equal to the CFE distance so BS doesn't corrupt
+      with Solver(name=solver_name) as solver:
 
-        feasible, mlp_lbs, mlp_ubs = getNetworkBounds(model_trained, dataset_obj, factual_sample, norm_type,
-                                            norm_lower_bound, curr_norm_threshold)
-        if feasible:
-          model_formula = getModelFormula(model_symbols, model_trained, mlp_lbs, mlp_ubs)
-          # model_formula = getModelFormula(model_symbols, model_trained)
+        if not first_iter:# I want it to save the last CFE in previous loop first
+          # Upper-bound becomes equal to the CFE distance so BS doesn't corrupt
 
-          formula = And(  # works for both initial iteration and all subsequent iterations
-            model_formula,
-            counterfactual_formula,
-            plausibility_formula,
-            distance_formula,
-            diversity_formula,
-          )
-          # formula = formula.simplify()
+          feasible, mlp_lbs, mlp_ubs = getNetworkBounds(model_trained, dataset_obj, factual_sample, norm_type,
+                                              norm_lower_bound, curr_norm_threshold)
+          if feasible:
+            model_formula = getModelFormula(model_symbols, model_trained, mlp_lbs, mlp_ubs)
+            # model_formula = getModelFormula(model_symbols, model_trained)
 
-          solver.add_assertion(formula)
-          iteration_start_time = time.time()
-          solved = solver.solve()
-          iteration_end_time = time.time()
+            formula = And(  # works for both initial iteration and all subsequent iterations
+              model_formula,
+              counterfactual_formula,
+              plausibility_formula,
+              distance_formula,
+              diversity_formula,
+            )
+            # formula = formula.simplify()
+
+            solver.add_assertion(formula)
+            iteration_start_time = time.time()
+            solved = solver.solve()
+            iteration_end_time = time.time()
+          else:
+            solved = False
+
         else:
-          solved = False
+          assert solved, 'last iter of reverse BS must have had solved the formula!'
+          assert rev_bs_model is not None, 'last iter of reverse BS must have solved the formula!'
 
+        if solved: # joint formula is satisfiable
+          if first_iter is True:
+            model = rev_bs_model
+            first_iter = False
+          else:
+            model = solver.get_model()
+          print('solution exists & found.', file = log_file)
+          counterfactual_pysmt_sample = {}
+          interventional_pysmt_sample = {}
+          for (symbol_key, symbol_value) in model:
+            # symbol_key may be 'x#', {'p0#', 'p1#'}, 'w#', or 'y'
+            tmp = str(symbol_key)
+            if 'counterfactual' in str(symbol_key):
+              tmp = tmp[:-15]
+              if tmp in dataset_obj.getInputOutputAttributeNames('kurz'):
+                counterfactual_pysmt_sample[tmp] = symbol_value
+            elif 'interventional' in str(symbol_key):
+              tmp = tmp[:-15]
+              if tmp in dataset_obj.getInputOutputAttributeNames('kurz'):
+                interventional_pysmt_sample[tmp] = symbol_value
+            elif tmp in dataset_obj.getInputOutputAttributeNames('kurz'): # for y variable
+              counterfactual_pysmt_sample[tmp] = symbol_value
+              interventional_pysmt_sample[tmp] = symbol_value
+
+          # Convert back from pysmt_sample to dict_sample to compute distance and save
+          counterfactual_sample  = getDictSampleFromPySMTSample(
+            counterfactual_pysmt_sample,
+            dataset_obj)
+          interventional_sample  = getDictSampleFromPySMTSample(
+            interventional_pysmt_sample,
+            dataset_obj)
+
+          # Assert samples have correct prediction label according to sklearn model
+          assertPrediction(counterfactual_sample, model_trained, dataset_obj)
+          # of course, there is no need to assertPrediction on the interventional_sample
+
+          counterfactual_distance = normalizedDistance.getDistanceBetweenSamples(
+            factual_sample,
+            counterfactual_sample,
+            norm_type,
+            dataset_obj)
+          interventional_distance = normalizedDistance.getDistanceBetweenSamples(
+            factual_sample,
+            interventional_sample,
+            norm_type,
+            dataset_obj)
+          counterfactual_time = iteration_end_time - iteration_start_time
+          counterfactuals.append({
+            'counterfactual_sample': counterfactual_sample,
+            'counterfactual_distance': counterfactual_distance,
+            'interventional_sample': interventional_sample,
+            'interventional_distance': interventional_distance,
+            'time': counterfactual_time,
+            'norm_type': norm_type})
+
+          # Update diversity and distance formulas now that we have found a solution
+          # TODO: I think the line below should be removed, because in successive
+          #       reductions of delta, we should be able to re-use previous CFs
+          # diversity_formula = And(diversity_formula, getDiversityFormulaUpdate(model))
+
+          # IMPORTANT: something odd happens somtimes if use vanilla binary search;
+          #            On the first iteration, with [0, 1] bounds, we may see a CF at
+          #            d = 0.22. When we update the bounds to [0, 0.5] bounds,  we
+          #            sometimes surprisingly see a new CF at distance 0.24. We optimize
+          #            the binary search to solve this.
+          norm_lower_bound = norm_lower_bound
+          # norm_upper_bound = curr_norm_threshold
+          if 'mace' in approach_string:
+            norm_upper_bound = float(counterfactual_distance + epsilon / 100) # not float64
+          elif 'mint' in approach_string:
+            norm_upper_bound = float(interventional_distance + epsilon / 100) # not float64
+          curr_norm_threshold = getCenterNormThresholdInRange(norm_lower_bound, norm_upper_bound)
+          distance_formula = getDistanceFormula(model_symbols, dataset_obj, factual_pysmt_sample, norm_type, approach_string, norm_lower_bound, curr_norm_threshold)
+
+        else: # no solution found in the assigned norm range --> update range and try again
+
+          # assert is_sat(And(plausibility_formula, distance_formula, diversity_formula), solver_name=solver_name)
+          if feasible:
+            f = Implies(And(plausibility_formula, distance_formula, diversity_formula),
+                        And(model_formula, Not(counterfactual_formula)))
+            assert is_sat(f, solver_name=solver_name), 'no solution found (SMT issue).'
+          print('no solution exists.', file = log_file)
+          norm_lower_bound = curr_norm_threshold
+          norm_upper_bound = norm_upper_bound
+          curr_norm_threshold = getCenterNormThresholdInRange(norm_lower_bound, norm_upper_bound)
+          distance_formula = getDistanceFormula(model_symbols, dataset_obj, factual_pysmt_sample, norm_type, approach_string, norm_lower_bound, curr_norm_threshold)
+
+    elif 'mace_MIP' in approach_string:
+
+      if not first_iter:  # I want it to save the last CFE in previous loop first
+        # Upper-bound becomes equal to the CFE distance so BS doesn't corrupt
+        solved, sol = solveMIP(model_trained, dataset_obj, factual_sample, norm_type, norm_lower_bound, curr_norm_threshold)
       else:
         assert solved, 'last iter of reverse BS must have had solved the formula!'
-        assert rev_bs_model is not None, 'last iter of reverse BS must have had solved the formula!'
+        assert rev_bs_model is not None, 'last iter of reverse BS must have solved the formula!'
 
-      if solved: # joint formula is satisfiable
+      if solved:  # joint formula is satisfiable
+
         if first_iter is True:
-          model = rev_bs_model
+          counterfactual_sample = rev_bs_model
           first_iter = False
         else:
-          model = solver.get_model()
-        print('solution exists & found.', file = log_file)
-        counterfactual_pysmt_sample = {}
-        interventional_pysmt_sample = {}
-        for (symbol_key, symbol_value) in model:
-          # symbol_key may be 'x#', {'p0#', 'p1#'}, 'w#', or 'y'
-          tmp = str(symbol_key)
-          if 'counterfactual' in str(symbol_key):
-            tmp = tmp[:-15]
-            if tmp in dataset_obj.getInputOutputAttributeNames('kurz'):
-              counterfactual_pysmt_sample[tmp] = symbol_value
-          elif 'interventional' in str(symbol_key):
-            tmp = tmp[:-15]
-            if tmp in dataset_obj.getInputOutputAttributeNames('kurz'):
-              interventional_pysmt_sample[tmp] = symbol_value
-          elif tmp in dataset_obj.getInputOutputAttributeNames('kurz'): # for y variable
-            counterfactual_pysmt_sample[tmp] = symbol_value
-            interventional_pysmt_sample[tmp] = symbol_value
+          counterfactual_sample = sol
 
-        # Convert back from pysmt_sample to dict_sample to compute distance and save
-        counterfactual_sample  = getDictSampleFromPySMTSample(
-          counterfactual_pysmt_sample,
-          dataset_obj)
-        interventional_sample  = getDictSampleFromPySMTSample(
-          interventional_pysmt_sample,
-          dataset_obj)
+        print('solution exists & found.', file=log_file)
 
         # Assert samples have correct prediction label according to sklearn model
         assertPrediction(counterfactual_sample, model_trained, dataset_obj)
@@ -817,55 +971,31 @@ def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, f
           counterfactual_sample,
           norm_type,
           dataset_obj)
-        interventional_distance = normalizedDistance.getDistanceBetweenSamples(
-          factual_sample,
-          interventional_sample,
-          norm_type,
-          dataset_obj)
-        counterfactual_time = iteration_end_time - iteration_start_time
         counterfactuals.append({
           'counterfactual_sample': counterfactual_sample,
           'counterfactual_distance': counterfactual_distance,
-          'interventional_sample': interventional_sample,
-          'interventional_distance': interventional_distance,
-          'time': counterfactual_time,
+          'time': None,
           'norm_type': norm_type})
 
-        # Update diversity and distance formulas now that we have found a solution
-        # TODO: I think the line below should be removed, because in successive
-        #       reductions of delta, we should be able to re-use previous CFs
-        # diversity_formula = And(diversity_formula, getDiversityFormulaUpdate(model))
-
-        # IMPORTANT: something odd happens somtimes if use vanilla binary search;
-        #            On the first iteration, with [0, 1] bounds, we may see a CF at
-        #            d = 0.22. When we update the bounds to [0, 0.5] bounds,  we
-        #            sometimes surprisingly see a new CF at distance 0.24. We optimize
-        #            the binary search to solve this.
         norm_lower_bound = norm_lower_bound
         # norm_upper_bound = curr_norm_threshold
-        if 'mace' in approach_string:
-          norm_upper_bound = float(counterfactual_distance + epsilon / 100) # not float64
-        elif 'mint' in approach_string:
-          norm_upper_bound = float(interventional_distance + epsilon / 100) # not float64
+        norm_upper_bound = float(counterfactual_distance + epsilon / 100)  # not float64
         curr_norm_threshold = getCenterNormThresholdInRange(norm_lower_bound, norm_upper_bound)
-        distance_formula = getDistanceFormula(model_symbols, dataset_obj, factual_pysmt_sample, norm_type, approach_string, norm_lower_bound, curr_norm_threshold)
 
-      else: # no solution found in the assigned norm range --> update range and try again
-
-        # assert is_sat(And(plausibility_formula, distance_formula, diversity_formula), solver_name=solver_name)
-        if feasible:
-          f = Implies(And(plausibility_formula, distance_formula, diversity_formula),
-                      And(model_formula, Not(counterfactual_formula)))
-          assert is_sat(f, solver_name=solver_name), 'no solution found (SMT issue).'
-        print('no solution exists.', file = log_file)
+      else:  # no solution found in the assigned norm range --> update range and try again
+        # TODO: confirm with SMT solver?
+        print('no solution exists.', file=log_file)
         norm_lower_bound = curr_norm_threshold
         norm_upper_bound = norm_upper_bound
         curr_norm_threshold = getCenterNormThresholdInRange(norm_lower_bound, norm_upper_bound)
-        distance_formula = getDistanceFormula(model_symbols, dataset_obj, factual_pysmt_sample, norm_type, approach_string, norm_lower_bound, curr_norm_threshold)
+
+    else:
+      raise Exception(f"Invalid approach string: {approach_string}")
 
   # IMPORTANT: there may be many more at this same distance! OR NONE! (what?? 2020.02.19)
   closest_counterfactual_sample = sorted(counterfactuals, key = lambda x: x['counterfactual_distance'])[0]
-  closest_interventional_sample = sorted(counterfactuals, key = lambda x: x['interventional_distance'])[0]
+  # closest_interventional_sample = sorted(counterfactuals, key = lambda x: x['interventional_distance'])[0]
+  closest_interventional_sample = None
 
   return counterfactuals, closest_counterfactual_sample, closest_interventional_sample
 

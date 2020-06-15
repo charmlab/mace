@@ -1,4 +1,5 @@
 import gurobipy as grb
+import math
 import torch
 import numpy as np
 
@@ -34,11 +35,20 @@ class LinearizedNetwork:
         '''
         self.layers = layers
         self.net = nn.Sequential(*layers)
+        # Skip all gradient computation for the weights of the Net
+        for param in self.net.parameters():
+            param.requires_grad = False
 
-    def get_upper_bound(self, domain):
+    def remove_maxpools(self, domain):
+        from plnn.model import reluify_maxpool, simplify_network
+        if any(map(lambda x: type(x) is nn.MaxPool1d, self.layers)):
+            new_layers = simplify_network(reluify_maxpool(self.layers, domain))
+            self.layers = new_layers
+
+
+    def get_upper_bound_random(self, domain):
         '''
         Compute an upper bound of the minimum of the network on `domain`
-
         Any feasible point is a valid upper bound on the minimum so we will
         perform some random testing.
         '''
@@ -56,23 +66,89 @@ class LinearizedNetwork:
         domain_lb = domain_lb.view(1, nb_inp).expand(nb_samples, nb_inp)
         domain_width = domain_width.view(1, nb_inp).expand(nb_samples, nb_inp)
 
-        inps = domain_lb + domain_width * rand_samples
+        with torch.no_grad():
+            inps = domain_lb + domain_width * rand_samples
+            outs = self.net(inps)
 
-        var_inps = Variable(inps, volatile=True)
-        outs = self.net(var_inps)
+            upper_bound, idx = torch.min(outs, dim=0)
 
-        upper_bound, idx = torch.min(outs.data, dim=0)
-
-        upper_bound = upper_bound[0]
-        ub_point = inps[idx].squeeze()
+            upper_bound = upper_bound[0].item()
+            ub_point = inps[idx].squeeze()
 
         return ub_point, upper_bound
+
+    def get_upper_bound_pgd(self, domain):
+        '''
+        Compute an upper bound of the minimum of the network on `domain`
+        Any feasible point is a valid upper bound on the minimum so we will
+        perform some random testing.
+        '''
+        nb_samples = 2056
+        torch.set_num_threads(1)
+        nb_inp = domain.size(0)
+        # Not a great way of sampling but this will be good enough
+        # We want to get rows that are >= 0
+        rand_samples = torch.Tensor(nb_samples, nb_inp)
+        rand_samples.uniform_(0, 1)
+
+        best_ub = float('inf')
+        best_ub_inp = None
+
+        domain_lb = domain.select(1, 0).contiguous()
+        domain_ub = domain.select(1, 1).contiguous()
+        domain_width = domain_ub - domain_lb
+
+        domain_lb = domain_lb.view(1, nb_inp).expand(nb_samples, nb_inp)
+        domain_width = domain_width.view(1, nb_inp).expand(nb_samples, nb_inp)
+
+        inps = (domain_lb + domain_width * rand_samples)
+
+        with torch.enable_grad():
+            batch_ub = float('inf')
+            for i in range(1000):
+                prev_batch_best = batch_ub
+
+                self.net.zero_grad()
+                if inps.grad is not None:
+                    inps.grad.zero_()
+                inps = inps.detach().requires_grad_()
+                out = self.net(inps)
+
+                batch_ub = out.min().item()
+                if batch_ub < best_ub:
+                    best_ub = batch_ub
+                    # print(f"New best lb: {best_lb}")
+                    _, idx = out.min(dim=0)
+                    best_ub_inp = inps[idx[0]]
+
+                if batch_ub >= prev_batch_best:
+                    break
+
+                all_samp_sum = out.sum() / nb_samples
+                all_samp_sum.backward()
+                grad = inps.grad
+
+                max_grad, _ = grad.max(dim=0)
+                min_grad, _ = grad.min(dim=0)
+                grad_diff = max_grad - min_grad
+
+                lr = 1e-2 * domain_width / grad_diff
+                min_lr = lr.min()
+
+                step = -min_lr*grad
+                inps = inps + step
+
+                inps = torch.max(inps, domain_lb)
+                inps = torch.min(inps, domain_ub)
+
+        return best_ub_inp, best_ub
+
+    get_upper_bound = get_upper_bound_random
 
     def get_lower_bound(self, domain):
         '''
         Update the linear approximation for `domain` of the network and use it
         to compute a lower bound on the minimum of the output.
-
         domain: Tensor containing in each row the lower and upper bound for
                 the corresponding dimension
         '''
@@ -82,10 +158,8 @@ class LinearizedNetwork:
     def compute_lower_bound(self, domain):
         '''
         Compute a lower bound of the function on `domain`
-
         Note that this doesn't change the approximation that is made to tailor
         it to `domain`, which would lead to a better approximation.
-
         domain: Tensor containing in each row the lower and upper bound for the
                 corresponding dimension.
         '''
@@ -104,6 +178,7 @@ class LinearizedNetwork:
         assert self.model.status == 2, "LP wasn't optimally solved"
 
         return self.gurobi_vars[-1][0].X
+
 
     def applyDistanceConstrs(self, dataset_obj, factual_sample, norm_type, norm_lower, norm_upper):
 
@@ -132,10 +207,13 @@ class LinearizedNetwork:
         # 1. mutable & non-hot
         for attr_name_kurz in np.intersect1d(mutables, non_hots):
             v = self.model.getVarByName(attr_name_kurz)
+            lb = dataset_obj.attributes_kurz[attr_name_kurz].lower_bound
+            ub = dataset_obj.attributes_kurz[attr_name_kurz].upper_bound
+
             diff_normalized = self.model.addVar(lb=-1.0, ub=1.0, obj=0,
                                                 vtype=grb.GRB.CONTINUOUS, name=f'diff_{attr_name_kurz}')
             self.model.addConstr(
-                diff_normalized == (v - factual_sample[attr_name_kurz]) / (v.ub - v.lb)
+                diff_normalized == (v - factual_sample[attr_name_kurz]) / (ub - lb)
             )
             abs_diff_normalized = self.model.addVar(lb=0.0, ub=1.0, obj=0,
                                                     vtype=grb.GRB.CONTINUOUS, name=f'abs_{attr_name_kurz}')
@@ -191,7 +269,6 @@ class LinearizedNetwork:
                 grb.quicksum(abs_diffs_normalized) / len(abs_diffs_normalized)
                 >= norm_lower
             )
-        self.model.update()
 
     def define_linear_approximation(self, input_domain, factual_sample, dataset_obj, norm_type, norm_lower, norm_upper):
         '''
@@ -237,73 +314,36 @@ class LinearizedNetwork:
             inp_gurobi_vars.append(v)
 
         self.model.update()
-
         self.applyDistanceConstrs(dataset_obj, factual_sample, norm_type, norm_lower, norm_upper)
+        self.model.update()
 
-        optimal_not_possible = False
-        non_opt = 0
+        # Compute new bounds on input w.r.t. distance constraint
         for i, inp_v in enumerate(inp_gurobi_vars):
+
             # lower bound
             self.model.setObjective(inp_v, grb.GRB.MINIMIZE)
             self.model.update()
             self.model.reset()
             self.model.optimize()
-            if self.model.status != 2: # LP wasn't optimally solved TODO: can we still make use of it?
-                # TODO: remove distance from constraints so that we can at least have the normal bounds later in the net
-                lb = input_domain[i][0]
-                inp_v.lb = lb
-                optimal_not_possible = True
-                non_opt += 1
-                # print(f'LP not optimally solved, status: {self.model.status}')
-                if self.model.status == 3: # Infeasible
-                    return False
-                break
-            else:
-                lb = inp_v.X
-                inp_v.lb = lb
+            if self.model.status == 3:  # Infeasible
+                return False
+            assert self.model.status == 2, "LP wasn't optimally solved"
+            lb = inp_v.X
+            inp_v.lb = lb
 
             # upper bound
             self.model.setObjective(inp_v, grb.GRB.MAXIMIZE)
             self.model.update()
             self.model.reset()
             self.model.optimize()
-            if self.model.status != 2:  # LP wasn't optimally solved
-                ub = input_domain[i][1]
-                inp_v.ub = ub
-                optimal_not_possible = True
-                non_opt += 1
-                # print(f'LP not optimally solved, status: {self.model.status}')
-                if self.model.status == 3: # Infeasible
-                    return False
-                break
-            else:
-                ub = inp_v.X
-                inp_v.ub = ub
+            if self.model.status == 3:  # Infeasible
+                return False
+            assert self.model.status == 2, "LP wasn't optimally solved"
+            ub = inp_v.X
+            inp_v.ub = ub
 
             inp_lb.append(lb)
             inp_ub.append(ub)
-
-        if optimal_not_possible:
-            self.model.remove(self.model.getQConstrs())
-            self.model.remove(self.model.getConstrs())
-            print(f"Non-optimal with status {self.model.status} **other than infeasible**!")
-            inp_lb = []
-            inp_ub = []
-            for i, inp_v in enumerate(inp_gurobi_vars):
-                lb = input_domain[i][0]
-                inp_v.lb = lb
-                ub = input_domain[i][1]
-                inp_v.ub = ub
-                inp_lb.append(lb)
-                inp_ub.append(ub)
-        else:
-            # TODO: keep 'em?! yes, for now.
-            # self.model.remove(self.model.getQConstrs())
-            # self.model.remove(self.model.getConstrs())
-            pass
-            # print(inp_lb)
-            # print(inp_ub)
-            # print("optimaly solved!")
 
         self.model.update()
         self.model.reset()
@@ -321,11 +361,11 @@ class LinearizedNetwork:
             new_layer_gurobi_vars = []
             if type(layer) is nn.Linear:
                 for neuron_idx in range(layer.weight.size(0)):
-                    ub = layer.bias.data[neuron_idx]
-                    lb = layer.bias.data[neuron_idx]
-                    lin_expr = layer.bias.data[neuron_idx]
+                    ub = layer.bias[neuron_idx].item()
+                    lb = layer.bias[neuron_idx].item()
+                    lin_expr = layer.bias[neuron_idx].item()
                     for prev_neuron_idx in range(layer.weight.size(1)):
-                        coeff = layer.weight.data[neuron_idx, prev_neuron_idx]
+                        coeff = layer.weight[neuron_idx, prev_neuron_idx].item()
                         if coeff >= 0:
                             ub += coeff*self.upper_bounds[-1][prev_neuron_idx]
                             lb += coeff*self.lower_bounds[-1][prev_neuron_idx]
@@ -343,9 +383,8 @@ class LinearizedNetwork:
                     self.model.optimize()
                     if self.model.status == 3:  # Infeasible
                         return False
-                    assert self.model.status == 2, f"LP wasn't optimally solved, status: {self.model.status}"
+                    assert self.model.status == 2, "LP wasn't optimally solved"
                     # We have computed a lower bound
-                    # if self.model.status == 2:
                     lb = v.X
                     v.lb = lb
 
@@ -356,8 +395,7 @@ class LinearizedNetwork:
                     self.model.optimize()
                     if self.model.status == 3:  # Infeasible
                         return False
-                    assert self.model.status == 2, f"LP wasn't optimally solved, status: {self.model.status}"
-                    # if self.model.status == 2:
+                    assert self.model.status == 2, "LP wasn't optimally solved"
                     ub = v.X
                     v.ub = ub
 
