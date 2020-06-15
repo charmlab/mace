@@ -1,4 +1,5 @@
 import pickle
+import glob
 
 import numpy as np
 import matplotlib
@@ -6,31 +7,33 @@ import matplotlib.pyplot as plt
 
 all_dists = []
 
-N_SAMPLES = 10
+N_SAMPLES = 1000
 
 def getDesiredKeyVals(desired_key, path, orders=None):
     all = pickle.load(open(path, 'rb'))
     desired = [i for i in range(len(orders))]
     for i, sample_idx in enumerate(orders.keys()):
-        curr = all[sample_idx][desired_key]
-        if 'model-free' in path and desired_key == 'cfe_time':
-            print('\033[93m' + f'handling model-free cfe_time by hand...' + '\033[0m')
-            curr /= len(all)
-
-        if orders is None:
-            desired[i] = curr
+        if sample_idx in all:
+            desired[orders[sample_idx]] = all[sample_idx][desired_key]
         else:
-            desired[orders[sample_idx]] = curr
+            raise Exception("Sample not found")
+            # desired[orders[sample_idx]] = 1000
+            # print("No key for this order!")
 
     all_dists.append(desired)
     return desired
 
-def getPlottingOrder(path, desired_key):
+def getPlottingOrder(path, desired_key, path2=None):
     all = pickle.load(open(path, 'rb'))
+    if path2 is not None:
+        all2 = pickle.load(open(path2, 'rb'))
 
     desired = []
     for sample_idx in all.keys():
-        if all[sample_idx]['cfe_found'] is True:
+        if path2 is not None:
+            if sample_idx in all2:
+                desired.append((all[sample_idx][desired_key], sample_idx))
+        else:
             desired.append((all[sample_idx][desired_key], sample_idx))
         if len(desired) == N_SAMPLES:
             break
@@ -52,72 +55,49 @@ def plotScatterDesiredKey(ax, label, path, orders, desired_key):
     ax.legend()
 
 if __name__ == "__main__":
-    mace_path = '_experiments/LP_one-norm/MACE__twomoon__mlp2x10__one_norm__MACE_eps_1e-5__batch0__samples10__pid0/_minimum_distances'
-    oneSideDist_path = '_experiments/LP_one-norm/oneSideDist__twomoon__mlp2x10__one_norm__MACE_eps_1e-5__batch0__samples10__pid0/_minimum_distances'
-    twoSideDist_path = '_experiments/LP_one-norm/twoSideDist__twomoon__mlp2x10__one_norm__MACE_eps_1e-5__batch0__samples10__pid0/_minimum_distances'
-    keepDistLP_path = '_experiments/LP_one-norm/keepDistLP__twomoon__mlp2x10__one_norm__MACE_eps_1e-5__batch0__samples10__pid0/_minimum_distances'
 
-    N_SAMPLES = 10
+    DATASET_VALUES = ['credit']
+    MODEL_CLASS_VALUES = ['mlp1x10', 'mlp2x10', 'mlp3x10']
+    NORM_VALUES = ['one_norm']
+    APPROACHES_VALUES = ['MACE_eps_1e-5', 'MIP_MACE_eps_1e-5']
+    KEY = 'cfe_time'
+    experiments_path = './_experiments/MIP_MACE_realworld'
 
-    fig = plt.figure(figsize=(16.0, 8.0))
+    fig, axs = plt.subplots(len(MODEL_CLASS_VALUES), len(DATASET_VALUES), figsize=(14, 10))
+    path = ''
 
-    key = 'cfe_distance'
-    ax1 = plt.subplot(1, 3, 1)
-    runtime_orders = getPlottingOrder(keepDistLP_path, key)
-    plotScatterDesiredKey(ax1, "MACE", mace_path, runtime_orders, key)
-    plotScatterDesiredKey(ax1, "oneSideDist", oneSideDist_path, runtime_orders, key)
-    plotScatterDesiredKey(ax1, "twoSideDist", twoSideDist_path, runtime_orders, key)
-    plotScatterDesiredKey(ax1, "keepDistLP", keepDistLP_path, runtime_orders, key)
-    ax1.set_xlabel("Time to find nearest counterfactual on 10 samples")
-    ax1.set_ylabel("Time in seconds")
-    ax1.set_title("MLP 2x10")
-    ax1.set_yscale("log")
-    # ax1.get_yaxis().set_major_formatter(matplotlib.ticker.ScalarFormatter())
-    # ax1.set_yticks(np.arange(0, 1000, 50))
-    ax1.grid()
+    for i, dataset in enumerate(DATASET_VALUES):
+        for j, model_type in enumerate(MODEL_CLASS_VALUES):
+            if len(DATASET_VALUES) == 1 and len(MODEL_CLASS_VALUES) == 1:
+                ax = axs[0]
+            elif len(DATASET_VALUES) == 1:
+                ax = axs[j]
+            elif len(MODEL_CLASS_VALUES) == 1:
+                ax = axs[i]
+            else:
+                ax = axs[j, i]
+            ax.grid()
+            ax.set_yscale("log")
+            ax.set_ylabel(f"{model_type}")
+            if j == 0:
+                ax.set_title(f"{dataset}")
+            paths = glob.glob(f'{experiments_path}/*{dataset}__{model_type}*/_minimum_distances')
+            assert len(paths) == 2
+            if 'MIP_MACE_eps_1e-5' in paths[0]:
+                orders = getPlottingOrder(paths[0], KEY, paths[1])
+            else:
+                orders = getPlottingOrder(paths[1], KEY, paths[0])
+            ax.set_xlabel(f"Time in seconds on {len(orders)} samples")
+            for norm in NORM_VALUES:
+                for approach in APPROACHES_VALUES:
+                    path = glob.glob(f'{experiments_path}/*{dataset}__{model_type}__{norm}__{approach}*/_minimum_distances')
+                    assert len(path) == 1
+                    path = path[0]
+                    plotScatterDesiredKey(ax, approach, path, orders, KEY)
 
-    mace_path = mace_path.replace("mlp2x10", "mlp3x10")
-    oneSideDist_path = oneSideDist_path.replace("mlp2x10", "mlp3x10")
-    twoSideDist_path = twoSideDist_path.replace("mlp2x10", "mlp3x10")
-    keepDistLP_path = keepDistLP_path.replace("mlp2x10", "mlp3x10")
-
-    ax2 = plt.subplot(1, 3, 2)
-    runtime_orders = getPlottingOrder(keepDistLP_path, key)
-    plotScatterDesiredKey(ax2, "MACE", mace_path, runtime_orders, key)
-    plotScatterDesiredKey(ax2, "oneSideDist", oneSideDist_path, runtime_orders, key)
-    plotScatterDesiredKey(ax2, "twoSideDist", twoSideDist_path, runtime_orders, key)
-    plotScatterDesiredKey(ax2, "keepDistLP", keepDistLP_path, runtime_orders, key)
-    ax2.set_xlabel("Time to find nearest counterfactual on 10 samples")
-    ax2.set_ylabel("Time in seconds")
-    ax2.set_title("MLP 3x10")
-    # ax2.set_yticks(np.arange(0, 1000, 50))
-    ax2.set_yscale("log")
-    ax2.grid()
-
-    mace_path = mace_path.replace("mlp3x10", "mlp4x10")
-    oneSideDist_path = oneSideDist_path.replace("mlp3x10", "mlp4x10")
-    twoSideDist_path = twoSideDist_path.replace("mlp3x10", "mlp4x10")
-    keepDistLP_path = keepDistLP_path.replace("mlp3x10", "mlp4x10")
-
-    ax3 = plt.subplot(1, 3, 3)
-    runtime_orders = getPlottingOrder(keepDistLP_path, key)
-    plotScatterDesiredKey(ax3, "MACE", mace_path, runtime_orders, key)
-    plotScatterDesiredKey(ax3, "oneSideDist", oneSideDist_path, runtime_orders, key)
-    plotScatterDesiredKey(ax3, "twoSideDist", twoSideDist_path, runtime_orders, key)
-    plotScatterDesiredKey(ax3, "keepDistLP", keepDistLP_path, runtime_orders, key)
-    ax3.set_xlabel("Time to find nearest counterfactual on 10 samples")
-    ax3.set_ylabel("Time in seconds")
-    ax3.set_title("MLP 4x10")
-    # ax2.set_yticks(np.arange(0, 1000, 50))
-    ax3.set_yscale("log")
-    ax3.grid()
-
-
-    a = np.array(all_dists)
-    print(abs(a[0]-a[1]))
 
     plt.tight_layout()
-    plt.subplots_adjust(hspace=0.3)
-    plt.show()
+    plt.subplots_adjust(wspace=0.3)
+    # plt.show()
 
-    # plt.savefig('comp.png', bboc_inches='tight', pad_inches=0)
+    plt.savefig(f'{DATASET_VALUES[0]}.png', bboc_inches='tight', pad_inches=0)

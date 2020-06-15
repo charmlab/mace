@@ -41,15 +41,15 @@ from debug import ipsh
 # # APPROACHES_VALUES = ['MINT_eps_1e-3']
 # APPROACHES_VALUES = ['MACE_eps_1e-3']
 
-DATASET_VALUES = ['twomoon'] #, 'twomoon', 'credit']
-MODEL_CLASS_VALUES = ['lr', 'mlp']
-NORM_VALUES = ['two_norm']
-# APPROACHES_VALUES = ['MACE_eps_1e-3']
-APPROACHES_VALUES = ['MACE_eps_1e-3', 'MINT_eps_1e-3']
+DATASET_VALUES = ['compass'] #, 'twomoon', 'credit']
+MODEL_CLASS_VALUES = ['mlp1x10']
+NORM_VALUES = ['one_norm']
+APPROACHES_VALUES = ['MIP_MACE_eps_1e-5']
+# APPROACHES_VALUES = ['MACE_eps_1e-3', 'MINT_eps_1e-3']
 
 
 
-experiments_folder_path = '/Volumes/amir/dev/mace/_experiments/'
+experiments_folder_path = './_experiments/'
 # experiments_folder_path = '/Users/a6karimi/dev/mace/_experiments/'
 all_counter = len(DATASET_VALUES) * len(MODEL_CLASS_VALUES) * len(NORM_VALUES) * len(APPROACHES_VALUES)
 counter = 0
