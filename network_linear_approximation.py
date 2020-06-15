@@ -341,7 +341,9 @@ class LinearizedNetwork:
 
                     self.model.setObjective(v, grb.GRB.MINIMIZE)
                     self.model.optimize()
-                    assert self.model.status == 2, "LP wasn't optimally solved"
+                    if self.model.status == 3:  # Infeasible
+                        return False
+                    assert self.model.status == 2, f"LP wasn't optimally solved, status: {self.model.status}"
                     # We have computed a lower bound
                     # if self.model.status == 2:
                     lb = v.X
@@ -352,7 +354,9 @@ class LinearizedNetwork:
                     self.model.update()
                     self.model.reset()
                     self.model.optimize()
-                    assert self.model.status == 2, "LP wasn't optimally solved"
+                    if self.model.status == 3:  # Infeasible
+                        return False
+                    assert self.model.status == 2, f"LP wasn't optimally solved, status: {self.model.status}"
                     # if self.model.status == 2:
                     ub = v.X
                     v.ub = ub

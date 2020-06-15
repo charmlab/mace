@@ -472,7 +472,8 @@ def mlp2formula(model, model_symbols, lower_bnds=None, upper_bnds=None):
             )
 
             if lower_bnds is not None:
-                assert relu_ubs[curr_layer_feature_idx] >= relu_lbs[curr_layer_feature_idx]
+                assert relu_ubs[curr_layer_feature_idx] + 1e-6 >= relu_lbs[curr_layer_feature_idx], f'layer {layer_idx}, ' \
+                f'feature {curr_layer_feature_idx}, ub: {relu_ubs[curr_layer_feature_idx]} lb: {relu_lbs[curr_layer_feature_idx]}'
 
             # ReLU is always in-active:
             if lower_bnds is not None and relu_ubs[curr_layer_feature_idx] == 0:
