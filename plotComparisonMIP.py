@@ -59,11 +59,11 @@ if __name__ == "__main__":
     DATASET_VALUES = ['credit']
     MODEL_CLASS_VALUES = ['mlp1x10', 'mlp2x10', 'mlp3x10']
     NORM_VALUES = ['one_norm']
-    APPROACHES_VALUES = ['MACE_eps_1e-5', 'MIP_MACE_eps_1e-5']
+    APPROACHES_VALUES = ['MACE_eps_1e-5', 'MIP_MACE_eps_1e-5', 'MIP_eps_1e-5']
     KEY = 'cfe_time'
     experiments_path = './_experiments/MIP_MACE_realworld'
 
-    fig, axs = plt.subplots(len(MODEL_CLASS_VALUES), len(DATASET_VALUES), figsize=(14, 10))
+    fig, axs = plt.subplots(len(MODEL_CLASS_VALUES), len(DATASET_VALUES), figsize=(14, 11))
     path = ''
 
     for i, dataset in enumerate(DATASET_VALUES):
@@ -80,20 +80,29 @@ if __name__ == "__main__":
             ax.set_yscale("log")
             ax.set_ylabel(f"{model_type}")
             if j == 0:
-                ax.set_title(f"{dataset}")
+                ax.set_title(f"{dataset} dataset")
             paths = glob.glob(f'{experiments_path}/*{dataset}__{model_type}*/_minimum_distances')
-            assert len(paths) == 2
-            if 'MIP_MACE_eps_1e-5' in paths[0]:
-                orders = getPlottingOrder(paths[0], KEY, paths[1])
-            else:
-                orders = getPlottingOrder(paths[1], KEY, paths[0])
+            assert len(paths) == len(APPROACHES_VALUES)
+            path1, path2 = '', ''
+            for path in paths:
+                if '__MIP_MACE_eps_1e-5__' in path:
+                    path1 = path
+                elif '__MACE_eps_1e-5__' in path:
+                    path2 = path
+            orders = getPlottingOrder(path1, KEY, path2)
             ax.set_xlabel(f"Time in seconds on {len(orders)} samples")
             for norm in NORM_VALUES:
                 for approach in APPROACHES_VALUES:
                     path = glob.glob(f'{experiments_path}/*{dataset}__{model_type}__{norm}__{approach}*/_minimum_distances')
                     assert len(path) == 1
                     path = path[0]
-                    plotScatterDesiredKey(ax, approach, path, orders, KEY)
+                    if approach == 'MACE_eps_1e-5':
+                        label = 'MACE (SMT)'
+                    if approach == 'MIP_MACE_eps_1e-5':
+                        label = 'MIP_MACE (+ RevBS, LinNet)'
+                    if approach == 'MIP_eps_1e-5':
+                        label = 'MIP (+ RevBS, LinNet, Tjeng et. al.)'
+                    plotScatterDesiredKey(ax, label, path, orders, KEY)
 
 
     plt.tight_layout()
