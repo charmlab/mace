@@ -19,7 +19,7 @@ GEN_CF_FOR = 'neg_and_pos'
 # NUM_BATCHES = 100
 # NUM_NEG_SAMPLES_PER_BATCH = 5
 
-request_memory = 8192
+request_memory = 8192*4
 
 sub_file = open('test.sub','w')
 print('executable = /home/amir/dev/mace/_venv/bin/python', file=sub_file)

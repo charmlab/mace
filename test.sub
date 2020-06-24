@@ -2,7 +2,7 @@ executable = /home/amir/dev/mace/_venv/bin/python
 error = _cluster_logs/test.$(Process).err
 output = _cluster_logs/test.$(Process).out
 log = _cluster_logs/test.$(Process).log
-request_memory = 8192
+request_memory = 32768
 request_cpus = 1
 
 
