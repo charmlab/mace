@@ -34,9 +34,9 @@ except:
   print('[ENV WARNING] process_german_data not available')
 
 try:
-  from _data_main.process_random_data import *
+  from _data_main.process_synthetic_data import *
 except:
-  print('[ENV WARNING] process_random_data not available')
+  print('[ENV WARNING] process_synthetic_data not available')
 
 try:
   from _data_main.process_mortgage_data import *
@@ -419,6 +419,10 @@ class Dataset(object):
         balanced_data_frame[balanced_data_frame.loc[:,output_col] == 0].sample(number_of_subsamples_in_each_class, random_state = RANDOM_SEED),
         balanced_data_frame[balanced_data_frame.loc[:,output_col] == 1].sample(number_of_subsamples_in_each_class, random_state = RANDOM_SEED),
     ]).sample(frac = 1, random_state = RANDOM_SEED)
+    # balanced_data_frame = pd.concat([
+    #     balanced_data_frame[balanced_data_frame.loc[:,output_col] == 0],
+    #     balanced_data_frame[balanced_data_frame.loc[:,output_col] == 1],
+    # ]).sample(frac = 1, random_state = RANDOM_SEED)
 
     return balanced_data_frame, meta_cols, input_cols, output_col
 
@@ -429,7 +433,7 @@ class Dataset(object):
 
     # When working only with normalized data in [0, 1], data ranges must change to [0, 1] as well
     # otherwise, in computing normalized distance we will normalize with intial ranges again!
-    # AMIR (2020.05.17) does this work with cat/ord and sub-cat/sub-ord data???
+    # pseudonym (2020.05.17) does this work with cat/ord and sub-cat/sub-ord data???
     def setBoundsToZeroOne():
       for attr_name_kurz in self.getNonHotAttributesNames('kurz'):
         attr_obj = self.attributes_kurz[attr_name_kurz]
@@ -588,7 +592,7 @@ class DatasetAttribute(object):
     self.upper_bound = upper_bound
 
 
-def loadDataset(dataset_name, return_one_hot, load_from_cache = False, debug_flag = True):
+def loadDataset(dataset_name, return_one_hot, load_from_cache = False, debug_flag = True, meta_param = None):
 
   def getInputOutputColumns(data_frame):
     all_data_frame_cols = data_frame.columns.values
@@ -909,12 +913,14 @@ def loadDataset(dataset_name, return_one_hot, load_from_cache = False, debug_fla
         lower_bound = data_frame_non_hot[col_name].min(),
         upper_bound = data_frame_non_hot[col_name].max())
 
-  elif dataset_name == 'random':
+  elif dataset_name == 'synthetic':
 
     variable_type = 'real'
     # variable_type = 'integer'
 
-    data_frame_non_hot = load_random_data(variable_type)
+    scm_class = meta_param
+
+    data_frame_non_hot = load_synthetic_data(scm_class, variable_type)
     data_frame_non_hot = data_frame_non_hot.reset_index(drop=True)
     attributes_non_hot = {}
 

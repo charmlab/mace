@@ -183,7 +183,7 @@ def runExperiments(dataset_values, model_class_values, norm_values, approaches_v
           model_trained = loadModel.loadModelForDataset(
             model_class_string,
             dataset_string,
-            experiment_folder_name)
+            experiment_folder_name = experiment_folder_name)
 
           # get the predicted labels (only test set)
           # X_test = pd.concat([X_train, X_test]) # ONLY ACTIVATE THIS WHEN TEST SET IS NOT LARGE ENOUGH TO GEN' MODEL RECON DATASET
