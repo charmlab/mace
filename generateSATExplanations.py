@@ -523,9 +523,13 @@ def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, f
     pysmt_prediction = int(dict_sample['y'])
     factual_prediction = int(factual_sample['y'])
 
-    if isinstance(model_trained, LogisticRegression):
-      if np.dot(model_trained.coef_, vectorized_sample) + model_trained.intercept_ < 1e-10:
-        return
+    # IMPORTANT: sometimes, MACE does such a good job, that the counterfactual
+    #            ends up super close to (if not on) the decision boundary; here
+    #            the label is underfined which causes inconsistency errors
+    #            between pysmt and sklearn. We skip the assert at such points.
+    class_predict_proba = model_trained.predict_proba([vectorized_sample])[0]
+    if np.abs(class_predict_proba[0] - class_predict_proba[1]) < 1e-10:
+      return
 
     assert sklearn_prediction == pysmt_prediction, 'Pysmt prediction does not match sklearn prediction.'
     assert sklearn_prediction != factual_prediction, 'Counterfactual and factual samples have the same prediction.'
