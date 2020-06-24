@@ -6,14 +6,14 @@
 # ls -1 | grep 2019.05 | xargs rm -rf
 # scp -r amir@login.cluster.is.localnet:~/dev/mace/_experiments/__merged _results/
 
-DATASET_VALUES = ['random', 'twomoon'] #, 'twomoon', 'credit']
-MODEL_CLASS_VALUES = ['lr', 'mlp']
+DATASET_VALUES = ['twomoon'] #, 'twomoon', 'credit']
+MODEL_CLASS_VALUES = ['lr', 'tree', 'mlp']
 NORM_VALUES = ['two_norm']
-# APPROACHES_VALUES = ['MACE_eps_1e-3']
-APPROACHES_VALUES = ['MACE_eps_1e-5', 'MINT_eps_1e-5']
+APPROACHES_VALUES = ['MACE_eps_1e-3']
+# APPROACHES_VALUES = ['MACE_eps_1e-5', 'MINT_eps_1e-5']
 
-NUM_BATCHES = 100
-NUM_NEG_SAMPLES_PER_BATCH = 1
+NUM_BATCHES = 500
+NUM_NEG_SAMPLES_PER_BATCH = 10
 GEN_CF_FOR = 'neg_and_pos'
 
 # NUM_BATCHES = 100
