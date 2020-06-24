@@ -65,7 +65,7 @@ def loadModelForDataset(model_class, dataset_string, scm_class = None, experimen
     model_pretrain = MLPClassifier(hidden_layer_sizes = (10, 10))
 
   tmp_text = f'[INFO] Training `{model_class}` on {X_train.shape[0]:,} samples ' + \
-    f'(%{100 * X_train.shape[0] / (X_train.shape[0] + X_test.shape[0]):.2f}' + \
+    f'(%{100 * X_train.shape[0] / (X_train.shape[0] + X_test.shape[0]):.2f} ' + \
     f'of {X_train.shape[0] + X_test.shape[0]:,} samples)...'
   print(tmp_text)
   print(tmp_text, file=log_file)

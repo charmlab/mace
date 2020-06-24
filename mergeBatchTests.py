@@ -41,11 +41,17 @@ from debug import ipsh
 # # APPROACHES_VALUES = ['MINT_eps_1e-3']
 # APPROACHES_VALUES = ['MACE_eps_1e-3']
 
+# DATASET_VALUES = ['twomoon'] #, 'twomoon', 'credit']
+# MODEL_CLASS_VALUES = ['lr', 'mlp']
+# NORM_VALUES = ['two_norm']
+# # APPROACHES_VALUES = ['MACE_eps_1e-3']
+# APPROACHES_VALUES = ['MACE_eps_1e-3', 'MINT_eps_1e-3']
+
 DATASET_VALUES = ['twomoon'] #, 'twomoon', 'credit']
-MODEL_CLASS_VALUES = ['lr', 'mlp']
+MODEL_CLASS_VALUES = ['lr', 'tree', 'mlp']
 NORM_VALUES = ['two_norm']
-# APPROACHES_VALUES = ['MACE_eps_1e-3']
-APPROACHES_VALUES = ['MACE_eps_1e-3', 'MINT_eps_1e-3']
+APPROACHES_VALUES = ['MACE_eps_1e-3']
+# APPROACHES_VALUES = ['MACE_eps_1e-5', 'MINT_eps_1e-5']
 
 
 
