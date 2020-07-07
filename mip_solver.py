@@ -5,7 +5,7 @@ import torch
 from torch import nn
 # from plnn.dual_network_linear_approximation import LooseDualNetworkApproximation
 from network_linear_approximation import LinearizedNetwork
-
+from applyMIPConstraints import *
 
 class View(nn.Module):
     '''
@@ -220,120 +220,6 @@ class MIPNetwork:
 
             layer_idx += 1
 
-    def applyDistanceConstrs(self, dataset_obj, factual_sample, norm_type, norm_lower, norm_upper):
-
-        # # Two-norm:
-        # assert norm_type == 'two_norm'
-        # self.model.addQConstr(
-        #     (1 / len(inp_gurobi_vars))
-        #     *
-        #     grb.quicksum(
-        #         ((inp_gurobi_vars[i] - factual_sample[i]) / (input_domain[i][1] - input_domain[i][0])) *
-        #         ((inp_gurobi_vars[i] - factual_sample[i]) / (input_domain[i][1] - input_domain[i][0]))
-        #         for i in range(len(inp_gurobi_vars))
-        #     )
-        #     <= norm_threshold ** 2
-        # )
-
-        mutables = dataset_obj.getMutableAttributeNames('kurz')
-        one_hots= dataset_obj.getOneHotAttributesNames('kurz')
-        non_hots = dataset_obj.getNonHotAttributesNames('kurz')
-
-        assert norm_type == 'one_norm'
-        abs_diffs_normalized = []
-
-        # TODO: should these intermediate variables also have the same type as input vars?
-
-        # 1. mutable & non-hot
-        for attr_name_kurz in np.intersect1d(mutables, non_hots):
-
-            v = self.model.getVarByName(attr_name_kurz)
-            lb = dataset_obj.attributes_kurz[attr_name_kurz].lower_bound
-            ub = dataset_obj.attributes_kurz[attr_name_kurz].upper_bound
-
-            diff_normalized = self.model.addVar(lb=-1.0, ub=1.0, obj=0,
-                                                vtype=grb.GRB.CONTINUOUS, name=f'diff_{attr_name_kurz}')
-            self.model.addConstr(
-                diff_normalized == (v - factual_sample[attr_name_kurz]) / (ub - lb)
-            )
-            abs_diff_normalized = self.model.addVar(lb=0.0, ub=1.0, obj=0,
-                                                    vtype=grb.GRB.CONTINUOUS, name=f'abs_{attr_name_kurz}')
-            self.model.addConstr(
-                abs_diff_normalized == grb.abs_(diff_normalized)
-            )
-            abs_diffs_normalized.append(abs_diff_normalized)
-
-        # 2. mutable & integer-based & one-hot
-        already_considered = []
-        for attr_name_kurz in np.intersect1d(mutables, one_hots):
-            if attr_name_kurz not in already_considered:
-                siblings_kurz = dataset_obj.getSiblingsFor(attr_name_kurz)
-                if 'cat' in dataset_obj.attributes_kurz[attr_name_kurz].attr_type:
-
-                    diff_normalized = self.model.addVar(lb=-1.0, ub=1.0, obj=0, vtype=grb.GRB.CONTINUOUS,
-                                             name=f'diff_{attr_name_kurz}')
-                    self.model.addConstr(
-                        diff_normalized == grb.max_(self.model.getVarByName(sib_name_kurz) - factual_sample[sib_name_kurz]
-                                                    for sib_name_kurz in siblings_kurz)
-                    )
-                    # It's either 0 or 1, so no need for grb.abs_()
-                    abs_diffs_normalized.append(diff_normalized)
-
-                elif 'ord' in dataset_obj.attributes_kurz[attr_name_kurz].attr_type:
-                    diff_normalized = self.model.addVar(lb=-1.0, ub=1.0, obj=0, vtype=grb.GRB.CONTINUOUS,
-                                             name=f'diff_{attr_name_kurz}')
-                    self.model.addConstr(
-                        diff_normalized == (grb.quicksum(
-                            self.model.getVarByName(sib_name_kurz) for sib_name_kurz in siblings_kurz
-                        )
-                        -
-                        sum(factual_sample[sib_name_kurz] for sib_name_kurz in siblings_kurz))
-                        /
-                        len(siblings_kurz)
-                    )
-                    abs_diff_normalized = self.model.addVar(lb=0.0, ub=1.0, obj=0,
-                                                            vtype=grb.GRB.CONTINUOUS, name=f'abs_{attr_name_kurz}')
-                    self.model.addConstr(
-                        abs_diff_normalized == grb.abs_(diff_normalized)
-                    )
-                    abs_diffs_normalized.append(abs_diff_normalized)
-                else:
-                    raise Exception(f'{attr_name_kurz} must include either `cat` or `ord`.')
-                already_considered.extend(siblings_kurz)
-
-        self.model.addConstr(
-            grb.quicksum(abs_diffs_normalized) / len(abs_diffs_normalized)
-            <= norm_upper
-        )
-        if norm_lower != 0.0:
-            self.model.addConstr(
-                grb.quicksum(abs_diffs_normalized) / len(abs_diffs_normalized)
-                >= norm_lower
-            )
-
-    def applyPlausibilityConstrs(self, dataset_obj):
-        # 1. Data range plausibility:
-        #    Already met when defining input variables
-
-        # 2. Data type plausibility
-        # TODO: add categorical
-
-        dict_of_siblings_kurz = dataset_obj.getDictOfSiblings('kurz')
-        for parent_name_kurz in dict_of_siblings_kurz['ord'].keys():
-            self.model.addConstrs(
-                self.model.getVarByName(dict_of_siblings_kurz['ord'][parent_name_kurz][name_idx])
-                >=
-                self.model.getVarByName(dict_of_siblings_kurz['ord'][parent_name_kurz][name_idx + 1])
-                for name_idx in range(len(dict_of_siblings_kurz['ord'][parent_name_kurz]) - 1)
-            )
-            # print("\nAdding this constraint: ")
-            # for name_idx in range(len(dict_of_siblings_kurz['ord'][parent_name_kurz])):
-            #     print(dict_of_siblings_kurz['ord'][parent_name_kurz][name_idx] + ' >= ', end='')
-
-        # 3. Actionability + Mutability
-        # 4. Causal Consistency
-
-
 
     def setup_model(self, inp_domain, factual_sample, dataset_obj, norm_type, norm_lower, norm_upper,
                     sym_bounds=False,
@@ -444,9 +330,9 @@ class MIPNetwork:
 
         self.gurobi_vars.append(inp_gurobi_vars)
         self.model.update()
-        self.applyDistanceConstrs(dataset_obj, factual_sample, norm_type, norm_lower, norm_upper)
+        applyDistanceConstrs(self.model, dataset_obj, factual_sample, norm_type, norm_lower, norm_upper)
         self.model.update()
-        self.applyPlausibilityConstrs(dataset_obj)
+        applyPlausibilityConstrs(self.model, dataset_obj)
         self.model.update()
 
         layer_idx = 1
