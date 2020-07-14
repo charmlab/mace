@@ -50,7 +50,7 @@ class MIPNetwork:
                   None otherwise.
         timeout : Maximum allowed time to run, if is not None
         '''
-        if factual_sample['y'] is True and self.lower_bounds[-1][0] >= 0:
+        if factual_sample['y'] is True and self.lower_bounds[-1][0] > 0:
             # The problem is infeasible, and we haven't setup the MIP
             return (False, None, 0)
         elif factual_sample['y'] is False and self.upper_bounds[-1][0] < 0:
@@ -66,7 +66,7 @@ class MIPNetwork:
                     best_bound = model.cbGet(grb.GRB.Callback.MIP_OBJBND)
                     if factual_sample['y'] is True and best_bound >= 0:
                         model.terminate()
-                    if factual_sample['y'] is False and best_bound < 0:
+                    if factual_sample['y'] is False and best_bound <= 0:
                         model.terminate()
 
                 if where == grb.GRB.Callback.MIPNODE:
@@ -76,7 +76,7 @@ class MIPNetwork:
 
                 if where == grb.GRB.Callback.MIPSOL:
                     obj = model.cbGet(grb.GRB.Callback.MIPSOL_OBJ)
-                    if factual_sample['y'] is True and obj < 0:
+                    if factual_sample['y'] is True and obj <= 0:
                         # Does it have a chance at being a valid
                         # counter-example?
 
@@ -87,8 +87,9 @@ class MIPNetwork:
                             inps = torch.Tensor(input_vals).view(1, -1)
                             out = self.net(inps).squeeze().item()
 
-                        if out < 0:
+                        if out <= 0:
                             model.terminate()
+
                     if factual_sample['y'] is False and obj >= 0:
                         # Does it have a chance at being a valid
                         # counter-example?
@@ -124,13 +125,28 @@ class MIPNetwork:
             for idx, var in enumerate(self.gurobi_vars[0]):
                 cfe[var.varName] = var.x
             optim_val = self.gurobi_vars[-1][-1].x
-            cfe['y'] = (optim_val >= 0)
+            cfe['y'] = not(factual_sample['y']) if optim_val == 0 else (optim_val > 0)
+
+
+            # Check it with the network
+            input_vals = [var.x for var in self.gurobi_vars[0]]
+
+
+            print("-----OPTIMAL")
+            with torch.no_grad():
+                inps = torch.Tensor(input_vals).view(1, -1)
+                out = self.net(inps).squeeze().item()
+
+            print("torch out: ", out)
+            print("optimal val: ", optim_val)
+            print("optimal distance: ", self.model.getVarByName('normalized_distance').x)
 
             return (cfe['y'] != factual_sample['y'], cfe, nb_visited_states)
+
         elif self.model.status is grb.GRB.INTERRUPTED:
             obj_bound = self.model.ObjBound
 
-            if factual_sample['y'] is True and obj_bound >= 0:
+            if factual_sample['y'] is True and obj_bound > 0:
                 return (False, None, nb_visited_states)
             elif factual_sample['y'] is False and obj_bound < 0:
                 return (False, None, nb_visited_states)
@@ -143,8 +159,22 @@ class MIPNetwork:
                 for idx, var in enumerate(self.gurobi_vars[0]):
                     cfe[var.varName] = var.x
                 optim_val = self.gurobi_vars[-1][-1].x
-                cfe['y'] = (optim_val >= 0)
+                cfe['y'] = not(factual_sample['y']) if optim_val == 0 else (optim_val > 0)
+
+            # Check it with the network
+            input_vals = [var.x for var in self.gurobi_vars[0]]
+
+            print("------INTERUPTED")
+            with torch.no_grad():
+                inps = torch.Tensor(input_vals).view(1, -1)
+                out = self.net(inps).squeeze().item()
+
+            print("torch out: ", out)
+            print("optimal val: ", optim_val)
+            print("optimal distance: ", self.model.getVarByName('normalized_distance').x)
+
             return (cfe['y'] != factual_sample['y'], cfe, nb_visited_states)
+
         elif self.model.status is grb.GRB.TIME_LIMIT:
             # We timed out, return a None Status
             return (None, None, nb_visited_states)
@@ -223,7 +253,7 @@ class MIPNetwork:
 
     def setup_model(self, inp_domain, factual_sample, dataset_obj, norm_type, norm_lower, norm_upper,
                     sym_bounds=False,
-                    use_obj_function=False,
+                    dist_as_constr=False,
                     bounds="opt",
                     parameter_file=None):
         '''
@@ -295,6 +325,13 @@ class MIPNetwork:
         self.model.setParam('OutputFlag', False)
         self.model.setParam('Threads', 1)
         self.model.setParam('DualReductions', 0)
+        self.model.setParam('FeasibilityTol', 1e-9)
+        self.model.setParam('OptimalityTol', 1e-9)
+        self.model.setParam('IntFeassTol', 1e-9)
+        self.model.setParam('MIPGap', 0)
+        self.model.setParam('MIPGapAbs', 0)
+        self.model.update()
+
         if parameter_file is not None:
             self.model.read(parameter_file)
 
@@ -479,9 +516,13 @@ class MIPNetwork:
 
         # Add the final constraint that the output must be less than or equal
         # to zero.
-        if not use_obj_function:
-            self.model.addConstr(self.gurobi_vars[-1][-1] <= 0)
-            self.model.setObjective(0, grb.GRB.MAXIMIZE)
+        if not dist_as_constr:
+            if factual_sample['y'] is True:
+                self.model.addConstr(self.gurobi_vars[-1][-1] <= 0)
+            else:
+                self.model.addConstr(self.gurobi_vars[-1][-1] >= 0)
+
+            self.model.setObjective(self.model.getVarByName('normalized_distance'), grb.GRB.MINIMIZE)
             self.check_obj_value_callback = False
         else:
             if factual_sample['y'] is True:

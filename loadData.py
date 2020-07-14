@@ -853,6 +853,9 @@ def loadDataset(dataset_name, return_one_hot, load_from_cache = False, debug_fla
         lower_bound = data_frame_non_hot[col_name].min(),
         upper_bound = data_frame_non_hot[col_name].max())
 
+      if attr_type == 'binary': # Make binary variables 0,1 (instead of 1,2)
+        data_frame_non_hot[col_name] = data_frame_non_hot[col_name] - data_frame_non_hot[col_name].min()
+
   elif dataset_name == 'compass':
 
     data_frame_non_hot = load_compas_data_new()

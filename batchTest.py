@@ -150,7 +150,7 @@ def runExperiments(dataset_values, model_class_values, norm_values, approaches_v
 
           if model_class_string in {'tree', 'forest'}:
             one_hot = False
-          elif model_class_string in {'lr', 'mlp', 'mlp1x10', 'mlp2x10', 'mlp3x10'}:
+          elif model_class_string in {'lr', 'mlp', 'mlp1x10', 'mlp2x10', 'mlp3x10', 'mlp4x10'}:
             one_hot = True
           else:
             raise Exception(f'{model_class_string} not recognized as a valid `model_class_string`.')
@@ -220,6 +220,9 @@ def runExperiments(dataset_values, model_class_values, norm_values, approaches_v
           explanation_counter = 1
           all_minimum_distances = {}
           for factual_sample_index, factual_sample in iterate_over_data_dict.items():
+
+            if factual_sample_index != 15829:
+              continue
 
             factual_sample['y'] = bool(factual_sample['y'])
 

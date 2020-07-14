@@ -195,6 +195,11 @@ class LinearizedNetwork:
         self.model = grb.Model()
         self.model.setParam('OutputFlag', False)
         self.model.setParam('Threads', 1)
+        self.model.setParam('FeasibilityTol', 1e-9)
+        self.model.setParam('OptimalityTol', 1e-9)
+        self.model.setParam('IntFeassTol', 1e-9)
+        self.model.setParam('MIPGap', 0)
+        self.model.setParam('MIPGapAbs', 0)
 
         ## Do the input layer, which is a special case
         inp_lb = []
@@ -225,8 +230,9 @@ class LinearizedNetwork:
             inp_gurobi_vars.append(v)
 
         self.model.update()
-        applyDistanceConstrs(self.model, dataset_obj, factual_sample, norm_type, norm_lower, norm_upper)
-        self.model.update()
+        if 'obj' not in norm_type:
+            applyDistanceConstrs(self.model, dataset_obj, factual_sample, norm_type, norm_lower, norm_upper)
+            self.model.update()
         applyPlausibilityConstrs(self.model, dataset_obj)
         self.model.update()
 

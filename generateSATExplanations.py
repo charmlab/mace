@@ -692,7 +692,7 @@ def solveMIP(sklearn_model, dataset_obj, factual_sample, norm_type, norm_lower, 
 
   # Setup MIP model and check bounds feasibility w.r.t. distance formula
   feasible = mip_net.setup_model(domains, factual_sample, dataset_obj, norm_type, norm_lower, norm_upper,
-             sym_bounds=False, use_obj_function=True, bounds='opt')
+                                 sym_bounds=False, dist_as_constr=not('obj' in norm_type), bounds='opt')
   if not feasible:
     return False, None
 
@@ -716,12 +716,61 @@ def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, f
     pysmt_prediction = int(dict_sample['y'])
     factual_prediction = int(factual_sample['y'])
 
+    # IMPORTANT: sometimes, MACE does such a good job, that the counterfactual
+    #            ends up super close to (if not on) the decision boundary; here
+    #            the label is underfined which causes inconsistency errors
+    #            between pysmt and sklearn. We skip the assert at such points.
+    class_predict_proba = model_trained.predict_proba([vectorized_sample])[0]
+    # print(class_predict_proba)
+    if np.abs(class_predict_proba[0] - class_predict_proba[1]) < 1e-8:
+      return
+
     if isinstance(model_trained, LogisticRegression):
       if np.dot(model_trained.coef_, vectorized_sample) + model_trained.intercept_ < 1e-10:
         return
 
     assert sklearn_prediction == pysmt_prediction, 'Pysmt prediction does not match sklearn prediction.'
     assert sklearn_prediction != factual_prediction, 'Counterfactual and factual samples have the same prediction.'
+
+
+  iters = 1
+  max_iters = 100
+  counterfactuals = [] # list of tuples (samples, distances)
+  # In case no counterfactuals are found (this could happen for a variety of
+  # reasons, perhaps due to non-plausibility), return a template counterfactual
+  counterfactuals.append({
+    'counterfactual_sample': {},
+    'counterfactual_distance': np.infty,
+    'interventional_sample': {},
+    'interventional_distance': np.infty,
+    'time': np.infty,
+    'norm_type': norm_type})
+
+
+  if 'mace_MIP_OBJ' in approach_string:
+    norm_type = norm_type + '_obj'
+    solved, counterfactual_sample = solveMIP(model_trained, dataset_obj, factual_sample, norm_type, 0, 0)
+    norm_type = norm_type.replace('_obj', '')
+    assert solved is True
+    # Assert samples have correct prediction label according to sklearn model
+    assertPrediction(counterfactual_sample, model_trained, dataset_obj)
+    counterfactual_distance = normalizedDistance.getDistanceBetweenSamples(
+      factual_sample,
+      counterfactual_sample,
+      norm_type,
+      dataset_obj)
+    print("computed distance: ", counterfactual_distance)
+    counterfactuals.append({
+      'counterfactual_sample': counterfactual_sample,
+      'counterfactual_distance': counterfactual_distance,
+      'time': None,
+      'norm_type': norm_type})
+
+    closest_counterfactual_sample = sorted(counterfactuals, key=lambda x: x['counterfactual_distance'])[0]
+    # closest_interventional_sample = sorted(counterfactuals, key = lambda x: x['interventional_distance'])[0]
+    closest_interventional_sample = None
+
+    return counterfactuals, closest_counterfactual_sample, closest_interventional_sample
 
   # Convert to pysmt_sample so factual symbols can be used in formulae
   factual_pysmt_sample = getPySMTSampleFromDictSample(factual_sample, dataset_obj)
@@ -738,19 +787,6 @@ def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, f
   distance_formula = getDistanceFormula(model_symbols, dataset_obj, factual_pysmt_sample, norm_type, approach_string, norm_lower_bound, curr_norm_threshold)
   diversity_formula = TRUE() # simply initialize and modify later as new counterfactuals come in
   print('done.', file = log_file)
-
-  iters = 1
-  max_iters = 100
-  counterfactuals = [] # list of tuples (samples, distances)
-  # In case no counterfactuals are found (this could happen for a variety of
-  # reasons, perhaps due to non-plausibility), return a template counterfactual
-  counterfactuals.append({
-    'counterfactual_sample': {},
-    'counterfactual_distance': np.infty,
-    'interventional_sample': {},
-    'interventional_distance': np.infty,
-    'time': np.infty,
-    'norm_type': norm_type})
 
   print('Solving (not searching) for closest counterfactual using various distance thresholds...', file = log_file)
 
