@@ -10,7 +10,7 @@ RANDOM_SEED = 54321
 seed(RANDOM_SEED) # set the random seed so that the random permutations can be reproduced again
 np.random.seed(RANDOM_SEED)
 
-n_samples = 2000
+n_samples = 25000
 
 def load_twomoon_data(variable_type = 'real'):
 
