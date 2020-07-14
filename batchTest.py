@@ -10,6 +10,7 @@ from datetime import datetime
 
 import loadData
 import loadModel
+from loadModel import visualizeDatasetAndFixedModel
 
 from debug import ipsh
 
@@ -221,9 +222,6 @@ def runExperiments(dataset_values, model_class_values, norm_values, approaches_v
           all_minimum_distances = {}
           for factual_sample_index, factual_sample in iterate_over_data_dict.items():
 
-            if factual_sample_index != 15829:
-              continue
-
             factual_sample['y'] = bool(factual_sample['y'])
 
             print(
@@ -267,6 +265,9 @@ def runExperiments(dataset_values, model_class_values, norm_values, approaches_v
 
           pickle.dump(all_minimum_distances, open(f'{experiment_folder_name}/_minimum_distances', 'wb'))
           pprint(all_minimum_distances, open(f'{experiment_folder_name}/minimum_distances.txt', 'w'))
+
+          if 'twomoon' in dataset_string:
+            visualizeDatasetAndFixedModel(dataset_obj, model_trained, experiment_folder_name)
 
 
 if __name__ == '__main__':

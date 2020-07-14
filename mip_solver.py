@@ -127,19 +127,16 @@ class MIPNetwork:
             optim_val = self.gurobi_vars[-1][-1].x
             cfe['y'] = not(factual_sample['y']) if optim_val == 0 else (optim_val > 0)
 
-
-            # Check it with the network
-            input_vals = [var.x for var in self.gurobi_vars[0]]
-
-
-            print("-----OPTIMAL")
-            with torch.no_grad():
-                inps = torch.Tensor(input_vals).view(1, -1)
-                out = self.net(inps).squeeze().item()
-
-            print("torch out: ", out)
-            print("optimal val: ", optim_val)
-            print("optimal distance: ", self.model.getVarByName('normalized_distance').x)
+            # print("-----OPTIMAL")
+            # # Check it with the network
+            # input_vals = [var.x for var in self.gurobi_vars[0]]
+            # with torch.no_grad():
+            #     inps = torch.Tensor(input_vals).view(1, -1)
+            #     out = self.net(inps).squeeze().item()
+            #
+            # print("torch out: ", out)
+            # print("optimal val: ", optim_val)
+            # print("optimal distance: ", self.model.getVarByName('normalized_distance').x)
 
             return (cfe['y'] != factual_sample['y'], cfe, nb_visited_states)
 
@@ -161,17 +158,16 @@ class MIPNetwork:
                 optim_val = self.gurobi_vars[-1][-1].x
                 cfe['y'] = not(factual_sample['y']) if optim_val == 0 else (optim_val > 0)
 
-            # Check it with the network
-            input_vals = [var.x for var in self.gurobi_vars[0]]
-
-            print("------INTERUPTED")
-            with torch.no_grad():
-                inps = torch.Tensor(input_vals).view(1, -1)
-                out = self.net(inps).squeeze().item()
-
-            print("torch out: ", out)
-            print("optimal val: ", optim_val)
-            print("optimal distance: ", self.model.getVarByName('normalized_distance').x)
+            # print("------INTERUPTED")
+            # # Check it with the network
+            # input_vals = [var.x for var in self.gurobi_vars[0]]
+            # with torch.no_grad():
+            #     inps = torch.Tensor(input_vals).view(1, -1)
+            #     out = self.net(inps).squeeze().item()
+            #
+            # print("torch out: ", out)
+            # print("optimal val: ", optim_val)
+            # print("optimal distance: ", self.model.getVarByName('normalized_distance').x)
 
             return (cfe['y'] != factual_sample['y'], cfe, nb_visited_states)
 
