@@ -50,6 +50,7 @@ class MIPNetwork:
                   None otherwise.
         timeout : Maximum allowed time to run, if is not None
         '''
+
         if factual_sample['y'] is True and self.lower_bounds[-1][0] > 0:
             # The problem is infeasible, and we haven't setup the MIP
             return (False, None, 0)
@@ -115,6 +116,7 @@ class MIPNetwork:
 
         if self.model.status is grb.GRB.INFEASIBLE:
             # Infeasible: No solution
+            print("-------INFEASIBLE")
             return (False, None, nb_visited_states)
         elif self.model.status is grb.GRB.OPTIMAL:
             # There is a feasible solution. Return the feasible solution as well.
@@ -132,8 +134,8 @@ class MIPNetwork:
             # input_vals = [var.x for var in self.gurobi_vars[0]]
             # with torch.no_grad():
             #     inps = torch.Tensor(input_vals).view(1, -1)
+            #     print(inps)
             #     out = self.net(inps).squeeze().item()
-            #
             # print("torch out: ", out)
             # print("optimal val: ", optim_val)
             # print("optimal distance: ", self.model.getVarByName('normalized_distance').x)
@@ -163,8 +165,8 @@ class MIPNetwork:
             # input_vals = [var.x for var in self.gurobi_vars[0]]
             # with torch.no_grad():
             #     inps = torch.Tensor(input_vals).view(1, -1)
+            #     print(inps)
             #     out = self.net(inps).squeeze().item()
-            #
             # print("torch out: ", out)
             # print("optimal val: ", optim_val)
             # print("optimal distance: ", self.model.getVarByName('normalized_distance').x)
@@ -239,7 +241,7 @@ class MIPNetwork:
             elif type(layer) == View:
                 continue
             else:
-                raise NotImplementedError
+                raise NotImplementedError()
 
             self.lower_bounds.append(new_layer_lb)
             self.upper_bounds.append(new_layer_ub)
@@ -514,9 +516,9 @@ class MIPNetwork:
         # to zero.
         if not dist_as_constr:
             if factual_sample['y'] is True:
-                self.model.addConstr(self.gurobi_vars[-1][-1] <= 0)
+                self.model.addConstr(self.gurobi_vars[-1][-1] <= -1e-1)
             else:
-                self.model.addConstr(self.gurobi_vars[-1][-1] >= 0)
+                self.model.addConstr(self.gurobi_vars[-1][-1] >= 1e-1)
 
             self.model.setObjective(self.model.getVarByName('normalized_distance'), grb.GRB.MINIMIZE)
             self.check_obj_value_callback = False

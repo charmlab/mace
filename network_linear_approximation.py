@@ -195,11 +195,11 @@ class LinearizedNetwork:
         self.model = grb.Model()
         self.model.setParam('OutputFlag', False)
         self.model.setParam('Threads', 1)
-        self.model.setParam('FeasibilityTol', 1e-9)
-        self.model.setParam('OptimalityTol', 1e-9)
-        self.model.setParam('IntFeassTol', 1e-9)
-        self.model.setParam('MIPGap', 0)
-        self.model.setParam('MIPGapAbs', 0)
+        # self.model.setParam('FeasibilityTol', 1e-9)
+        # self.model.setParam('OptimalityTol', 1e-9)
+        # self.model.setParam('IntFeassTol', 1e-9)
+        # self.model.setParam('MIPGap', 0)
+        # self.model.setParam('MIPGapAbs', 0)
 
         ## Do the input layer, which is a special case
         inp_lb = []
@@ -278,6 +278,7 @@ class LinearizedNetwork:
             new_layer_lb = []
             new_layer_ub = []
             new_layer_gurobi_vars = []
+            # print("layer ", layer, " -------------------------------------")
             if type(layer) is nn.Linear:
                 for neuron_idx in range(layer.weight.size(0)):
                     ub = layer.bias[neuron_idx].item()
@@ -317,6 +318,8 @@ class LinearizedNetwork:
                     assert self.model.status == 2, "LP wasn't optimally solved"
                     ub = v.X
                     v.ub = ub
+
+                    # print("new bounds: ", (lb, ub))
 
                     new_layer_lb.append(lb)
                     new_layer_ub.append(ub)

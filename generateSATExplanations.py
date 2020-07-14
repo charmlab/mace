@@ -729,7 +729,7 @@ def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, f
       if np.dot(model_trained.coef_, vectorized_sample) + model_trained.intercept_ < 1e-10:
         return
 
-    assert sklearn_prediction == pysmt_prediction, 'Pysmt prediction does not match sklearn prediction.'
+    assert sklearn_prediction == pysmt_prediction, f'Pysmt prediction does not match sklearn prediction. \n{dict_sample} \n{factual_sample}'
     assert sklearn_prediction != factual_prediction, 'Counterfactual and factual samples have the same prediction.'
 
 
