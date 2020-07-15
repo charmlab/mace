@@ -56,10 +56,10 @@ def plotScatterDesiredKey(ax, label, path, orders, desired_key):
 
 if __name__ == "__main__":
 
-    DATASET_VALUES = ['credit']
+    DATASET_VALUES = ['adult']
     MODEL_CLASS_VALUES = ['mlp4x10']
     NORM_VALUES = ['one_norm']
-    APPROACHES_VALUES = ['MIP_eps_1e-5', 'MIP_OBJ_eps_1e-5']
+    APPROACHES_VALUES = ['MIP_eps_1e-3', 'MIP_OBJ_eps_1e-5']
     KEY = 'cfe_distance'
     experiments_path = './_experiments/'
 
@@ -101,10 +101,10 @@ if __name__ == "__main__":
                         label = 'MACE (SMT)'
                     if approach == 'MIP_MACE_eps_1e-5':
                         label = 'MIP_MACE (+ RevBS, LinNet)'
-                    if approach == 'MIP_eps_1e-5':
+                    if approach == 'MIP_eps_1e-5' or approach == 'MIP_eps_1e-3':
                         label = 'MIP (+ ExpSearch, LinNet, LP_Bounds)'
                     if approach == 'MIP_OBJ_eps_1e-5':
-                        label = 'MIP_OBJ (+ LP_Bounds, |net_out|>0.01)'
+                        label = 'MIP_OBJ (+ LinNet, LP_Bounds, |net_out|>0.01)'
                     plotScatterDesiredKey(ax, label, path, orders, KEY)
 
 

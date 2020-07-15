@@ -40,9 +40,16 @@ def applyDistanceConstrs(model, dataset_obj, factual_sample, norm_type, norm_low
 
                 diff_normalized = model.addVar(lb=-1.0, ub=1.0, obj=0, vtype=grb.GRB.CONTINUOUS,
                                                     name=f'diff_{attr_name_kurz}')
+
+                elemwise_diffs = []
+                for sib_name_kurz in siblings_kurz:
+                    elem_diff = model.addVar(lb=-1.0, ub=1.0, obj=0, vtype=grb.GRB.CONTINUOUS,
+                                                   name=f'elem_diff_{attr_name_kurz}')
+                    model.addConstr(elem_diff == model.getVarByName(sib_name_kurz) - factual_sample[sib_name_kurz])
+                    elemwise_diffs.append(elem_diff)
+
                 model.addConstr(
-                    diff_normalized == grb.max_(model.getVarByName(sib_name_kurz) - factual_sample[sib_name_kurz]
-                                                for sib_name_kurz in siblings_kurz)
+                    diff_normalized == grb.max_(elemwise_diffs)
                 )
                 # It's either 0 or 1, so no need for grb.abs_()
                 abs_diffs_normalized.append(diff_normalized)
@@ -100,6 +107,19 @@ def applyPlausibilityConstrs(model, dataset_obj):
         # print("\nAdding this constraint: ")
         # for name_idx in range(len(dict_of_siblings_kurz['ord'][parent_name_kurz])):
         #     print(dict_of_siblings_kurz['ord'][parent_name_kurz][name_idx] + ' >= ', end='')
+
+    for parent_name_kurz in dict_of_siblings_kurz['cat'].keys():
+        model.addConstr(
+            grb.quicksum(
+                model.getVarByName(dict_of_siblings_kurz['cat'][parent_name_kurz][name_idx])
+                for name_idx in range(len(dict_of_siblings_kurz['cat'][parent_name_kurz]))
+            )
+            ==
+            1
+        )
+        # print("\nAdding this constraint: ")
+        # for name_idx in range(len(dict_of_siblings_kurz['cat'][parent_name_kurz])):
+        #     print(dict_of_siblings_kurz['cat'][parent_name_kurz][name_idx] + ' + ', end='')
 
     # 3. Actionability + Mutability
     # 4. Causal Consistency

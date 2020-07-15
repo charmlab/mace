@@ -9,8 +9,34 @@ request_cpus = 1
 
 
 
-arguments = batchTest.py -d compass -m mlp1x10 -n one_norm -a MACE_eps_1e-5 -b 0 -s 1  -g neg_and_pos  -p $(Process)
+arguments = batchTest.py -d compass -m mlp1x10 -n one_norm -a MIP_eps_1e-5 -b 0 -s 1  -g neg_and_pos  -p $(Process)
 getenv=True
 queue
 
+arguments = batchTest.py -d compass -m mlp1x10 -n one_norm -a MIP_eps_1e-5 -b 1 -s 1  -g neg_and_pos  -p $(Process)
+getenv=True
+queue
 
+arguments = batchTest.py -d compass -m mlp1x10 -n one_norm -a MIP_eps_1e-5 -b 2 -s 1  -g neg_and_pos  -p $(Process)
+getenv=True
+queue
+
+arguments = batchTest.py -d compass -m mlp1x10 -n one_norm -a MIP_eps_1e-5 -b 3 -s 1  -g neg_and_pos  -p $(Process)
+getenv=True
+queue
+
+arguments = batchTest.py -d compass -m mlp1x10 -n one_norm -a MIP_OBJ_eps_1e-5 -b 0 -s 1  -g neg_and_pos  -p $(Process)
+getenv=True
+queue
+
+arguments = batchTest.py -d compass -m mlp1x10 -n one_norm -a MIP_OBJ_eps_1e-5 -b 1 -s 1  -g neg_and_pos  -p $(Process)
+getenv=True
+queue
+
+arguments = batchTest.py -d compass -m mlp1x10 -n one_norm -a MIP_OBJ_eps_1e-5 -b 2 -s 1  -g neg_and_pos  -p $(Process)
+getenv=True
+queue
+
+arguments = batchTest.py -d compass -m mlp1x10 -n one_norm -a MIP_OBJ_eps_1e-5 -b 3 -s 1  -g neg_and_pos  -p $(Process)
+getenv=True
+queue

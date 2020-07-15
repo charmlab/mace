@@ -134,7 +134,7 @@ class MIPNetwork:
             # input_vals = [var.x for var in self.gurobi_vars[0]]
             # with torch.no_grad():
             #     inps = torch.Tensor(input_vals).view(1, -1)
-            #     print(inps)
+            #     # print(inps)
             #     out = self.net(inps).squeeze().item()
             # print("torch out: ", out)
             # print("optimal val: ", optim_val)
@@ -323,11 +323,11 @@ class MIPNetwork:
         self.model.setParam('OutputFlag', False)
         self.model.setParam('Threads', 1)
         self.model.setParam('DualReductions', 0)
-        self.model.setParam('FeasibilityTol', 1e-9)
-        self.model.setParam('OptimalityTol', 1e-9)
-        self.model.setParam('IntFeassTol', 1e-9)
-        self.model.setParam('MIPGap', 0)
-        self.model.setParam('MIPGapAbs', 0)
+        # self.model.setParam('FeasibilityTol', 1e-9)
+        # self.model.setParam('OptimalityTol', 1e-9)
+        # self.model.setParam('IntFeassTol', 1e-9)
+        # self.model.setParam('MIPGap', 0)
+        # self.model.setParam('MIPGapAbs', 0)
         self.model.update()
 
         if parameter_file is not None:
