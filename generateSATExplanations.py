@@ -671,6 +671,7 @@ def getNetworkBounds(sklearn_model, dataset_obj, factual_sample, norm_type, norm
 
   return True, lin_net.lower_bounds, lin_net.upper_bounds
 
+
 def solveMIP(sklearn_model, dataset_obj, factual_sample, norm_type, norm_lower, norm_upper):
   assert isinstance(sklearn_model, MLPClassifier), "Only MLP model supports the linear relaxation."
   input_dim = len(dataset_obj.getInputAttributeNames('kurz'))
@@ -745,32 +746,6 @@ def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, f
     'interventional_distance': np.infty,
     'time': np.infty,
     'norm_type': norm_type})
-
-
-  if 'mace_MIP_OBJ' in approach_string:
-    norm_type = norm_type + '_obj'
-    solved, counterfactual_sample = solveMIP(model_trained, dataset_obj, factual_sample, norm_type, 0, 0)
-    norm_type = norm_type.replace('_obj', '')
-    assert solved is True
-    # Assert samples have correct prediction label according to sklearn model
-    assertPrediction(counterfactual_sample, model_trained, dataset_obj)
-    counterfactual_distance = normalizedDistance.getDistanceBetweenSamples(
-      factual_sample,
-      counterfactual_sample,
-      norm_type,
-      dataset_obj)
-    print("computed distance: ", counterfactual_distance)
-    counterfactuals.append({
-      'counterfactual_sample': counterfactual_sample,
-      'counterfactual_distance': counterfactual_distance,
-      'time': None,
-      'norm_type': norm_type})
-
-    closest_counterfactual_sample = sorted(counterfactuals, key=lambda x: x['counterfactual_distance'])[0]
-    # closest_interventional_sample = sorted(counterfactuals, key = lambda x: x['interventional_distance'])[0]
-    closest_interventional_sample = None
-
-    return counterfactuals, closest_counterfactual_sample, closest_interventional_sample
 
   # Convert to pysmt_sample so factual symbols can be used in formulae
   factual_pysmt_sample = getPySMTSampleFromDictSample(factual_sample, dataset_obj)

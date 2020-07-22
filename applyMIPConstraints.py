@@ -1,8 +1,24 @@
 import gurobipy as grb
 import numpy as np
 
+from modelConversion import *
 
-def applyDistanceConstrs(model, dataset_obj, factual_sample, norm_type, norm_lower, norm_upper):
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.neural_network import MLPClassifier
+
+def applyTrainedModelConstrs(model, model_vars, model_trained):
+    if isinstance(model_trained, DecisionTreeClassifier):
+        tree2mip(model_trained, model, model_vars)
+    elif isinstance(model_trained, LogisticRegression):
+        lr2mip(model_trained, model, model_vars)
+    elif isinstance(model_trained, RandomForestClassifier):
+        forest2mip(model_trained, model, model_vars)
+    else:
+        raise Exception(f"Trained model type not recognized")
+
+def applyDistanceConstrs(model, dataset_obj, factual_sample, norm_type, norm_lower=0, norm_upper=0):
 
     mutables = dataset_obj.getMutableAttributeNames('kurz')
     one_hots = dataset_obj.getOneHotAttributesNames('kurz')
@@ -94,7 +110,6 @@ def applyPlausibilityConstrs(model, dataset_obj):
     #    Already met when defining input variables
 
     # 2. Data type plausibility
-    # TODO: add categorical
 
     dict_of_siblings_kurz = dataset_obj.getDictOfSiblings('kurz')
     for parent_name_kurz in dict_of_siblings_kurz['ord'].keys():

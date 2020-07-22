@@ -689,6 +689,9 @@ def loadDataset(dataset_name, return_one_hot, load_from_cache = False, debug_fla
         actionability = 'any'
         mutability = True
 
+      if attr_type == 'binary':  # Make binary variables 0,1 (instead of 1,2)
+        data_frame_non_hot[col_name] = data_frame_non_hot[col_name] - data_frame_non_hot[col_name].min()
+
       attributes_non_hot[col_name] = DatasetAttribute(
         attr_name_long = col_name,
         attr_name_kurz = f'x{col_idx}',
@@ -700,9 +703,6 @@ def loadDataset(dataset_name, return_one_hot, load_from_cache = False, debug_fla
         parent_name_kurz = -1,
         lower_bound = data_frame_non_hot[col_name].min(),
         upper_bound = data_frame_non_hot[col_name].max())
-
-      if attr_type == 'binary': # Make binary variables 0,1 (instead of 1,2)
-        data_frame_non_hot[col_name] = data_frame_non_hot[col_name] - data_frame_non_hot[col_name].min()
 
   elif dataset_name == 'german':
 
@@ -848,6 +848,9 @@ def loadDataset(dataset_name, return_one_hot, load_from_cache = False, debug_fla
         actionability = 'any'
         mutability = True
 
+      if attr_type == 'binary': # Make binary variables 0,1 (instead of 1,2)
+        data_frame_non_hot[col_name] = data_frame_non_hot[col_name] - data_frame_non_hot[col_name].min()
+
       attributes_non_hot[col_name] = DatasetAttribute(
         attr_name_long = col_name,
         attr_name_kurz = f'x{col_idx}',
@@ -860,8 +863,6 @@ def loadDataset(dataset_name, return_one_hot, load_from_cache = False, debug_fla
         lower_bound = data_frame_non_hot[col_name].min(),
         upper_bound = data_frame_non_hot[col_name].max())
 
-      if attr_type == 'binary': # Make binary variables 0,1 (instead of 1,2)
-        data_frame_non_hot[col_name] = data_frame_non_hot[col_name] - data_frame_non_hot[col_name].min()
 
   elif dataset_name == 'compass':
 
@@ -907,6 +908,9 @@ def loadDataset(dataset_name, return_one_hot, load_from_cache = False, debug_fla
         actionability = 'any'
         mutability = True
 
+      if attr_type == 'binary': # Make binary variables 0,1 (instead of 1,2)
+        data_frame_non_hot[col_name] = data_frame_non_hot[col_name] - data_frame_non_hot[col_name].min()
+
       attributes_non_hot[col_name] = DatasetAttribute(
         attr_name_long = col_name,
         attr_name_kurz = f'x{col_idx}',
@@ -918,6 +922,7 @@ def loadDataset(dataset_name, return_one_hot, load_from_cache = False, debug_fla
         parent_name_kurz = -1,
         lower_bound = data_frame_non_hot[col_name].min(),
         upper_bound = data_frame_non_hot[col_name].max())
+
 
   elif dataset_name == 'synthetic':
 
