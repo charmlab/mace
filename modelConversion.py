@@ -4,7 +4,7 @@ import gurobipy as grb
 from sklearn.tree import _tree, export_graphviz
 from pysmt.shortcuts import *
 from pysmt.typing import *
-
+import math
 
 # # Hoare triple examples:
 #     # https://www.cs.cmu.edu/~aldrich/courses/654-sp07/slides/7-hoare.pdf
@@ -125,38 +125,7 @@ def tree2formula(tree, model_symbols, return_value = 'class_idx_max', tree_idx =
 
     return recurse(0)
 
-def tree2mip(tree, mip_model:grb.Model, model_vars, return_value ='class_idx_max', tree_idx =''):
-    tree_ = tree.tree_
-    feature_names = list(model_vars['counterfactual'].keys())
-    feature_name = [
-        feature_names[i] if i != _tree.TREE_UNDEFINED else 'undefined!'
-        for i in tree_.feature
-    ]
-
-    def recurse(node):
-        if tree_.feature[node] != _tree.TREE_UNDEFINED:
-            name = feature_name[node]
-            threshold = float(tree_.threshold[node])
-
-            which_branch = mip_model.addVar(obj=0, vtype=grb.GRB.BINARY, name=f'which_branch_{node}')
-            mip_model.addConstr((which_branch == 1) >> (model_vars['counterfactual'][name]['var'] <= threshold - 1e-7))
-            mip_model.addConstr((which_branch == 0) >> (model_vars['counterfactual'][name]['var'] >= threshold + 1e-7))
-
-            # A chain of intermediate variables which finish with the last one equal to the class index
-            # which is the output
-            chosen_class = mip_model.addVar(obj=0, vtype=grb.GRB.BINARY, name=f'chosen_branch_{node}')
-            mip_model.addConstr((which_branch == 1) >> (chosen_class == recurse(tree_.children_left[node])))
-            mip_model.addConstr((which_branch == 0) >> (chosen_class == recurse(tree_.children_right[node])))
-            return chosen_class
-        else:
-            values = list(tree_.value[node][0])
-            output = values.index(max(values))
-            return output
-
-    mip_model.addConstr(model_vars['output']['y']['var'] == recurse(0))
-
-
-def tree2mip4forest(tree, mip_model:grb.Model, model_vars, tree_idx):
+def tree2mip(tree, mip_model:grb.Model, model_vars, return_value ='class_idx_max', tree_idx =0):
     tree_ = tree.tree_
     feature_names = list(model_vars['counterfactual'].keys())
     feature_name = [
@@ -170,24 +139,26 @@ def tree2mip4forest(tree, mip_model:grb.Model, model_vars, tree_idx):
             threshold = float(tree_.threshold[node])
 
             which_branch = mip_model.addVar(obj=0, vtype=grb.GRB.BINARY, name=f'which_branch_{tree_idx}_{node}')
-            mip_model.addConstr((which_branch == 1) >> (model_vars['counterfactual'][name]['var'] <= threshold - 1e-7))
-            mip_model.addConstr((which_branch == 0) >> (model_vars['counterfactual'][name]['var'] >= threshold + 1e-7))
+            mip_model.addConstr((which_branch == 1) >> (model_vars['counterfactual'][name]['var'] <= threshold - 1e-6))
+            mip_model.addConstr((which_branch == 0) >> (model_vars['counterfactual'][name]['var'] >= threshold + 1e-6))
 
-            p0 = mip_model.addVar(obj=0, vtype=grb.GRB.CONTINUOUS, name=f'p0_{tree_idx}_{node}')
-            p1 = mip_model.addVar(obj=0, vtype=grb.GRB.CONTINUOUS, name=f'p1_{tree_idx}_{node}')
-            p0_left, p1_left = recurse(tree_.children_left[node])
-            p0_right, p1_right = recurse(tree_.children_right[node])
-
-            mip_model.addConstr((which_branch == 1) >> (p0 == p0_left))
-            mip_model.addConstr((which_branch == 1) >> (p1 == p1_left))
-            mip_model.addConstr((which_branch == 0) >> (p0 == p0_right))
-            mip_model.addConstr((which_branch == 0) >> (p1 == p1_right))
-            return p0, p1
+            # A chain of intermediate variables which finish with the last one equal to the class index
+            # which is the output
+            chosen_class = mip_model.addVar(obj=0, vtype=grb.GRB.BINARY, name=f'chosen_branch_{tree_idx}_{node}')
+            mip_model.addConstr((which_branch == 1) >> (chosen_class == recurse(tree_.children_left[node])))
+            mip_model.addConstr((which_branch == 0) >> (chosen_class == recurse(tree_.children_right[node])))
+            return chosen_class
         else:
-            prob_array = list(np.divide(tree_.value[node][0], np.sum(tree_.value[node][0])))
-            return float(prob_array[0]), float(prob_array[1])
+            values = list(tree_.value[node][0])
+            output = values.index(max(values))
+            return output
 
-    return recurse(0)
+    if return_value == 'class_idx_max':
+        mip_model.addConstr(model_vars['output']['y']['var'] == recurse(0))
+    elif return_value == 'class_prob_array':
+        return recurse(0)
+    else:
+        raise Exception(f"Tree {return_value} return value not recognized.")
 
 
 
@@ -274,17 +245,19 @@ def forest2formula(forest, model_symbols):
     )
 
 def forest2mip(forest, mip_model:grb.Model, model_vars):
-    ps = [tree2mip4forest(forest.estimators_[tree_idx], mip_model, model_vars, tree_idx)
-          for tree_idx in range(len(forest.estimators_))]
-
-    forest_p0 = mip_model.addVar(obj=0, vtype=grb.GRB.CONTINUOUS, name=f'forest_p0')
-    forest_p1 = mip_model.addVar(obj=0, vtype=grb.GRB.CONTINUOUS, name=f'forest_p1')
-    mip_model.addConstr(forest_p0 == grb.quicksum(ps[i][0] for i in range(len(forest.estimators_))))
-    mip_model.addConstr(forest_p1 == grb.quicksum(ps[i][1] for i in range(len(forest.estimators_))))
-
-    chosen_class = mip_model.addVar(obj=0, vtype=grb.GRB.BINARY, name=f'chosen_class_forest')
-    mip_model.addConstr((model_vars['output']['y']['var'] == 0) >> (forest_p0 >= forest_p1))
-    mip_model.addConstr((model_vars['output']['y']['var'] == 1) >> (forest_p0 <= forest_p1))
+    n_trees = len(forest.estimators_)
+    # print(n_trees, " num of trees")
+    class_sum = mip_model.addVar(lb=0, ub=n_trees, obj=0, vtype=grb.GRB.INTEGER, name=f'forest_class_sum')
+    mip_model.addConstr(
+        class_sum
+        ==
+        grb.quicksum(
+            tree2mip(forest.estimators_[tree_idx], mip_model, model_vars, 'class_prob_array', tree_idx)
+            for tree_idx in range(n_trees)
+        )
+    )
+    mip_model.addConstr((model_vars['output']['y']['var'] == 0) >> (class_sum <= int(math.ceil(n_trees/2))))
+    mip_model.addConstr((model_vars['output']['y']['var'] == 1) >> (class_sum >= int(math.ceil(n_trees/2))))
 
 ################################################################################
 ##                                          Logistic Regression-related Methods
