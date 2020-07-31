@@ -17,6 +17,7 @@ from debug import ipsh
 try:
   import generateSATExplanations
   import generateMIPExplanations
+  import generateMIPSATExplanations
 except:
   print('[ENV WARNING] activate virtualenv to allow for testing MACE or MINT')
 import generateMOExplanations
@@ -50,7 +51,7 @@ def generateExplanations(
   standard_deviations):
 
 
-  if 'MACE' in approach_string or 'MIP_MACE' in approach_string or 'MIP_EXP' in approach_string: # 'MACE_counterfactual':
+  if 'MACE_SAT' in approach_string: # 'MACE_counterfactual':
 
     return generateSATExplanations.genExp(
       explanation_file_name,
@@ -58,18 +59,29 @@ def generateExplanations(
       dataset_obj,
       factual_sample,
       norm_type_string,
-      'mace_'+approach_string,
+      'mace',
       getEpsilonInString(approach_string)
     )
 
-  elif 'MIP' in approach_string:
+  elif 'MACE_MIP_EXP' in approach_string or 'MACE_MIP_OBJ' in approach_string:
     return generateMIPExplanations.genExp(
       explanation_file_name,
       model_trained,
       dataset_obj,
       factual_sample,
       norm_type_string,
-      'mace_' + approach_string,
+      approach_string,
+      getEpsilonInString(approach_string)
+    )
+
+  elif 'MACE_MIP_SAT' in approach_string:
+    return generateMIPSATExplanations.genExp(
+      explanation_file_name,
+      model_trained,
+      dataset_obj,
+      factual_sample,
+      norm_type_string,
+      'mace',
       getEpsilonInString(approach_string)
     )
 

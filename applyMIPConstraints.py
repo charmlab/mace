@@ -18,7 +18,7 @@ def applyTrainedModelConstrs(model, model_vars, model_trained):
     else:
         raise Exception(f"Trained model type not recognized")
 
-def applyDistanceConstrs(model, dataset_obj, factual_sample, norm_type, norm_lower=0, norm_upper=0):
+def applyDistanceConstrs(model: grb.Model, dataset_obj, factual_sample, norm_type, norm_lower=0, norm_upper=0):
 
     mutables = dataset_obj.getMutableAttributeNames('kurz')
     one_hots = dataset_obj.getOneHotAttributesNames('kurz')
@@ -100,9 +100,9 @@ def applyDistanceConstrs(model, dataset_obj, factual_sample, norm_type, norm_low
     )
 
     if 'obj' not in norm_type:
-        model.addConstr(normalized_distance <= norm_upper)
-        if norm_lower != 0.0:
-            model.addConstr(normalized_distance >= norm_lower)
+        model.addConstr(normalized_distance <= norm_upper, name='dist_less_than')
+        # if norm_lower != 0.0:
+        model.addConstr(normalized_distance >= norm_lower, name='dist_greater_than')
 
 
 def applyPlausibilityConstrs(model, dataset_obj):
