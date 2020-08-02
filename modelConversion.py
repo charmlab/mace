@@ -139,8 +139,8 @@ def tree2mip(tree, mip_model:grb.Model, model_vars, return_value ='class_idx_max
             threshold = float(tree_.threshold[node])
 
             which_branch = mip_model.addVar(obj=0, vtype=grb.GRB.BINARY, name=f'which_branch_{tree_idx}_{node}')
-            mip_model.addConstr((which_branch == 1) >> (model_vars['counterfactual'][name]['var'] <= threshold - 1e-6))
-            mip_model.addConstr((which_branch == 0) >> (model_vars['counterfactual'][name]['var'] >= threshold + 1e-6))
+            mip_model.addConstr((which_branch == 1) >> (model_vars['counterfactual'][name]['var'] <= threshold - 1e-4))
+            mip_model.addConstr((which_branch == 0) >> (model_vars['counterfactual'][name]['var'] >= threshold + 1e-4))
 
             # A chain of intermediate variables which finish with the last one equal to the class index
             # which is the output

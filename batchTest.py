@@ -208,7 +208,7 @@ def runExperiments(dataset_values, model_class_values, norm_values, approaches_v
           # )
           model_trained = loadModel.loadModelForDataset(
             model_class_string,
-            dataset_string,
+            dataset_string, return_one_hot=one_hot,
             experiment_folder_name = experiment_folder_name)
 
           # get the predicted labels (only test set)
