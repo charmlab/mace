@@ -6,15 +6,16 @@
 # ls -1 | grep 2019.05 | xargs rm -rf
 # scp -r amir@login.cluster.is.localnet:~/dev/mace/_experiments/__merged _results/
 
-DATASET_VALUES = ['compass', 'credit', 'adult'] #, 'twomoon', 'credit']
-# MODEL_CLASS_VALUES = ['forest', 'tree', 'mlp2x10']
-MODEL_CLASS_VALUES = ['mlp2x10']
-NORM_VALUES = ['one_norm']
-# APPROACHES_VALUES = ['MACE_MIP_OBJ_eps_1e-3', 'MACE_MIP_EXP_eps_1e-3', 'MACE_SAT_eps_1e-3']
-APPROACHES_VALUES = ['MACE_MIP_SAT_eps_1e-3']
+DATASET_VALUES = ['credit', 'adult']
+# MODEL_CLASS_VALUES = ['forest', 'tree', 'lr']
+# MODEL_CLASS_VALUES = ['mlp2x10']
+MODEL_CLASS_VALUES = ['lr']
+NORM_VALUES = ['zero_norm', 'one_norm', 'two_norm', 'infty_norm']
+APPROACHES_VALUES = ['MACE_MIP_OBJ_eps_1e-3', 'MACE_MIP_EXP_eps_1e-3']
+# APPROACHES_VALUES = ['MACE_MIP_SAT_eps_1e-3', 'MACE_SAT_eps_1e-3']
 
-NUM_BATCHES = 500
-NUM_NEG_SAMPLES_PER_BATCH = 1
+NUM_BATCHES = 1
+NUM_SAMPLES_PER_BATCH = 500
 GEN_CF_FOR = 'neg_and_pos'
 # REPEAT = 10
 
@@ -23,7 +24,23 @@ GEN_CF_FOR = 'neg_and_pos'
 
 request_memory = 8192
 
-sub_file = open('test.sub','w')
+sub_file_name = f'{NUM_BATCHES}_BATCH_{NUM_SAMPLES_PER_BATCH}_SAMPLES__'
+
+sub_file_name += 'DATASET_'
+for dataset_string in DATASET_VALUES:
+  sub_file_name += dataset_string + '_'
+sub_file_name += '_MODEL__'
+for model_class_string in MODEL_CLASS_VALUES:
+  sub_file_name += model_class_string + '_'
+sub_file_name += '_NORM__'
+for norm_type_string in NORM_VALUES:
+  sub_file_name += norm_type_string + '_'
+sub_file_name += '_APPROACH__'
+for approach_string in APPROACHES_VALUES:
+  sub_file_name += approach_string + '_'
+
+
+sub_file = open(sub_file_name + '.sub','w')
 print('executable = /home/kmohammadi/anaconda3/envs/_mip_smt/bin/python', file=sub_file)
 print('error = _cluster_logs/test.$(Process).err', file=sub_file)
 print('output = _cluster_logs/test.$(Process).out', file=sub_file)
@@ -50,11 +67,11 @@ for dataset_string in DATASET_VALUES:
              f' -n {norm_type_string}' \
              f' -a {approach_string}' \
              f' -b {batch_number}' \
-             f' -s {NUM_NEG_SAMPLES_PER_BATCH}', \
+             f' -s {NUM_SAMPLES_PER_BATCH}', \
              f' -g {GEN_CF_FOR}', \
              f' -p $(Process)', \
-          file=sub_file)
-          print(f'requirements = CpuModel =?= "Intel(R) Xeon(R) Gold 5220 CPU @ 2.20GHz"', file=sub_file)
+                file=sub_file)
+          # print(f'requirements = CpuModel =?= "Intel(R) Xeon(R) Gold 5220 CPU @ 2.20GHz"', file=sub_file)
           print(f'queue', file=sub_file)
           print('\n', file=sub_file)
 
