@@ -363,11 +363,10 @@ def findClosestCounterfactualSample(model_trained, dataset_obj, factual_sample, 
       else:
         reverse_norm_threshold *= 2.0
 
+    # The upper bound on distance
     norm_upper_bound = reverse_norm_threshold
-    if reverse_norm_threshold == epsilon:
-      norm_lower_bound = 0.
-    else:
-      norm_lower_bound = reverse_norm_threshold / 2.0
+    # The lower bound on distance
+    norm_lower_bound = 0.0 if reverse_norm_threshold == epsilon else reverse_norm_threshold / 2.0
 
     curr_norm_threshold = (norm_lower_bound + norm_upper_bound) / 2.0
     first_iter = True
@@ -384,8 +383,8 @@ def findClosestCounterfactualSample(model_trained, dataset_obj, factual_sample, 
         end='', file=log_file)
       iters = iters + 1
 
-      if not first_iter:  # I want it to save the last CFE in previous loop first
-        # Upper-bound becomes equal to the CFE distance so BS doesn't corrupt
+      if not first_iter:  # In the first iter, only the CFE from the exponential part will be saved.
+
         if isinstance(model_trained, MLPClassifier):
           solved, sol = findCFE4MLP(model_trained, dataset_obj, factual_sample, norm_type, norm_lower_bound,
                                     curr_norm_threshold)

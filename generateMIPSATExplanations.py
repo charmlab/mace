@@ -217,8 +217,7 @@ def getDistanceFormula(model_symbols, dataset_obj, factual_sample, norm_type, ap
   # those attributes that are mutable, and for each sibling-group (ord, cat)
   # we only consider 1 entry in the normalized_absolute_distances
   if norm_type == 'zero_norm':
-    distance_formula = LE(
-      Times(
+    normalized_distance = Times(
         Real(1 / len(normalized_absolute_distances)),
         Plus([
           Ite(
@@ -227,48 +226,67 @@ def getDistanceFormula(model_symbols, dataset_obj, factual_sample, norm_type, ap
             Real(1)
           ) for elem in normalized_absolute_distances
         ])
+      )
+    distance_formula = And(
+      GE(
+        normalized_distance,
+        Real(norm_lower_threshold)
       ),
-      Real(norm_threshold)
+      LE(
+        normalized_distance,
+        Real(norm_upper_threshold)
+      )
     )
   elif norm_type == 'one_norm':
-    normalized_sum = Times(
+    normalized_distance = Times(
         Real(1 / len(normalized_absolute_distances)),
         ToReal(Plus(normalized_absolute_distances))
       )
-    if norm_lower_threshold == 0.0:
-      distance_formula = LE(
-          normalized_sum,
-          Real(norm_upper_threshold)
-        )
-    else:
-      distance_formula = And(
-        GE(
-          normalized_sum,
-          Real(norm_lower_threshold)
-        ),
-        LE(
-          normalized_sum,
-          Real(norm_upper_threshold)
-        )
+    distance_formula = And(
+      GE(
+        normalized_distance,
+        Real(norm_lower_threshold)
+      ),
+      LE(
+        normalized_distance,
+        Real(norm_upper_threshold)
       )
+    )
   elif norm_type == 'two_norm':
-    distance_formula = LE(
-      Times(
+    normalized_distance = Times(
         Real(1 / len(normalized_squared_distances)),
         ToReal(Plus(normalized_squared_distances))
+      )
+    distance_formula = And(
+      GE(
+        normalized_distance,
+        Pow(
+          Real(norm_lower_threshold),
+          Int(2)
+        )
       ),
-      Pow(
-        Real(norm_threshold),
-        Real(2)
+      LE(
+        normalized_distance,
+        Pow(
+          Real(norm_upper_threshold),
+          Int(2)
+        )
       )
     )
   elif norm_type == 'infty_norm':
-    distance_formula = LE(
-      Times(
+    normalized_distance = Times(
         Real(1 / len(normalized_absolute_distances)),
         ToReal(Max(normalized_absolute_distances))
+      )
+    distance_formula = And(
+      GE(
+        normalized_distance,
+        Real(norm_lower_threshold)
       ),
-      Real(norm_threshold)
+      LE(
+        normalized_distance,
+        Real(norm_upper_threshold)
+      )
     )
   else:
     raise Exception(f'{norm_type} not recognized as a valid `norm_type`.')
@@ -451,7 +469,7 @@ def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, f
     assert sklearn_prediction == pysmt_prediction, f'Pysmt prediction does not match sklearn prediction. \n{dict_sample} \n{factual_sample}'
     assert sklearn_prediction != factual_prediction, 'Counterfactual and factual samples have the same prediction.'
 
-
+  assert isinstance(model_trained, MLPClassifier), 'This approach is only for MLPs.'
   iters = 1
   max_iters = 100
   counterfactuals = [] # list of tuples (samples, distances)
@@ -485,10 +503,12 @@ def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, f
 
   solver_name = "z3"
 
-  ###### Reverse BS Begin #########
+  #############################################
+  ###### Reverse BS (Exponential Growth) ######
+  #############################################
+
   reverse_norm_threshold = epsilon
-  solved = False
-  rev_bs_model = None
+  solved, rev_bs_model = False, None
   iteration_start_time, iteration_end_time = 0, 0
 
   while (not solved):
@@ -499,7 +519,6 @@ def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, f
       reverse_norm_threshold *= 2.0
       continue
     model_formula = getModelFormula(model_symbols, model_trained, mlp_lbs, mlp_ubs)
-    # model_formula = getModelFormula(model_symbols, model_trained)
     distance_formula = getDistanceFormula(model_symbols, dataset_obj, factual_pysmt_sample, norm_type,
                                           approach_string, lower, reverse_norm_threshold)
     # distance_formula = distance_formula.simplify()
@@ -514,31 +533,40 @@ def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, f
 
     with Solver(name=solver_name) as solver:
       solver.add_assertion(formula)
-      iteration_start_time = time.time()
-      solved = solver.solve()
-      iteration_end_time = time.time()
+      try:
+        iteration_start_time = time.time()
+        solved = solver.solve()
+        iteration_end_time = time.time()
+      except SolverReturnedUnknownResultError: # Might happen in the two-norm case
+        counterfactuals = [counterfactuals[0]]
+        iters = max_iters # To prevent the normal BS to start afterwards
+        break
       if solved:
         rev_bs_model = solver.get_model()
       else:
-        # assert is_sat(And(plausibility_formula, distance_formula, diversity_formula), solver_name=solver_name)
-        f = Implies(And(plausibility_formula, distance_formula, diversity_formula),
-                    And(model_formula, Not(counterfactual_formula)))
-        assert is_sat(f, solver_name=solver_name), 'no solution found (SMT issue).'
+        if 'two_norm' not in norm_type: # There is no logic to prove with two-norm...
+          # assert is_sat(And(plausibility_formula, distance_formula, diversity_formula), solver_name=solver_name)
+          f = Implies(And(plausibility_formula, distance_formula, diversity_formula),
+                      And(model_formula, Not(counterfactual_formula)))
+          f = f.simplify()
+          assert is_sat(f, solver_name=solver_name), 'no solution found (SMT issue).'
 
     if not solved:
       reverse_norm_threshold *= 2.0
 
+  # The upper bound on distance
   norm_upper_bound = reverse_norm_threshold
-  if reverse_norm_threshold == epsilon:
-    norm_lower_bound = 0.
-  else:
-    norm_lower_bound = reverse_norm_threshold/2.0
+  # The lower bound on distance
+  norm_lower_bound = 0 if reverse_norm_threshold == epsilon else reverse_norm_threshold / 2.0
 
-  curr_norm_threshold = (norm_lower_bound + norm_upper_bound)/2.0
+  curr_norm_threshold = (norm_lower_bound + norm_upper_bound) / 2.0
   distance_formula = getDistanceFormula(model_symbols, dataset_obj, factual_pysmt_sample, norm_type, approach_string,
                                         norm_lower_bound, curr_norm_threshold)
   first_iter = True
-  ###### Reverse BS End #########
+
+  #############################################
+  ################ Normal BS ##################
+  #############################################
 
   while iters < max_iters and norm_upper_bound - norm_lower_bound >= epsilon:
 
@@ -547,8 +575,7 @@ def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, f
 
     with Solver(name=solver_name) as solver:
 
-      if not first_iter:# I want it to save the last CFE in previous loop first
-        # Upper-bound becomes equal to the CFE distance so BS doesn't corrupt
+      if not first_iter: # In the first iter, only the CFE from the exponential part will be saved.
 
         feasible, mlp_lbs, mlp_ubs = getNetworkBounds(model_trained, dataset_obj, factual_sample, norm_type,
                                             norm_lower_bound, curr_norm_threshold)
@@ -565,15 +592,20 @@ def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, f
           )
           # formula = formula.simplify()
 
+
           solver.add_assertion(formula)
-          iteration_start_time = time.time()
-          solved = solver.solve()
-          iteration_end_time = time.time()
+          try:
+            iteration_start_time = time.time()
+            solved = solver.solve()
+            iteration_end_time = time.time()
+          except SolverReturnedUnknownResultError:  # Might happen in the two-norm case
+            counterfactuals = [counterfactuals[0]]
+            break
         else:
           solved = False
 
       else:
-        assert solved, 'last iter of reverse BS must have had solved the formula!'
+        assert solved, 'last iter of reverse BS must have solved the formula!'
         assert rev_bs_model is not None, 'last iter of reverse BS must have solved the formula!'
 
       if solved: # joint formula is satisfiable
@@ -654,9 +686,10 @@ def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, f
 
         # assert is_sat(And(plausibility_formula, distance_formula, diversity_formula), solver_name=solver_name)
         if feasible:
-          f = Implies(And(plausibility_formula, distance_formula, diversity_formula),
-                      And(model_formula, Not(counterfactual_formula)))
-          assert is_sat(f, solver_name=solver_name), 'no solution found (SMT issue).'
+          if 'two_norm' not in norm_type:  # There is no logic to prove with two-norm...
+            f = Implies(And(plausibility_formula, distance_formula, diversity_formula),
+                        And(model_formula, Not(counterfactual_formula)))
+            assert is_sat(f, solver_name=solver_name), 'no solution found (SMT issue).'
         print('no solution exists.', file = log_file)
         norm_lower_bound = curr_norm_threshold
         norm_upper_bound = norm_upper_bound
@@ -748,6 +781,8 @@ def genExp(
   else:
     log_file = open(explanation_file_name, 'w')
 
+  start_time = time.time()
+
   # Initial params
   model_symbols = {
     'counterfactual': {},
@@ -791,8 +826,6 @@ def genExp(
   pprint(model_symbols, log_file)
 
   # factual_sample['y'] = False
-
-  start_time = time.time()
 
   # find closest counterfactual sample from this negative sample
   all_counterfactuals, closest_counterfactual_sample, closest_interventional_sample = findClosestCounterfactualSample(

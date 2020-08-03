@@ -556,7 +556,7 @@ def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, f
   # In case no counterfactuals are found (this could happen for a variety of
   # reasons, perhaps due to non-plausibility), return a template counterfactual
   counterfactuals.append({
-    'counterfactual_sample': {},
+    'counterfactual_sample': None,
     'counterfactual_distance': np.infty,
     'interventional_sample': {},
     'interventional_distance': np.infty,
@@ -582,9 +582,13 @@ def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, f
     with Solver(name=solver_name) as solver:
       solver.add_assertion(formula)
 
-      iteration_start_time = time.time()
-      solved = solver.solve()
-      iteration_end_time = time.time()
+      try:
+        iteration_start_time = time.time()
+        solved = solver.solve()
+        iteration_end_time = time.time()
+      except SolverReturnedUnknownResultError: # Might happen in the two-norm case
+        counterfactuals = [counterfactuals[0]]
+        break
 
       if solved: # joint formula is satisfiable
         model = solver.get_model()
@@ -755,6 +759,8 @@ def genExp(
   else:
     log_file = open(explanation_file_name, 'w')
 
+  start_time = time.time()
+
   # Initial params
   model_symbols = {
     'counterfactual': {},
@@ -798,7 +804,6 @@ def genExp(
   pprint(model_symbols, log_file)
 
   # factual_sample['y'] = False
-  start_time = time.time()
 
   # find closest counterfactual sample from this negative sample
   all_counterfactuals, closest_counterfactual_sample, closest_interventional_sample = findClosestCounterfactualSample(
