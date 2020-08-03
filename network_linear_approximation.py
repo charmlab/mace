@@ -232,6 +232,8 @@ class LinearizedNetwork:
         self.model.update()
         if 'obj' not in norm_type:
             applyDistanceConstrs(self.model, dataset_obj, factual_sample, norm_type, norm_lower, norm_upper)
+            if 'two_norm' in norm_type:
+                self.model.setParam('NonConvex', 2)
             self.model.update()
         applyPlausibilityConstrs(self.model, dataset_obj)
         self.model.update()

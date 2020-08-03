@@ -323,6 +323,8 @@ class MIPNetwork:
         self.model.setParam('OutputFlag', False)
         self.model.setParam('Threads', 1)
         self.model.setParam('DualReductions', 0)
+        if 'two_norm' in norm_type:
+            self.model.setParam('NonConvex', 2)
         # self.model.setParam('FeasibilityTol', 1e-9)
         # self.model.setParam('OptimalityTol', 1e-9)
         # self.model.setParam('IntFeassTol', 1e-9)

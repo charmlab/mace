@@ -7,12 +7,13 @@
 # scp -r amir@login.cluster.is.localnet:~/dev/mace/_experiments/__merged _results/
 
 DATASET_VALUES = ['compass', 'credit', 'adult'] #, 'twomoon', 'credit']
-MODEL_CLASS_VALUES = ['mlp1x10', 'mlp2x10', 'mlp3x10']
+# MODEL_CLASS_VALUES = ['forest', 'tree', 'mlp2x10']
+MODEL_CLASS_VALUES = ['mlp2x10']
 NORM_VALUES = ['one_norm']
-# APPROACHES_VALUES = ['MACE_eps_1e-3']
-APPROACHES_VALUES = ['MACE_eps_1e-5']
+# APPROACHES_VALUES = ['MACE_MIP_OBJ_eps_1e-3', 'MACE_MIP_EXP_eps_1e-3', 'MACE_SAT_eps_1e-3']
+APPROACHES_VALUES = ['MACE_MIP_SAT_eps_1e-3']
 
-NUM_BATCHES = 100
+NUM_BATCHES = 500
 NUM_NEG_SAMPLES_PER_BATCH = 1
 GEN_CF_FOR = 'neg_and_pos'
 # REPEAT = 10
@@ -53,7 +54,7 @@ for dataset_string in DATASET_VALUES:
              f' -g {GEN_CF_FOR}', \
              f' -p $(Process)', \
           file=sub_file)
-          print(f'requirements = CPUFamily =?= 6', file=sub_file)
+          print(f'requirements = CpuModel =?= "Intel(R) Xeon(R) Gold 5220 CPU @ 2.20GHz"', file=sub_file)
           print(f'queue', file=sub_file)
           print('\n', file=sub_file)
 

@@ -247,6 +247,10 @@ def findCFE4Others(approach, model_trained, dataset_obj, factual_sample, norm_ty
       mip_model.setObjective(mip_model.getVarByName('normalized_distance'), grb.GRB.MINIMIZE)
     mip_model.update()
 
+  if 'two_norm' in norm_type:
+    mip_model.setParam('NonConvex', 2)
+    mip_model.update()
+
   mip_model.optimize()
 
   if 'OBJ' in approach:
