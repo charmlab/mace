@@ -265,7 +265,7 @@ def getDistanceFormula(model_symbols, dataset_obj, factual_sample, norm_type, ap
       ),
       Pow(
         Real(norm_threshold),
-        Real(2)
+        Int(2)
       )
     )
   elif norm_type == 'infty_norm':
