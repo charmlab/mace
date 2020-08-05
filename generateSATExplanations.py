@@ -9,6 +9,7 @@ import normalizedDistance
 from modelConversion import *
 from pysmt.shortcuts import *
 from pysmt.typing import *
+from pysmt.exceptions import SolverReturnedUnknownResultError
 from pprint import pprint
 
 from sklearn.tree import DecisionTreeClassifier
@@ -685,7 +686,7 @@ def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, f
 
 def getPrettyStringForSampleDictionary(sample, dataset_obj):
 
-  if len(sample.keys()) == 0 :
+  if sample is None :
     return 'No sample found.'
 
   key_value_pairs_with_x_in_key = {}
