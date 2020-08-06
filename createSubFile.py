@@ -6,10 +6,10 @@
 # ls -1 | grep 2019.05 | xargs rm -rf
 # scp -r amir@login.cluster.is.localnet:~/dev/mace/_experiments/__merged _results/
 
-DATASET_VALUES = ['credit', 'adult']
-# MODEL_CLASS_VALUES = ['forest', 'tree', 'lr']
+DATASET_VALUES = ['compass','credit', 'adult']
+MODEL_CLASS_VALUES = ['forest', 'tree', 'mlp2x10']
 # MODEL_CLASS_VALUES = ['mlp2x10']
-MODEL_CLASS_VALUES = ['lr']
+# MODEL_CLASS_VALUES = ['lr']
 NORM_VALUES = ['zero_norm', 'one_norm', 'two_norm', 'infty_norm']
 APPROACHES_VALUES = ['MACE_MIP_OBJ_eps_1e-3', 'MACE_MIP_EXP_eps_1e-3']
 # APPROACHES_VALUES = ['MACE_MIP_SAT_eps_1e-3', 'MACE_SAT_eps_1e-3']
@@ -72,6 +72,7 @@ for dataset_string in DATASET_VALUES:
              f' -p $(Process)', \
                 file=sub_file)
           # print(f'requirements = CpuModel =?= "Intel(R) Xeon(R) Gold 5220 CPU @ 2.20GHz"', file=sub_file)
+          print(f'environment = GRB_LICENSE_FILE=/is/software/gurobi/gurobi.lic', file=sub_file)
           print(f'queue', file=sub_file)
           print('\n', file=sub_file)
 

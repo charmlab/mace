@@ -187,7 +187,7 @@ def setupMIPModelWithInputVars(dataset_obj):
 
   return mip_model, model_vars
 
-def findCFE4MLP(model_trained, dataset_obj, factual_sample, norm_type, norm_lower, norm_upper):
+def findCFE4MLP(model_trained, dataset_obj, factual_sample, norm_type, norm_lower, norm_upper, epsilon):
   assert isinstance(model_trained, MLPClassifier), "Only MLP model supports the linear relaxation."
   input_dim = len(dataset_obj.getInputAttributeNames('kurz'))
 
@@ -207,7 +207,7 @@ def findCFE4MLP(model_trained, dataset_obj, factual_sample, norm_type, norm_lowe
   domains = torch.from_numpy(domains)
 
   # Setup MIP model and check bounds feasibility w.r.t. distance formula
-  feasible = mip_net.setup_model(domains, factual_sample, dataset_obj, norm_type, norm_lower, norm_upper,
+  feasible = mip_net.setup_model(domains, factual_sample, dataset_obj, norm_type, norm_lower, norm_upper, epsilon=epsilon,
                                  sym_bounds=False, dist_as_constr=not('obj' in norm_type), bounds='opt')
   if not feasible:
     return False, None
@@ -218,7 +218,7 @@ def findCFE4MLP(model_trained, dataset_obj, factual_sample, norm_type, norm_lowe
   return solved, sol
 
 
-def findCFE4Others(approach, model_trained, dataset_obj, factual_sample, norm_type, norm_lower=0, norm_upper=0, mip_model=None,):
+def findCFE4Others(approach, model_trained, dataset_obj, factual_sample, norm_type, epsilon, norm_lower=0, norm_upper=0, mip_model=None,):
 
   # print(mip_model)
   # print("lowe: ", norm_lower, " upper: ", norm_upper)
@@ -245,6 +245,7 @@ def findCFE4Others(approach, model_trained, dataset_obj, factual_sample, norm_ty
     mip_model.addConstr(model_vars['output']['y']['var'] == 1 - int(factual_sample['y']))
     if 'OBJ' in approach:  # set distance as objective for MIP_OBJ
       mip_model.setObjective(mip_model.getVarByName('normalized_distance'), grb.GRB.MINIMIZE)
+      mip_model.setParam('OptimalityTol', epsilon)
     mip_model.update()
 
   if 'two_norm' in norm_type:
@@ -315,10 +316,10 @@ def findClosestCounterfactualSample(model_trained, dataset_obj, factual_sample, 
     norm_type = norm_type + '_obj'
 
     if isinstance(model_trained, MLPClassifier):
-      solved, counterfactual_sample = findCFE4MLP(model_trained, dataset_obj, factual_sample, norm_type, 0, 0)
+      solved, counterfactual_sample = findCFE4MLP(model_trained, dataset_obj, factual_sample, norm_type, 0, 0, epsilon=epsilon)
       assert solved is True
     else:
-      solved, counterfactual_sample, _ = findCFE4Others(approach_string, model_trained, dataset_obj, factual_sample, norm_type)
+      solved, counterfactual_sample, _ = findCFE4Others(approach_string, model_trained, dataset_obj, factual_sample, norm_type, epsilon=epsilon)
 
     norm_type = norm_type.replace('_obj', '')
 

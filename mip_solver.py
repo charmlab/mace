@@ -249,7 +249,7 @@ class MIPNetwork:
             layer_idx += 1
 
 
-    def setup_model(self, inp_domain, factual_sample, dataset_obj, norm_type, norm_lower, norm_upper,
+    def setup_model(self, inp_domain, factual_sample, dataset_obj, norm_type, norm_lower, norm_upper, epsilon,
                     sym_bounds=False,
                     dist_as_constr=False,
                     bounds="opt",
@@ -325,6 +325,8 @@ class MIPNetwork:
         self.model.setParam('DualReductions', 0)
         if 'two_norm' in norm_type:
             self.model.setParam('NonConvex', 2)
+        if 'obj' in norm_type:
+            self.model.setParam('OptimalityTol', epsilon)
         # self.model.setParam('FeasibilityTol', 1e-9)
         # self.model.setParam('OptimalityTol', 1e-9)
         # self.model.setParam('IntFeassTol', 1e-9)
