@@ -26,7 +26,7 @@ def applyDistanceConstrs(model: grb.Model, dataset_obj, factual_sample, norm_typ
 
     abs_diffs_normalized = []
     squ_diffs_normalized = []
-    non_zeros = []
+    is_zeros = []
 
     # TODO: should these intermediate variables also have the same type as input vars?
     # TODO: variable bounds w.r.t. new bounds derived from distance? (for second bounded MIP network)
@@ -38,16 +38,12 @@ def applyDistanceConstrs(model: grb.Model, dataset_obj, factual_sample, norm_typ
         ub = dataset_obj.attributes_kurz[attr_name_kurz].upper_bound
 
         if 'zero_norm' in norm_type:
-            non_zero = model.addVar(obj=0, vtype=grb.GRB.BINARY, name=f'non_zero_{attr_name_kurz}')
-            diff = model.addVar(lb=-(ub-lb), ub=ub-lb, obj=0,
+            is_zero = model.addVar(obj=0, vtype=grb.GRB.BINARY, name=f'is_zero_{attr_name_kurz}')
+            diff = model.addVar(lb=lb-ub, ub=ub-lb, obj=0,
                                     vtype=grb.GRB.CONTINUOUS, name=f'diff_{attr_name_kurz}')
             model.addConstr(diff == v - factual_sample[attr_name_kurz])
-            abs_diff = model.addVar(lb=0.0, ub=ub-lb, obj=0,
-                                                vtype=grb.GRB.CONTINUOUS, name=f'abs_{attr_name_kurz}')
-            model.addConstr(abs_diff == grb.abs_(diff))
-            model.addConstr((non_zero == 0) >> (abs_diff == 0))
-            model.addConstr((non_zero == 1) >> (abs_diff >= 1-8))
-            non_zeros.append(non_zero)
+            model.addSOS(grb.GRB.SOS_TYPE1, [diff, is_zero])
+            is_zeros.append(is_zero)
         else:
             diff_normalized = model.addVar(lb=-1.0, ub=1.0, obj=0,
                                                 vtype=grb.GRB.CONTINUOUS, name=f'diff_{attr_name_kurz}')
@@ -91,42 +87,44 @@ def applyDistanceConstrs(model: grb.Model, dataset_obj, factual_sample, norm_typ
                     diff_normalized == grb.max_(elemwise_diffs)
                 )
                 if 'zero_norm' in norm_type:
-                    non_zero = model.addVar(obj=0, vtype=grb.GRB.BINARY, name=f'non_zero_{attr_name_kurz}')
-                    model.addConstr(non_zero == diff_normalized)
-                    non_zeros.append(non_zero)
+                    is_zero = model.addVar(obj=0, vtype=grb.GRB.BINARY, name=f'is_zero_{attr_name_kurz}')
+                    model.addConstr(is_zero == 1 - diff_normalized)
+                    is_zeros.append(is_zero)
                 else:
                     # It's either 0 or 1, so no need for grb.abs_()
                     abs_diffs_normalized.append(diff_normalized)
                     squ_diffs_normalized.append(diff_normalized)
 
             elif 'ord' in dataset_obj.attributes_kurz[attr_name_kurz].attr_type:
-                diff_normalized = model.addVar(lb=-1.0, ub=1.0, obj=0, vtype=grb.GRB.CONTINUOUS,
-                                                    name=f'diff_{attr_name_kurz}')
-                model.addConstr(
-                    diff_normalized == (grb.quicksum(
-                        model.getVarByName(sib_name_kurz) for sib_name_kurz in siblings_kurz
+                if 'zero_norm' in norm_type:
+                    diff = model.addVar(lb=-len(siblings_kurz), ub=len(siblings_kurz), obj=0, vtype=grb.GRB.CONTINUOUS,
+                                                   name=f'diff_{attr_name_kurz}')
+                    is_zero = model.addVar(obj=0, vtype=grb.GRB.BINARY, name=f'is_zero_{attr_name_kurz}')
+                    model.addConstr(
+                        diff == (grb.quicksum(model.getVarByName(sib_name_kurz) for sib_name_kurz in siblings_kurz)
+                                            -
+                                            sum(factual_sample[sib_name_kurz] for sib_name_kurz in siblings_kurz))
                     )
-                                        -
-                                        sum(factual_sample[sib_name_kurz] for sib_name_kurz in siblings_kurz))
-                    /
-                    len(siblings_kurz)
-                )
-                if 'one_norm' in norm_type or 'zero_norm' in norm_type or 'infty_norm' in norm_type:
+                    model.addSOS(grb.GRB.SOS_TYPE1, [diff, is_zero])
+                    is_zeros.append(is_zero)
+                else:
+                    diff_normalized = model.addVar(lb=-1.0, ub=1.0, obj=0, vtype=grb.GRB.CONTINUOUS,
+                                                   name=f'diff_{attr_name_kurz}')
+                    model.addConstr(
+                        diff_normalized == (grb.quicksum(model.getVarByName(sib_name_kurz) for sib_name_kurz in siblings_kurz)
+                                            -
+                                            sum(factual_sample[sib_name_kurz] for sib_name_kurz in siblings_kurz))
+                        /
+                        len(siblings_kurz)
+                    )
+                if 'one_norm' in norm_type or 'infty_norm' in norm_type:
                     abs_diff_normalized = model.addVar(lb=0.0, ub=1.0, obj=0,
                                                             vtype=grb.GRB.CONTINUOUS, name=f'abs_{attr_name_kurz}')
                     model.addConstr(
                         abs_diff_normalized == grb.abs_(diff_normalized)
                     )
                     abs_diffs_normalized.append(abs_diff_normalized)
-
-                    if 'zero_norm' in norm_type:
-                        non_zero = model.addVar(obj=0, vtype=grb.GRB.BINARY, name=f'non_zero_{attr_name_kurz}')
-                        model.addConstr((non_zero == 0) >> (abs_diff_normalized == 0))
-                        model.addConstr((non_zero == 1) >> (abs_diff_normalized >= 1e-8))
-                        non_zeros.append(non_zero)
-
-                else:
-                    assert 'two_norm' in norm_type
+                elif 'two_norm' in norm_type:
                     squ_diff_normalized = model.addVar(lb=0.0, ub=1.0, obj=0,
                                                        vtype=grb.GRB.CONTINUOUS, name=f'squ_{attr_name_kurz}')
                     model.addConstr(
@@ -144,7 +142,7 @@ def applyDistanceConstrs(model: grb.Model, dataset_obj, factual_sample, norm_typ
         model.addConstr(
             normalized_distance
             ==
-            grb.quicksum(non_zeros) / len(non_zeros)
+            (len(is_zeros) - grb.quicksum(is_zeros)) / len(is_zeros)
         )
     elif 'one_norm' in norm_type:
         model.addConstr(

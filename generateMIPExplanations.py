@@ -214,6 +214,7 @@ def findCFE4MLP(model_trained, dataset_obj, factual_sample, norm_type, norm_lowe
 
   # Solve the MIP
   solved, sol, _ = mip_net.solve(domains, factual_sample)
+  # print("opt dist: ", mip_net.model.getVarByName("normalized_distance").x)
 
   return solved, sol
 
@@ -330,6 +331,8 @@ def findClosestCounterfactualSample(model_trained, dataset_obj, factual_sample, 
       counterfactual_sample,
       norm_type,
       dataset_obj)
+
+    # print("found dist: ", counterfactual_distance)
 
     counterfactuals.append({
       'counterfactual_sample': counterfactual_sample,
