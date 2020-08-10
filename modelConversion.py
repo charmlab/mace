@@ -335,7 +335,7 @@ def lr2formula(model, model_symbols):
 
 def lr2mip(lr_model, mip_model:grb.Model, model_vars):
 
-   logit_out = mip_model.addVar(obj=0, vtype=grb.GRB.CONTINUOUS, name=f'logit_out')
+   logit_out = mip_model.addVar(lb=-grb.GRB.INFINITY, ub=grb.GRB.INFINITY, obj=0, vtype=grb.GRB.CONTINUOUS, name=f'logit_out')
 
    mip_model.addConstr(
        logit_out
