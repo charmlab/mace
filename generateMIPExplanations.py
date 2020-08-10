@@ -354,10 +354,11 @@ def findClosestCounterfactualSample(model_trained, dataset_obj, factual_sample, 
         raise Exception("Not possible!")
 
       if isinstance(model_trained, MLPClassifier):
-        solved, sol = findCFE4MLP(model_trained, dataset_obj, factual_sample, norm_type, norm_lower_bound, reverse_norm_threshold)
+        solved, sol = findCFE4MLP(model_trained, dataset_obj, factual_sample, norm_type, norm_lower_bound,
+                                  reverse_norm_threshold, epsilon=epsilon)
       else:
         solved, sol, mip_model = findCFE4Others(approach_string, model_trained, dataset_obj, factual_sample, norm_type,
-                                    norm_lower_bound, reverse_norm_threshold, mip_model=mip_model)
+                                    norm_lower_bound, reverse_norm_threshold, mip_model=mip_model, epsilon=epsilon)
 
       if solved:
         rev_bs_cfe = sol
@@ -388,10 +389,10 @@ def findClosestCounterfactualSample(model_trained, dataset_obj, factual_sample, 
 
         if isinstance(model_trained, MLPClassifier):
           solved, sol = findCFE4MLP(model_trained, dataset_obj, factual_sample, norm_type, norm_lower_bound,
-                                    curr_norm_threshold)
+                                    curr_norm_threshold, epsilon=epsilon)
         else:
           solved, sol, mip_model = findCFE4Others(approach_string, model_trained, dataset_obj, factual_sample, norm_type,
-                                      norm_lower_bound, curr_norm_threshold, mip_model=mip_model)
+                                      norm_lower_bound, curr_norm_threshold, mip_model=mip_model, epsilon=epsilon)
       else:
         assert solved, 'last iter of reverse BS must have had solved the formula!'
         assert rev_bs_cfe is not None, 'last iter of reverse BS must have solved the formula!'
