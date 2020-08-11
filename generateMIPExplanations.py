@@ -219,7 +219,7 @@ def findCFE4MLP(model_trained, dataset_obj, factual_sample, norm_type, norm_lowe
   return solved, sol
 
 
-def findCFE4Others(approach, model_trained, dataset_obj, factual_sample, norm_type, epsilon, norm_lower=0, norm_upper=0, mip_model=None,):
+def findCFE4Others(approach, model_trained, dataset_obj, factual_sample, norm_type, norm_lower=0, norm_upper=0, mip_model=None, epsilon=None):
 
   # print(mip_model)
   # print("lowe: ", norm_lower, " upper: ", norm_upper)
