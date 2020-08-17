@@ -36,7 +36,7 @@ except:
 SIMPLIFY_TREES = False
 
 @utils.Memoize
-def loadModelForDataset(model_class, dataset_string, return_one_hot = True, scm_class = None, experiment_folder_name = None):
+def loadModelForDataset(model_class, dataset_string, return_one_hot = True, scm_class = None, experiment_folder_name = None, preprocessing=None,):
 
   log_file = sys.stdout if experiment_folder_name == None else open(f'{experiment_folder_name}/log_training.txt','w')
 
@@ -47,7 +47,7 @@ def loadModelForDataset(model_class, dataset_string, return_one_hot = True, scm_
     raise Exception(f'{dataset_string} not supported.')
 
   dataset_obj = loadData.loadDataset(dataset_string, return_one_hot = return_one_hot, load_from_cache = False, meta_param = scm_class)
-  X_train, X_test, y_train, y_test = dataset_obj.getTrainTestSplit()
+  X_train, X_test, y_train, y_test = dataset_obj.getTrainTestSplit(preprocessing=preprocessing)
   X_all = pd.concat([X_train, X_test], axis = 0)
   y_all = pd.concat([y_train, y_test], axis = 0)
   assert sum(y_all) / len(y_all) == 0.5, 'Expected class balance should be 50/50%.'
