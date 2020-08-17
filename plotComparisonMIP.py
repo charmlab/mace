@@ -33,7 +33,7 @@ def getPlottingOrder(path, desired_key, path2=None):
         if path2 is not None:
             if sample_idx in all2:
                 desired.append((all[sample_idx][desired_key], sample_idx))
-        else:
+        elif all[sample_idx]['cfe_found'] is True:
             desired.append((all[sample_idx][desired_key], sample_idx))
         if len(desired) == N_SAMPLES:
             break
@@ -56,12 +56,12 @@ def plotScatterDesiredKey(ax, label, path, orders, desired_key):
 
 if __name__ == "__main__":
 
-    DATASET_VALUES = ['credit', 'adult']
-    MODEL_CLASS_VALUES = ['mlp2x10', 'tree', 'lr']
-    NORM_VALUES = ['zero_norm', 'one_norm', 'two_norm', 'infty_norm']
-    APPROACHES_VALUES = ['MACE_MIP_OBJ_eps_1e-3', 'MACE_MIP_EXP_eps_1e-3', 'MACE_SAT_eps_1e-3']
+    DATASET_VALUES = ['compass']
+    MODEL_CLASS_VALUES = ['mlp3x10']
+    NORM_VALUES = ['one_norm']
+    APPROACHES_VALUES = ['MACE_MIP_OBJ_eps_1e-3', 'dice']
 
-    KEY = 'cfe_distance'
+    KEY = 'cfe_time'
     experiments_path = './_experiments/'
 
     for norm in NORM_VALUES:
@@ -85,8 +85,8 @@ if __name__ == "__main__":
                 ax.set_ylabel(f"{model_type}")
                 if j == 0:
                     ax.set_title(f"{dataset} dataset")
-                paths = glob.glob(f'{experiments_path}/*{dataset}__{model_type}__{norm}*/_minimum_distances')
-                order_path = paths[0] if 'MIP' in paths[0] else paths[1]
+                paths = glob.glob(f'{experiments_path}/*{dataset}__{model_type}__{norm}__*/_minimum_distances')
+                order_path = paths[0] if 'dice' in paths[0] else paths[1]
                 orders = getPlottingOrder(order_path, KEY)
                 ax.set_xlabel(f"{KEY.split('_')[-1]} on {len(orders)} samples")
                 # for norm in NORM_VALUES:

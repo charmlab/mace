@@ -48,7 +48,8 @@ def generateExplanations(
   factual_sample,
   norm_type_string,
   observable_data_dict,
-  standard_deviations):
+  standard_deviations,
+  preprocessing):
 
 
   if 'MACE_SAT' in approach_string: # 'MACE_counterfactual':
@@ -71,7 +72,8 @@ def generateExplanations(
       factual_sample,
       norm_type_string,
       approach_string,
-      getEpsilonInString(approach_string)
+      getEpsilonInString(approach_string),
+      preprocessing
     )
 
   elif 'MACE_MIP_SAT' in approach_string:
@@ -153,7 +155,7 @@ def generateExplanations(
     raise Exception(f'{approach_string} not recognized as a valid `approach_string`.')
 
 
-def runExperiments(dataset_values, model_class_values, norm_values, approaches_values, batch_number, sample_count, gen_cf_for, process_id):
+def runExperiments(dataset_values, model_class_values, norm_values, approaches_values, batch_number, sample_count, gen_cf_for, process_id, preprocessing):
 
   for dataset_string in dataset_values:
 
@@ -209,11 +211,17 @@ def runExperiments(dataset_values, model_class_values, norm_values, approaches_v
           model_trained = loadModel.loadModelForDataset(
             model_class_string,
             dataset_string, return_one_hot=one_hot,
-            experiment_folder_name = experiment_folder_name)
+            experiment_folder_name = experiment_folder_name,
+            preprocessing=preprocessing)
 
           # get the predicted labels (only test set)
           # X_test = pd.concat([X_train, X_test]) # ONLY ACTIVATE THIS WHEN TEST SET IS NOT LARGE ENOUGH TO GEN' MODEL RECON DATASET
-          X_test_pred_labels = model_trained.predict(X_test)
+          if preprocessing=='normalize':
+            tmp_dataset_obj = loadData.loadDataset(dataset_string, return_one_hot = one_hot, load_from_cache = False, debug_flag = False)
+            _, X_test_normalized, _, _ = tmp_dataset_obj.getTrainTestSplit(preprocessing=preprocessing)
+            X_test_pred_labels = model_trained.predict(X_test_normalized)
+          else:
+            X_test_pred_labels = model_trained.predict(X_test)
 
           all_pred_data_df = X_test
           # IMPORTANT: note that 'y' is actually 'pred_y', not 'true_y'
@@ -267,6 +275,7 @@ def runExperiments(dataset_values, model_class_values, norm_values, approaches_v
               norm_type_string,
               observable_data_dict, # used solely for minimum_observable method
               standard_deviations, # used solely for feature_tweaking method
+              preprocessing, # used solely for MACE_MIP to support range-normalized trained models for comparing against DiCE
             )
 
             if 'MINT' in approach_string:
@@ -351,6 +360,12 @@ if __name__ == '__main__':
       default = '0',
       help = 'When running parallel tests on the cluster, process_id guarantees (in addition to time stamped experiment folder) that experiments do not conflict.')
 
+  parser.add_argument(
+    '-pr', '--preprocessing',
+    type=str,
+    default=None,
+    help='Determines the kind of preprocessing to be performed on data before training the model.')
+
 
   # parsing the args
   args = parser.parse_args()
@@ -372,7 +387,8 @@ if __name__ == '__main__':
     args.batch_number,
     args.sample_count,
     args.gen_cf_for,
-    args.process_id)
+    args.process_id,
+    args.preprocessing)
 
 
 

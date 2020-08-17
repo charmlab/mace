@@ -33,102 +33,60 @@ np.random.seed(RANDOM_SEED)
 DEBUG_FLAG = False
 
 
-def getTorchFromSklearn(sklearn_model, input_dim, no_relu=False):
+def getTorchFromSklearn(dataset_obj, sklearn_model, input_dim, preprocessing=None, no_final_relu=False):
   model_width = 10  # TODO make more dynamic later and move to separate function
   if sklearn_model.hidden_layer_sizes == model_width:
     n_hidden_layers = 1
   else:
     n_hidden_layers = len(sklearn_model.hidden_layer_sizes)
 
-  if n_hidden_layers == 1:
-    assert sklearn_model.hidden_layer_sizes == (model_width)
-    if no_relu:
-      torch_model = torch.nn.Sequential(
-        torch.nn.Linear(input_dim, model_width),
-        torch.nn.ReLU(),
-        torch.nn.Linear(model_width, 1))
-    else:
-      torch_model = torch.nn.Sequential(
-        torch.nn.Linear(input_dim, model_width),
-        torch.nn.ReLU(),
-        torch.nn.Linear(model_width, 1),
-        torch.nn.ReLU())
+  torch_model = torch.nn.ModuleList()
 
-  elif n_hidden_layers == 2:
-    assert sklearn_model.hidden_layer_sizes == (model_width, model_width)
-    if no_relu:
-      torch_model = torch.nn.Sequential(
-        torch.nn.Linear(input_dim, model_width),
-        torch.nn.ReLU(),
-        torch.nn.Linear(model_width, model_width),
-        torch.nn.ReLU(),
-        torch.nn.Linear(model_width, 1))
-    else:
-      torch_model = torch.nn.Sequential(
-        torch.nn.Linear(input_dim, model_width),
-        torch.nn.ReLU(),
-        torch.nn.Linear(model_width, model_width),
-        torch.nn.ReLU(),
-        torch.nn.Linear(model_width, 1),
-        torch.nn.ReLU())
+  if preprocessing is not None:
+    # add a layer in the beginning that implements the preprocessing
+    # so that the preprocessing constraints are later added to the MIP model
+    torch_model.append(torch.nn.Linear(input_dim, input_dim))
 
-  elif n_hidden_layers == 3:
-    assert sklearn_model.hidden_layer_sizes == (model_width, model_width, model_width)
-    if no_relu:
-      torch_model = torch.nn.Sequential(
-        torch.nn.Linear(input_dim, model_width),
-        torch.nn.ReLU(),
-        torch.nn.Linear(model_width, model_width),
-        torch.nn.ReLU(),
-        torch.nn.Linear(model_width, model_width),
-        torch.nn.ReLU(),
-        torch.nn.Linear(model_width, 1))
-    else:
-      torch_model = torch.nn.Sequential(
-        torch.nn.Linear(input_dim, model_width),
-        torch.nn.ReLU(),
-        torch.nn.Linear(model_width, model_width),
-        torch.nn.ReLU(),
-        torch.nn.Linear(model_width, model_width),
-        torch.nn.ReLU(),
-        torch.nn.Linear(model_width, 1),
-        torch.nn.ReLU())
+  torch_model.append(torch.nn.Linear(input_dim, model_width))
+  torch_model.append(torch.nn.ReLU())
 
-  elif n_hidden_layers == 4:
-    assert sklearn_model.hidden_layer_sizes == (model_width, model_width, model_width, model_width)
-    if no_relu:
-      torch_model = torch.nn.Sequential(
-        torch.nn.Linear(input_dim, model_width),
-        torch.nn.ReLU(),
-        torch.nn.Linear(model_width, model_width),
-        torch.nn.ReLU(),
-        torch.nn.Linear(model_width, model_width),
-        torch.nn.ReLU(),
-        torch.nn.Linear(model_width, model_width),
-        torch.nn.ReLU(),
-        torch.nn.Linear(model_width, 1))
-    else:
-      torch_model = torch.nn.Sequential(
-        torch.nn.Linear(input_dim, model_width),
-        torch.nn.ReLU(),
-        torch.nn.Linear(model_width, model_width),
-        torch.nn.ReLU(),
-        torch.nn.Linear(model_width, model_width),
-        torch.nn.ReLU(),
-        torch.nn.Linear(model_width, model_width),
-        torch.nn.ReLU(),
-        torch.nn.Linear(model_width, 1),
-        torch.nn.ReLU())
+  for i in range(n_hidden_layers):
 
-  else:
-    raise Exception("MLP model not supported")
+    if i==n_hidden_layers-1:
+      torch_model.append(torch.nn.Linear(model_width, 1))
+      if not no_final_relu:
+        torch_model.append(torch.nn.ReLU())
+      continue
 
-  for i in range(n_hidden_layers + 1):
-    torch_model[2*i].weight = torch.nn.Parameter(torch.FloatTensor(sklearn_model.coefs_[i].astype('float64')).t(),
-                                                 requires_grad=False)
-  for i in range(n_hidden_layers + 1):
-    torch_model[2*i].bias = torch.nn.Parameter(torch.FloatTensor(sklearn_model.intercepts_[i].astype('float64')),
+    torch_model.append(torch.nn.Linear(model_width, model_width))
+    torch_model.append(torch.nn.ReLU())
+
+
+  if preprocessing is not None:
+    assert preprocessing=='normalize', "Currently only range normalization is supported for preprocessing."
+    torch_model[0].weight = torch.nn.Parameter(torch.zeros(torch_model[0].weight.shape, dtype=torch.float64),
+                                               requires_grad=False)
+    torch_model[0].bias = torch.nn.Parameter(torch.zeros(torch_model[0].bias.shape, dtype=torch.float64),
                                              requires_grad=False)
+    input_atrr_names = dataset_obj.getInputAttributeNames()
+    for i in range(input_dim):
+      attr_obj = dataset_obj.attributes_kurz[input_atrr_names[i]]
+      lower_bound = attr_obj.lower_bound
+      upper_bound = dataset_obj.attributes_kurz[input_atrr_names[i]].upper_bound
+      if 'cat' in attr_obj.attr_type or 'ord' in attr_obj.attr_type or 'binary' in attr_obj.attr_type:
+        torch_model[0].weight[i][i] = 1.
+      else:
+        torch_model[0].weight[i][i] = 1 / float(upper_bound - lower_bound)
+        torch_model[0].bias[i] = - float(lower_bound) / (float(upper_bound - lower_bound))
+
+  n_prep = 0 if preprocessing is None else 1
+
+  for i in range(n_hidden_layers + 1):
+    torch_model[2*i + n_prep].weight = torch.nn.Parameter(torch.tensor(sklearn_model.coefs_[i].astype('float64'),
+                                                                       dtype=torch.float64).t(), requires_grad=False)
+  for i in range(n_hidden_layers + 1):
+    torch_model[2*i + n_prep].bias = torch.nn.Parameter(torch.tensor(sklearn_model.intercepts_[i].astype('float64'),
+                                                                     dtype=torch.float64), requires_grad=False)
 
   return torch_model
 
@@ -187,15 +145,15 @@ def setupMIPModelWithInputVars(dataset_obj):
 
   return mip_model, model_vars
 
-def findCFE4MLP(model_trained, dataset_obj, factual_sample, norm_type, norm_lower, norm_upper, epsilon):
+def findCFE4MLP(model_trained, dataset_obj, factual_sample, norm_type, norm_lower, norm_upper, epsilon, preprocessing):
   assert isinstance(model_trained, MLPClassifier), "Only MLP model supports the linear relaxation."
   input_dim = len(dataset_obj.getInputAttributeNames('kurz'))
 
   # First, translate sklearn model to PyTorch model
-  torch_model = getTorchFromSklearn(model_trained, input_dim, no_relu=True)
+  torch_model = getTorchFromSklearn(dataset_obj, model_trained, input_dim, preprocessing, no_final_relu=True)
 
   # Now create a linearized network
-  layers = [module for module in torch_model.modules() if type(module) != torch.nn.Sequential]
+  layers = [module for module in torch_model]
   mip_net = MIPNetwork(layers)
 
   # Get input domains
@@ -270,7 +228,7 @@ def findCFE4Others(approach, model_trained, dataset_obj, factual_sample, norm_ty
 
   return True, counterfactual_sample, mip_model
 
-def findClosestCounterfactualSample(model_trained, dataset_obj, factual_sample, norm_type, approach_string, epsilon, log_file):
+def findClosestCounterfactualSample(model_trained, dataset_obj, factual_sample, norm_type, approach_string, epsilon, log_file, preprocessing=None):
 
   def getCenterNormThresholdInRange(lower_bound, upper_bound):
     return (lower_bound + upper_bound) / 2
@@ -278,7 +236,16 @@ def findClosestCounterfactualSample(model_trained, dataset_obj, factual_sample, 
   def assertPrediction(dict_sample, model_trained, dataset_obj):
     vectorized_sample = []
     for attr_name_kurz in dataset_obj.getInputAttributeNames('kurz'):
-      vectorized_sample.append(dict_sample[attr_name_kurz])
+      if preprocessing == 'normalize':
+        attr_obj = dataset_obj.attributes_kurz[attr_name_kurz]
+        lower_bound = attr_obj.lower_bound
+        upper_bound = attr_obj.upper_bound
+        if not('cat' in attr_obj.attr_type or 'ord' in attr_obj.attr_type or 'binary' in attr_obj.attr_type):
+          vectorized_sample.append((dict_sample[attr_name_kurz]-lower_bound)/(upper_bound-lower_bound))
+        else:
+          vectorized_sample.append(dict_sample[attr_name_kurz])
+      else:
+        vectorized_sample.append(dict_sample[attr_name_kurz])
 
     sklearn_prediction = int(model_trained.predict([vectorized_sample])[0])
     pysmt_prediction = int(dict_sample['y'])
@@ -317,10 +284,13 @@ def findClosestCounterfactualSample(model_trained, dataset_obj, factual_sample, 
     norm_type = norm_type + '_obj'
 
     if isinstance(model_trained, MLPClassifier):
-      solved, counterfactual_sample = findCFE4MLP(model_trained, dataset_obj, factual_sample, norm_type, 0, 0, epsilon=epsilon)
+      solved, counterfactual_sample = findCFE4MLP(model_trained, dataset_obj, factual_sample, norm_type, 0, 0,
+                                                  epsilon=epsilon, preprocessing=preprocessing)
       assert solved is True
     else:
-      solved, counterfactual_sample, _ = findCFE4Others(approach_string, model_trained, dataset_obj, factual_sample, norm_type, epsilon=epsilon)
+      solved, counterfactual_sample, _ = findCFE4Others(approach_string, model_trained, dataset_obj, factual_sample,
+                                                        norm_type, epsilon=epsilon)
+      assert preprocessing is None, "Preprocessing is currently supported only for MLP models."
 
     norm_type = norm_type.replace('_obj', '')
 
@@ -358,10 +328,11 @@ def findClosestCounterfactualSample(model_trained, dataset_obj, factual_sample, 
 
       if isinstance(model_trained, MLPClassifier):
         solved, sol = findCFE4MLP(model_trained, dataset_obj, factual_sample, norm_type, norm_lower_bound,
-                                  reverse_norm_threshold, epsilon=epsilon)
+                                  reverse_norm_threshold, epsilon=epsilon, preprocessing=preprocessing)
       else:
         solved, sol, mip_model = findCFE4Others(approach_string, model_trained, dataset_obj, factual_sample, norm_type,
                                     norm_lower_bound, reverse_norm_threshold, mip_model=mip_model, epsilon=epsilon)
+        assert preprocessing is None, "Preprocessing is currently supported only for MLP models."
 
       if solved:
         rev_bs_cfe = sol
@@ -392,7 +363,7 @@ def findClosestCounterfactualSample(model_trained, dataset_obj, factual_sample, 
 
         if isinstance(model_trained, MLPClassifier):
           solved, sol = findCFE4MLP(model_trained, dataset_obj, factual_sample, norm_type, norm_lower_bound,
-                                    curr_norm_threshold, epsilon=epsilon)
+                                    curr_norm_threshold, epsilon=epsilon, preprocessing=preprocessing)
         else:
           solved, sol, mip_model = findCFE4Others(approach_string, model_trained, dataset_obj, factual_sample, norm_type,
                                       norm_lower_bound, curr_norm_threshold, mip_model=mip_model, epsilon=epsilon)
@@ -477,7 +448,8 @@ def genExp(
   factual_sample,
   norm_type,
   approach_string,
-  epsilon=None):
+  epsilon,
+  preprocessing):
 
   # # ONLY TO BE USED FOR TEST PURPOSES ON MORTGAGE DATASET
   # factual_sample = {'x0': 75000, 'x1': 25000, 'y': False}
@@ -503,7 +475,8 @@ def genExp(
     norm_type,
     approach_string,
     epsilon,
-    log_file
+    log_file,
+    preprocessing
   )
 
   end_time = time.time()
