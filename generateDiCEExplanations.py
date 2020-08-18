@@ -1,6 +1,3 @@
-
-# TODO: check with newer TensowrFlow versions
-
 import os
 import sys
 import copy
@@ -226,7 +223,7 @@ def cat_from_dice(data_point, dataset_obj):
 
 def generateDiCEExplanations(APPROACH, DATASET, MODEL_CLASS, LEARNING_RATE, PROXIMITY_WEIGHT, PROCESS_ID, GEN_CF_FOR, SAMPLES):
 
-    setup_name = f'{DATASET}__{MODEL_CLASS}__{APPROACH}__lr{LEARNING_RATE}__pr{PROXIMITY_WEIGHT}'
+    setup_name = f'{DATASET}__{MODEL_CLASS}__one_norm__{APPROACH}__lr{LEARNING_RATE}__pr{PROXIMITY_WEIGHT}'
     experiment_name = f'{setup_name}__pid{PROCESS_ID}'
     experiment_folder_name = f"_experiments/{datetime.now().strftime('%Y.%m.%d_%H.%M.%S')}__{experiment_name}"
     os.mkdir(experiment_folder_name)
@@ -259,7 +256,7 @@ def generateDiCEExplanations(APPROACH, DATASET, MODEL_CLASS, LEARNING_RATE, PROX
 
     data_dim = X_train_normalized.shape[1]
 
-    sklearn_model = loadModel.loadModelForDataset(MODEL_CLASS, DATASET, experiment_folder_name)
+    sklearn_model = loadModel.loadModelForDataset(MODEL_CLASS, DATASET, experiment_folder_name, preprocessing='normalize')
 
     # get the predicted labels (only test set)
     X_test_pred_labels = sklearn_model.predict(X_test_normalized)
@@ -292,21 +289,13 @@ def generateDiCEExplanations(APPROACH, DATASET, MODEL_CLASS, LEARNING_RATE, PROX
 
 
     ################################################################################
-    # Load fixed_model < f > (TODO: load params for more complicated models than lr)
+    # Load fixed_model < f >
     ################################################################################
     print(f'[INFO] Loading the `{DATASET}` fixed predictor...\t', end = '')
 
-    if MODEL_CLASS == 'lr':
-        fixed_model_w = sklearn_model.coef_
-        fixed_model_b = sklearn_model.intercept_
-        fixed_model = lambda x: torch.nn.functional.linear(
-            x,
-            torch.from_numpy(fixed_model_w).float(),
-        ) + float(fixed_model_b)
-        # , requires_grad=False) + float(fixed_model_b) # TODO: should this line replace the above?
-    elif MODEL_CLASS == 'mlp3x10':
+    if MODEL_CLASS == 'mlp2x10':
         fixed_model_width = 10 # TODO make more dynamic later and move to separate function
-        assert sklearn_model.hidden_layer_sizes == (fixed_model_width, fixed_model_width, fixed_model_width)
+        assert sklearn_model.hidden_layer_sizes == (fixed_model_width, fixed_model_width)
 
         # Keras model
         sess = tf.InteractiveSession()
@@ -314,18 +303,15 @@ def generateDiCEExplanations(APPROACH, DATASET, MODEL_CLASS, LEARNING_RATE, PROX
         fixed_model = keras.Sequential()
         fixed_model.add(keras.layers.Dense(fixed_model_width, input_shape=(data_dim,), activation=tf.nn.relu))
         fixed_model.add(keras.layers.Dense(fixed_model_width, input_shape=(fixed_model_width,), activation=tf.nn.relu))
-        fixed_model.add(keras.layers.Dense(fixed_model_width, input_shape=(fixed_model_width,), activation=tf.nn.relu))
         fixed_model.add(keras.layers.Dense(1, input_shape=(fixed_model_width,), activation=tf.nn.sigmoid))
 
         fixed_model.layers[0].set_weights([sklearn_model.coefs_[0].astype('float64'), sklearn_model.intercepts_[0].astype('float64')])
         fixed_model.layers[1].set_weights([sklearn_model.coefs_[1].astype('float64'), sklearn_model.intercepts_[1].astype('float64')])
         fixed_model.layers[2].set_weights([sklearn_model.coefs_[2].astype('float64'), sklearn_model.intercepts_[2].astype('float64')])
-        fixed_model.layers[3].set_weights([sklearn_model.coefs_[3].astype('float64'), sklearn_model.intercepts_[3].astype('float64')])
 
         fixed_model.layers[0].trainable = False
         fixed_model.layers[1].trainable = False
         fixed_model.layers[2].trainable = False
-        fixed_model.layers[3].trainable = False
     else:
         raise Exception(f"{MODEL_CLASS} not a recognized model class.")
 
@@ -348,7 +334,7 @@ def generateDiCEExplanations(APPROACH, DATASET, MODEL_CLASS, LEARNING_RATE, PROX
     tot_dist_flipped, tot_flipped = 0, 0
     for factual_sample_index, factual_sample_normalized in iterate_over_data_dict_normalized.items():
 
-        print('-'*40)
+        print('-'*80 + ' factual sample #' + str(factual_sample_index))
         init_label = factual_sample_normalized['y']
         del factual_sample_normalized['y']
 
@@ -420,7 +406,7 @@ def generateDiCEExplanations(APPROACH, DATASET, MODEL_CLASS, LEARNING_RATE, PROX
                 'cfe_sample': de_normalize(counterfactual_sample_normalized, dice_dataset_features),
                 'cfe_found': False,
                 'cfe_plausible': False,
-                'cfe_distance': distance,
+                'cfe_distance': np.infty,
                 'cfe_time': end_time - start_time,
             }
             print("prediction proba: ", dice_exp.final_cfs_list[0][-1])
@@ -433,8 +419,8 @@ def generateDiCEExplanations(APPROACH, DATASET, MODEL_CLASS, LEARNING_RATE, PROX
     pickle.dump(all_minimum_distances, open(f'{experiment_folder_name}/_minimum_distances', 'wb'))
     pprint(all_minimum_distances, open(f'{experiment_folder_name}/minimum_distances.txt', 'w'))
 
-    # avg_dist = tot_dist_flipped / tot_flipped
-    # avg_flip = tot_flipped / SAMPLES * 100
+    avg_dist = tot_dist_flipped / tot_flipped
+    avg_flip = tot_flipped / SAMPLES * 100
     # writer.add_scalars(f'metrics/avg_flip', {'avg_flip': avg_flip}, 0)
     # writer.add_scalars(f'metrics/avg_flip', {'avg_flip': avg_flip}, 1)
     # writer.add_scalars(f'metrics/avg_dist', {'avg_dist': avg_dist}, 0)
@@ -450,19 +436,19 @@ if __name__ == "__main__":
         '-a', '--approach',
         type = str,
         default = 'dice',
-        help = 'Approach used to generate counterfactual: `model-based`, or `model-free`')
+        help = 'Approach used to generate counterfactual: dice')
 
     parser.add_argument(
         '-d', '--dataset',
         type = str,
         default = 'random',
-        help = 'Name of dataset to train explanation model for: german, random, mortgage, twomoon')
+        help = 'Name of dataset to train explanation model for')
 
     parser.add_argument(
         '-m', '--model_class',
         type = str,
         default = 'mlp',
-        help = 'Model class that will learn data: lr, mlp')
+        help = 'Model class that will learn data: mlp2x10')
 
     parser.add_argument(
         '-l', '--learning_rate',
@@ -473,14 +459,14 @@ if __name__ == "__main__":
     parser.add_argument(
         '-w', '--proximity_weight',
         type=float,
-        default=1.0,
+        default=0.5,
         help='proximity weight for DiCE')
 
     parser.add_argument(
         '-s', '--samples',
         type=int,
         default=25,
-        help='number of test samples')
+        help='number of factual samples')
 
     parser.add_argument(
         '-g', '--gen_cf_for',
