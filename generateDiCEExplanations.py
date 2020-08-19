@@ -199,21 +199,33 @@ def de_normalize(data_point, data_range):
     return new_data_point
 
 def cat_to_dice(data_point):
+    # DiCE requires the categorical choice in non-hot
     new_data_point = {}
     for key in data_point.keys():
         if not('cat' in key):
             new_data_point[key] = data_point[key]
         elif data_point[key] == 1.0:
-            new_data_point[key.replace('_'+key.split('_')[-1], '')] = key
+            key_to_dice = key
+            idx = key_to_dice.split('_')[-1]
+            if int(idx) > 9:
+                # Refer to line 257 for explanation
+                key_to_dice = key_to_dice.replace('_' + idx, '_'+str(int(idx) + 80))
+            new_data_point[key.replace('_'+key.split('_')[-1], '')] = key_to_dice
     return new_data_point
 
 def cat_from_dice(data_point, dataset_obj):
+    # DiCE gives the categorical choice and we should revert back to one-hot
     new_data_point = {}
     for key in data_point.keys():
         if not('cat' in key):
             new_data_point[key] = data_point[key]
         else:
-            cat_choice = key + '_' + data_point[key]
+            idx = int(data_point[key])
+            if idx >= 90:
+                # Refer to line 257 for explanation
+                cat_choice = key + '_' + str(idx-80)
+            else:
+                cat_choice = key + '_' + data_point[key]
             for sibling in dataset_obj.getSiblingsFor(cat_choice):
                 if sibling == cat_choice:
                     new_data_point[sibling] = 1.0
@@ -245,7 +257,19 @@ def generateDiCEExplanations(APPROACH, DATASET, MODEL_CLASS, LEARNING_RATE, PROX
         elif attr_obj.attr_type == 'sub-categorical' and attr_name_kurz in already_considered:
             continue
         elif attr_obj.attr_type == 'sub-categorical':
-            dice_dataset_features[attr_name_kurz.replace('_'+attr_name_kurz.split('_')[-1], '')] = dataset_obj.getSiblingsFor(attr_name_kurz)
+            siblings = dataset_obj.getSiblingsFor(attr_name_kurz)
+
+            # DiCE weirdly re-orders the sub-categorical names alphabetically so x_cat10 comes befor x_cat2 and when
+            # feeding to the model, the prediction becomes invalid.
+            # As a turn-around I encode x_cat10 as x_cat90, x_cat11 as x_cat91, and so on!
+            siblings_dice = []
+            for sib in siblings:
+                idx = sib.split('_')[-1]
+                if int(idx) > 9:
+                    siblings_dice.append(sib.replace('_'+idx, '_'+str(int(idx)+80)))
+                else:
+                    siblings_dice.append(sib)
+            dice_dataset_features[attr_name_kurz.replace('_'+attr_name_kurz.split('_')[-1], '')] = siblings_dice
             already_considered += dataset_obj.getSiblingsFor(attr_name_kurz)
         else:
             raise Exception(f"Attribute type {attr_obj.attr_type} not supported by DiCE")
@@ -339,11 +363,12 @@ def generateDiCEExplanations(APPROACH, DATASET, MODEL_CLASS, LEARNING_RATE, PROX
         del factual_sample_normalized['y']
 
         sklearn_prediction = int(sklearn_model.predict([list(factual_sample_normalized.values())])[0])
+        sklearn_prediction_proba = sklearn_model.predict_proba([list(factual_sample_normalized.values())])[0][1]
         fixed_model_output = tf.keras.backend.get_value(fixed_model(tf.convert_to_tensor([list(factual_sample_normalized.values())])))[0][0]
 
         assert bool(sklearn_prediction) == init_label
         assert bool(sklearn_prediction) == (fixed_model_output >= 0.5)
-
+        assert abs(sklearn_prediction_proba - fixed_model_output) < 1e-5, "Sklearn model and TF model are not the same!"
 
         if len(dataset_obj.getOneHotAttributesNames()) > 0:
             dice_sample = cat_to_dice(de_normalize(factual_sample_normalized, dice_dataset_features))
@@ -364,6 +389,7 @@ def generateDiCEExplanations(APPROACH, DATASET, MODEL_CLASS, LEARNING_RATE, PROX
             cfe_label = (dice_exp.final_cfs_list[0][-1] >= 0.5)
 
             dice_counterfactual_sample_normalized = normalize(dice_exp.final_cfs_df.T.to_dict()[0], dice_dataset_features)
+
             if len(dataset_obj.getOneHotAttributesNames()) > 0:
                 counterfactual_sample_normalized = cat_from_dice(dice_counterfactual_sample_normalized, dataset_obj)
             else:
@@ -371,9 +397,9 @@ def generateDiCEExplanations(APPROACH, DATASET, MODEL_CLASS, LEARNING_RATE, PROX
 
             fixed_model_output_on_cfe = tf.keras.backend.get_value(
                 fixed_model(tf.convert_to_tensor([list(counterfactual_sample_normalized.values())[:-1]])))[0][0]
-            assert abs(fixed_model_output_on_cfe - dice_exp.final_cfs_list[0][
-                -1] < 1e-2), f"DiCE model prob output does not match fixed model output \n factual: " \
-                             f"{factual_sample_normalized} \n counterfactual: {counterfactual_sample_normalized}"
+            assert abs(fixed_model_output_on_cfe - dice_exp.final_cfs_list[0][-1] < 1e-2), \
+                f"DiCE model prob output does not match fixed model output, {dice_exp.final_cfs_list[0][-1]} and " \
+                f"{fixed_model_output_on_cfe} \n factual: {factual_sample_normalized} \n counterfactual: {counterfactual_sample_normalized}"
 
             factual_sample_normalized['y'] = init_label
             distance = normalizedDistance.getDistanceBetweenSamples(
@@ -411,6 +437,7 @@ def generateDiCEExplanations(APPROACH, DATASET, MODEL_CLASS, LEARNING_RATE, PROX
                 'cfe_time': end_time - start_time,
             }
             print("prediction proba: ", dice_exp.final_cfs_list[0][-1])
+            print(f"init label: {init_label}")
             print("*** CFE not found. ***")
 
     if len(dataset_obj.getOneHotAttributesNames()) == 0:
