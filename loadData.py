@@ -508,6 +508,8 @@ class Dataset(object):
         X_train, X_test = standardizeData(X_train, X_test)
       elif preprocessing == 'normalize':
         X_train, X_test = normalizeData(X_train, X_test)
+      elif preprocessing is not None:
+        raise Exception(f"{preprocessing} not a recognized preprocessing.")
 
       return X_train, X_test, y_train, y_test
 
