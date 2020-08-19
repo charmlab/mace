@@ -372,13 +372,14 @@ def generateDiCEExplanations(APPROACH, DATASET, MODEL_CLASS, LEARNING_RATE, PROX
             fixed_model_output_on_cfe = tf.keras.backend.get_value(
                 fixed_model(tf.convert_to_tensor([list(counterfactual_sample_normalized.values())[:-1]])))[0][0]
             assert abs(fixed_model_output_on_cfe - dice_exp.final_cfs_list[0][
-                -1] < 1e-2), "DiCE model prob output does not match fixed model output"
+                -1] < 1e-2), f"DiCE model prob output does not match fixed model output \n factual: " \
+                             f"{factual_sample_normalized} \n counterfactual: {counterfactual_sample_normalized}"
 
             factual_sample_normalized['y'] = init_label
             distance = normalizedDistance.getDistanceBetweenSamples(
                 factual_sample_normalized,
                 counterfactual_sample_normalized,
-                'two_norm',
+                'one_norm',
                 dataset_obj  # is normalized thus [0, 1] bounds
             )
 
@@ -410,7 +411,7 @@ def generateDiCEExplanations(APPROACH, DATASET, MODEL_CLASS, LEARNING_RATE, PROX
                 'cfe_time': end_time - start_time,
             }
             print("prediction proba: ", dice_exp.final_cfs_list[0][-1])
-            print("CFE not found.")
+            print("*** CFE not found. ***")
 
     if len(dataset_obj.getOneHotAttributesNames()) == 0:
         printAndVisualizeTestStatistics( experiment_name, all_fcs, all_cfs, True, DATASET, MODEL_CLASS,
