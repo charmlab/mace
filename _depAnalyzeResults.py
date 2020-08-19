@@ -1,6 +1,6 @@
 
 def measureSensitiveAttributeChange():
-  df_all_distances = pickle.load(open(f'_results/df_all_distances', 'rb'))
+  df_all_distances = pickle.load(open(f'_results/df_all_distances_MLP', 'rb'))
   df_all_distances = df_all_distances.where(
     (df_all_distances['counterfactual found'] == True) &
     (df_all_distances['counterfactual plausible'] == True)
@@ -48,7 +48,7 @@ def measureSensitiveAttributeChange():
 
 
 def measureEffectOfAgeCompass():
-  df_all_distances = pickle.load(open(f'_results/df_all_distances', 'rb'))
+  df_all_distances = pickle.load(open(f'_results/df_all_distances_MLP', 'rb'))
   df_all_distances = df_all_distances.where(
     (df_all_distances['counterfactual found'] == True) &
     (df_all_distances['counterfactual plausible'] == True)
@@ -159,7 +159,7 @@ def measureEffectOfRaceCompass():
 
 
 def measureEffectOfAgeAdultPart1():
-  df_all_distances = pickle.load(open(f'_results/df_all_distances', 'rb'))
+  df_all_distances = pickle.load(open(f'_results/df_all_distances_MLP', 'rb'))
   df_all_distances = df_all_distances.where(
     (df_all_distances['counterfactual found'] == True) &
     (df_all_distances['counterfactual plausible'] == True)
