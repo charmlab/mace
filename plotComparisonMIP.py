@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 
 all_dists = []
 
-N_SAMPLES = 100
+N_SAMPLES = 500
 
 def getDesiredKeyVals(desired_key, path, orders=None):
     all = pickle.load(open(path, 'rb'))
@@ -56,17 +56,17 @@ def plotScatterDesiredKey(ax, label, path, orders, desired_key):
 
 if __name__ == "__main__":
 
-    DATASET_VALUES = ['compass']
-    MODEL_CLASS_VALUES = ['mlp3x10']
+    DATASET_VALUES = ['compass', 'credit', 'adult']
+    MODEL_CLASS_VALUES = ['mlp2x10']
     NORM_VALUES = ['one_norm']
     APPROACHES_VALUES = ['MACE_MIP_OBJ_eps_1e-3', 'dice']
 
-    KEY = 'cfe_time'
+    KEY = 'cfe_distance'
     experiments_path = './_experiments/'
 
     for norm in NORM_VALUES:
 
-        fig, axs = plt.subplots(len(MODEL_CLASS_VALUES), len(DATASET_VALUES), figsize=(20, 11))
+        fig, axs = plt.subplots(len(DATASET_VALUES), len(MODEL_CLASS_VALUES), figsize=(20, 11))
         path = ''
 
         for i, dataset in enumerate(DATASET_VALUES):
@@ -78,7 +78,7 @@ if __name__ == "__main__":
                 elif len(MODEL_CLASS_VALUES) == 1:
                     ax = axs[i]
                 else:
-                    ax = axs[j, i]
+                    ax = axs[i, j]
                 ax.grid()
                 if 'time' in KEY:
                     ax.set_yscale("log")

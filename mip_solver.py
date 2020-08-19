@@ -85,7 +85,7 @@ class MIPNetwork:
                         input_vals = model.cbGetSolution(self.gurobi_vars[0])
 
                         with torch.no_grad():
-                            inps = torch.Tensor(input_vals).view(1, -1)
+                            inps = torch.tensor(input_vals, dtype=torch.float64).view(1, -1)
                             out = self.net(inps).squeeze().item()
 
                         if out <= 0:
@@ -99,7 +99,7 @@ class MIPNetwork:
                         input_vals = model.cbGetSolution(self.gurobi_vars[0])
 
                         with torch.no_grad():
-                            inps = torch.Tensor(input_vals).view(1, -1)
+                            inps = torch.tensor(input_vals, dtype=torch.float64).view(1, -1)
                             out = self.net(inps).squeeze().item()
 
                         if out >= 0:
@@ -236,8 +236,8 @@ class MIPNetwork:
 
                     pre_start_idx += stride
                     pre_window_end = pre_start_idx + window_size
-                new_layer_lb = torch.Tensor(new_layer_lb)
-                new_layer_ub = torch.Tensor(new_layer_ub)
+                new_layer_lb = torch.tensor(new_layer_lb, dtype=torch.float64)
+                new_layer_ub = torch.tensor(new_layer_ub, dtype=torch.float64)
             elif type(layer) == View:
                 continue
             else:
@@ -269,8 +269,8 @@ class MIPNetwork:
             # compute upper and lower bounds to be able to define Ms
             feasible = self.lin_net.define_linear_approximation(inp_domain, factual_sample, dataset_obj, norm_type, norm_lower, norm_upper)
 
-            self.lower_bounds = list(map(torch.Tensor, self.lin_net.lower_bounds))
-            self.upper_bounds = list(map(torch.Tensor, self.lin_net.upper_bounds))
+            self.lower_bounds = list(map(torch.tensor, self.lin_net.lower_bounds))
+            self.upper_bounds = list(map(torch.tensor, self.lin_net.upper_bounds))
         elif bounds == "interval":
             self.do_interval_analysis(inp_domain)
             if self.lower_bounds[-1][0] > 0:
@@ -519,10 +519,11 @@ class MIPNetwork:
         # Add the final constraint that the output must be less than or equal
         # to zero.
         if not dist_as_constr:
+            # TODO: This tolerance is quite sensitive, if there are assertion erros it means that this should be increased
             if factual_sample['y'] is True:
-                self.model.addConstr(self.gurobi_vars[-1][-1] <= -1e-1)
+                self.model.addConstr(self.gurobi_vars[-1][-1] <= -1e-3)
             else:
-                self.model.addConstr(self.gurobi_vars[-1][-1] >= 1e-1)
+                self.model.addConstr(self.gurobi_vars[-1][-1] >= 1e-3)
 
             self.model.setObjective(self.model.getVarByName('normalized_distance'), grb.GRB.MINIMIZE)
             self.check_obj_value_callback = False

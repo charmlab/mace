@@ -157,7 +157,7 @@ def findCFE4MLP(model_trained, dataset_obj, factual_sample, norm_type, norm_lowe
   mip_net = MIPNetwork(layers)
 
   # Get input domains
-  domains = np.zeros((input_dim, 2), dtype=np.float32)
+  domains = np.zeros((input_dim, 2), dtype=np.float64)
   for i, attr_name_kurz in enumerate(dataset_obj.getInputAttributeNames('kurz')):
     attr_obj = dataset_obj.attributes_kurz[attr_name_kurz]
     domains[i][0] = attr_obj.lower_bound

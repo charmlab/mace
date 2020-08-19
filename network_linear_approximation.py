@@ -58,7 +58,7 @@ class LinearizedNetwork:
         nb_inp = domain.size(0)
         # Not a great way of sampling but this will be good enough
         # We want to get rows that are >= 0
-        rand_samples = torch.Tensor(nb_samples, nb_inp)
+        rand_samples = torch.tensor(nb_samples, nb_inp, dtype=torch.float64)
         rand_samples.uniform_(0, 1)
 
         domain_lb = domain.select(1, 0).contiguous()
@@ -90,7 +90,7 @@ class LinearizedNetwork:
         nb_inp = domain.size(0)
         # Not a great way of sampling but this will be good enough
         # We want to get rows that are >= 0
-        rand_samples = torch.Tensor(nb_samples, nb_inp)
+        rand_samples = torch.tensor(nb_samples, nb_inp, dtype=torch.float64)
         rand_samples.uniform_(0, 1)
 
         best_ub = float('inf')
