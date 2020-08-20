@@ -521,9 +521,9 @@ class MIPNetwork:
         if not dist_as_constr:
             # TODO: This tolerance is quite sensitive, if there are assertion erros it means that this should be increased
             if factual_sample['y'] is True:
-                self.model.addConstr(self.gurobi_vars[-1][-1] <= -1e-3)
+                self.model.addConstr(self.gurobi_vars[-1][-1] <= -1e-2)
             else:
-                self.model.addConstr(self.gurobi_vars[-1][-1] >= 1e-3)
+                self.model.addConstr(self.gurobi_vars[-1][-1] >= 1e-2)
 
             self.model.setObjective(self.model.getVarByName('normalized_distance'), grb.GRB.MINIMIZE)
             self.check_obj_value_callback = False
