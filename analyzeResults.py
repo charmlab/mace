@@ -85,8 +85,8 @@ def gatherAndSaveDistances():
   DATASET_VALUES = ['compass', 'credit', 'adult']
   # MODEL_CLASS_VALUES = ['lr', 'tree', 'forest', 'mlp2x10']
   MODEL_CLASS_VALUES = ['mlp2x10']
-  NORM_VALUES = ['one_norm']
-  APPROACHES_VALUES = ['MACE_MIP_OBJ_eps_1e-3', 'dice']
+  NORM_VALUES = ['zero_norm', 'one_norm', 'two_norm', 'infty_norm']
+  APPROACHES_VALUES = ['MACE_MIP_OBJ_eps_1e-3', 'MACE_MIP_EXP_eps_1e-3', 'MACE_MIP_SAT_eps_1e-3', 'MACE_SAT_eps_1e-3']
 
   # all_counter = 72 + 18 + 6 # (without the unneccessary FT folders for LR and MLP)
   # assert len(all_child_folders) == all_counter, 'missing, or too many experiment folders'
@@ -240,6 +240,8 @@ def gatherAndSaveDistances():
               all_counterfactual_times = []
 
             d = minimum_distance_file[key]['cfe_distance']
+
+            # MACE_SAT and MACE_MIP_SAT do have perfect coverage but they simply don't terminate on some samples.
             if (d == np.infty or not(0.0 <= d <= 1.0)) and not('MACE_SAT' in approach_string or 'MACE_MIP_SAT' in approach_string or 'dice' in approach_string):
               raise Exception("Not perfect coverage.")
 
@@ -689,17 +691,17 @@ def analyzeAverageDistanceRunTimeCoverage():
 def plotAllDistancesAppendix():
   time_or_distance = 'distance'
 
-  # MODEL_CLASS_VALUES = ['lr', 'tree', 'forest', 'mlp2x10']
-  MODEL_CLASS_VALUES = ['mlp2x10']
-  NORM_VALUES = ['one_norm']
+  MODEL_CLASS_VALUES = ['lr', 'tree', 'forest']
+  # MODEL_CLASS_VALUES = ['mlp2x10']
+  NORM_VALUES = ['zero_norm', 'one_norm', 'two_norm', 'infty_norm']
   DATASET_VALUES = ['compass', 'credit', 'adult']
-  # MODEL_CLASS_VALUES = ['lr', 'tree', 'forest', 'mlp2x10']
-  APPROACHES_VALUES = ['MACE_MIP_OBJ_eps_1e-3', 'dice']
+  # APPROACHES_VALUES = ['MACE_MIP_OBJ_eps_1e-3', 'MACE_MIP_EXP_eps_1e-3', 'MACE_MIP_SAT_eps_1e-3', 'MACE_SAT_eps_1e-3']
+  APPROACHES_VALUES = ['MACE_MIP_OBJ_eps_1e-3', 'MACE_MIP_EXP_eps_1e-3', 'MACE_SAT_eps_1e-3']
 
   # tmp_constrained = 'constrained'
   tmp_constrained = 'unconstrained'
   # Remove FeatureTweaking / ActionableRecourse distances that were unsuccessful or non-plausible
-  df_all_distances = pickle.load(open(f'_results/df_all_distances', 'rb'))
+  df_all_distances = pickle.load(open(f'_results/df_all_distances_otherThanMLP', 'rb'))
 
   # Remove FeatureTweaking / ActionableRecourse distances that were unsuccessful or non-plausible
   df_all_distances = df_all_distances.where(
@@ -709,8 +711,11 @@ def plotAllDistancesAppendix():
 
   # get the intersection of all approaches... (as some do not have perfect coverage)
   filtered_df_all_distance = None
+  n_samples = {}
   for model in MODEL_CLASS_VALUES:
-    for norm in NORM_VALUES:
+    n_samples[model] = {}
+    for i, norm in enumerate(NORM_VALUES):
+      n_samples[model][i] = {}
       for dataset in DATASET_VALUES:
         specific_df = df_all_distances.where(
           (df_all_distances['model'] == model) &
@@ -724,13 +729,21 @@ def plotAllDistancesAppendix():
           if fac_sample_occurances[fac_sample] < n_approaches:
             specific_df = specific_df.where(specific_df['factual sample index'] != fac_sample).dropna()
 
-        assert len(specific_df) % n_approaches == 0
-        n_common_samples = int(len(specific_df) / n_approaches)
-        specific_df['dataset'] = specific_df['dataset'].map({
-          'adult': f'Adult\n(n = {n_common_samples})',
-          'credit': f'Credit\n(n = {n_common_samples})',
-          'compass': f'COMPAS\n(n = {n_common_samples})',
-        })
+        if len(specific_df) > 0:
+          assert len(specific_df) % n_approaches == 0
+          n_common_samples = int(len(specific_df) / n_approaches)
+        else:
+          n_common_samples = 0
+
+        if dataset == 'adult':
+          n_samples[model][i]['Adult'] = n_common_samples
+        elif dataset == 'credit':
+          n_samples[model][i]['Credit'] = n_common_samples
+        elif dataset == 'compass':
+          n_samples[model][i]['COMPAS'] = n_common_samples
+        else:
+          raise Exception(f"{dataset} not a recognized dataset.")
+
         if filtered_df_all_distance is None:
           filtered_df_all_distance = specific_df
         else:
@@ -748,11 +761,11 @@ def plotAllDistancesAppendix():
     'infty_norm': r'$\ell_\infty$',
   })
 
-  # df_all_distances['dataset'] = df_all_distances['dataset'].map({
-  #   'adult': 'Adult',
-  #   'credit': 'Credit',
-  #   'compass': 'COMPAS',
-  # })
+  df_all_distances['dataset'] = df_all_distances['dataset'].map({
+    'adult': 'Adult',
+    'credit': 'Credit',
+    'compass': 'COMPAS',
+  })
 
   df_all_distances['approach'] = df_all_distances['approach'].map({
     # 'MACE_eps_1e-1': r'MACE ($\epsilon = 10^{-1}$)',
@@ -775,12 +788,11 @@ def plotAllDistancesAppendix():
 
     model_specific_df = df_all_distances.where(df_all_distances['model'] == model_string).dropna()
 
-    # hue_order = [r'MACE ($\epsilon = 10^{-1}$)', r'MACE ($\epsilon = 10^{-3}$)', r'MACE ($\epsilon = 10^{-5}$)']
-    # hue_order = [r'MACE ($\epsilon = 10^{-2}$)', r'MACE ($\epsilon = 10^{-3}$)', r'MACE ($\epsilon = 10^{-5}$)']
-    # hue_order = [r'MACE ($\epsilon = 10^{-3}$)', r'MACE ($\epsilon = 10^{-5}$)']
     # hue_order = [r'MIP\_OBJ ($\epsilon = 10^{-3}$)', r'MIP\_EXP ($\epsilon = 10^{-3}$)',
-    #              r'SAT ($\epsilon = 10^{-3}$)', r'MIP\_SAT ($\epsilon = 10^{-3}$)']
-    hue_order = [r'MIP\_OBJ ($\epsilon = 10^{-3}$)', 'DiCE']
+    #              r'MIP\_SAT ($\epsilon = 10^{-3}$)', r'SAT ($\epsilon = 10^{-3}$)']
+    hue_order = [r'MIP\_OBJ ($\epsilon = 10^{-3}$)', r'MIP\_EXP ($\epsilon = 10^{-3}$)',
+                 r'SAT ($\epsilon = 10^{-3}$)']
+    # hue_order = [r'MIP\_OBJ ($\epsilon = 10^{-3}$)', 'DiCE']
     # hue_order = [r'MACE ($\epsilon = 10^{-3}$)']
     # if model_string == 'tree' or model_string == 'forest':
     #   hue_order.extend(['MO', 'PFT'])
@@ -814,17 +826,24 @@ def plotAllDistancesAppendix():
     # ax.fig.get_children()[-1].set_bbox_to_anchor((1.1, 0.5, 0, 0))
     ax.fig.get_axes()[0].legend().remove()
 
+    # write the number of samples under dataset name
+    # for i in range(len(ax.fig.axes)):
+    #   labels = []
+    #   for dataset_text in ax.fig.axes[i].get_xticklabels():
+    #     labels.append(dataset_text._text + f'\n(n = {n_samples[model_string][i][dataset_text._text]})')
+    #   ax.fig.axes[i].set_xticklabels(labels)
+
     if time_or_distance == 'distance':
-      ax.fig.get_axes()[0].legend(loc='upper left', fancybox=True, shadow=True, fontsize='small')
+      ax.fig.get_axes()[0].legend(loc='upper right', fancybox=True, shadow=True, fontsize='small')
       ax.set(ylim=(0, None))
       ax.set_axis_labels("", r"Distance $\delta$ to" + "\nNearest Counterfactual")
     else:
-      ax.fig.get_axes()[0].legend(loc='lower right', fancybox=True, shadow=True, fontsize='small')
+      ax.fig.get_axes()[2].legend(loc='upper right', fancybox=True, shadow=True, fontsize='small')
       ax.set_axis_labels("", r"Time in seconds to find" + "\nNearest Counterfactual")
       # ticks = [-4, -3, -2, -1, 0, 1, 2, 3]
       # labels = [i for i in ticks]
       ax.set(yscale='log')
-    ax.set_titles('norm')
+    ax.set_titles('{col_name}')
     ax.set_xlabels() # remove "dataset" on the x-axis
     ax.savefig(f'_results/all_{time_or_distance}__{model_string}.png', dpi = 400)
 
