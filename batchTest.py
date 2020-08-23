@@ -178,7 +178,7 @@ def runExperiments(dataset_values, model_class_values, norm_values, approaches_v
 
           if model_class_string in {'tree', 'forest'}:
             one_hot = False
-          elif model_class_string in {'lr', 'mlp', 'mlp1x10', 'mlp2x10', 'mlp3x10', 'mlp4x10'}:
+          elif model_class_string in {'lr', 'mlp'} or 'mlp' in model_class_string:
             one_hot = True
           else:
             raise Exception(f'{model_class_string} not recognized as a valid `model_class_string`.')

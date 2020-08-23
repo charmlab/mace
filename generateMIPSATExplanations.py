@@ -295,106 +295,65 @@ def getDistanceFormula(model_symbols, dataset_obj, factual_sample, norm_type, ap
 
 
 
-def getTorchFromSklearn(sklearn_model, input_dim, no_relu=False):
-  model_width = 10  # TODO make more dynamic later and move to separate function
+def getTorchFromSklearn(sklearn_model, input_dim, dataset_obj=None, preprocessing=None, no_final_relu=False):
+  model_width = sklearn_model.hidden_layer_sizes[0]
+
   if sklearn_model.hidden_layer_sizes == model_width:
     n_hidden_layers = 1
   else:
     n_hidden_layers = len(sklearn_model.hidden_layer_sizes)
 
-  if n_hidden_layers == 1:
-    assert sklearn_model.hidden_layer_sizes == (model_width)
-    if no_relu:
-      torch_model = torch.nn.Sequential(
-        torch.nn.Linear(input_dim, model_width),
-        torch.nn.ReLU(),
-        torch.nn.Linear(model_width, 1))
-    else:
-      torch_model = torch.nn.Sequential(
-        torch.nn.Linear(input_dim, model_width),
-        torch.nn.ReLU(),
-        torch.nn.Linear(model_width, 1),
-        torch.nn.ReLU())
+  torch_model = torch.nn.ModuleList()
 
-  elif n_hidden_layers == 2:
-    assert sklearn_model.hidden_layer_sizes == (model_width, model_width)
-    if no_relu:
-      torch_model = torch.nn.Sequential(
-        torch.nn.Linear(input_dim, model_width),
-        torch.nn.ReLU(),
-        torch.nn.Linear(model_width, model_width),
-        torch.nn.ReLU(),
-        torch.nn.Linear(model_width, 1))
-    else:
-      torch_model = torch.nn.Sequential(
-        torch.nn.Linear(input_dim, model_width),
-        torch.nn.ReLU(),
-        torch.nn.Linear(model_width, model_width),
-        torch.nn.ReLU(),
-        torch.nn.Linear(model_width, 1),
-        torch.nn.ReLU())
+  if preprocessing is not None:
+    # add a layer in the beginning that implements the preprocessing
+    # so that the preprocessing constraints are later added to the MIP model
+    torch_model.append(torch.nn.Linear(input_dim, input_dim))
 
-  elif n_hidden_layers == 3:
-    assert sklearn_model.hidden_layer_sizes == (model_width, model_width, model_width)
-    if no_relu:
-      torch_model = torch.nn.Sequential(
-        torch.nn.Linear(input_dim, model_width),
-        torch.nn.ReLU(),
-        torch.nn.Linear(model_width, model_width),
-        torch.nn.ReLU(),
-        torch.nn.Linear(model_width, model_width),
-        torch.nn.ReLU(),
-        torch.nn.Linear(model_width, 1))
-    else:
-      torch_model = torch.nn.Sequential(
-        torch.nn.Linear(input_dim, model_width),
-        torch.nn.ReLU(),
-        torch.nn.Linear(model_width, model_width),
-        torch.nn.ReLU(),
-        torch.nn.Linear(model_width, model_width),
-        torch.nn.ReLU(),
-        torch.nn.Linear(model_width, 1),
-        torch.nn.ReLU())
+  torch_model.append(torch.nn.Linear(input_dim, model_width))
+  torch_model.append(torch.nn.ReLU())
 
-  elif n_hidden_layers == 4:
-    assert sklearn_model.hidden_layer_sizes == (model_width, model_width, model_width, model_width)
-    if no_relu:
-      torch_model = torch.nn.Sequential(
-        torch.nn.Linear(input_dim, model_width),
-        torch.nn.ReLU(),
-        torch.nn.Linear(model_width, model_width),
-        torch.nn.ReLU(),
-        torch.nn.Linear(model_width, model_width),
-        torch.nn.ReLU(),
-        torch.nn.Linear(model_width, model_width),
-        torch.nn.ReLU(),
-        torch.nn.Linear(model_width, 1))
-    else:
-      torch_model = torch.nn.Sequential(
-        torch.nn.Linear(input_dim, model_width),
-        torch.nn.ReLU(),
-        torch.nn.Linear(model_width, model_width),
-        torch.nn.ReLU(),
-        torch.nn.Linear(model_width, model_width),
-        torch.nn.ReLU(),
-        torch.nn.Linear(model_width, model_width),
-        torch.nn.ReLU(),
-        torch.nn.Linear(model_width, 1),
-        torch.nn.ReLU())
+  for i in range(n_hidden_layers):
 
-  else:
-    raise Exception("MLP model not supported")
+    if i==n_hidden_layers-1:
+      torch_model.append(torch.nn.Linear(model_width, 1))
+      if not no_final_relu:
+        torch_model.append(torch.nn.ReLU())
+      continue
 
-  for i in range(n_hidden_layers + 1):
-    torch_model[2*i].weight = torch.nn.Parameter(torch.FloatTensor(sklearn_model.coefs_[i].astype('float64')).t(),
-                                                 requires_grad=False)
-  for i in range(n_hidden_layers + 1):
-    torch_model[2*i].bias = torch.nn.Parameter(torch.FloatTensor(sklearn_model.intercepts_[i].astype('float64')),
+    torch_model.append(torch.nn.Linear(model_width, model_width))
+    torch_model.append(torch.nn.ReLU())
+
+
+  if preprocessing is not None:
+    assert preprocessing=='normalize', "Currently only range normalization is supported for preprocessing."
+    torch_model[0].weight = torch.nn.Parameter(torch.zeros(torch_model[0].weight.shape, dtype=torch.float64),
+                                               requires_grad=False)
+    torch_model[0].bias = torch.nn.Parameter(torch.zeros(torch_model[0].bias.shape, dtype=torch.float64),
                                              requires_grad=False)
+    input_atrr_names = dataset_obj.getInputAttributeNames()
+    for i in range(input_dim):
+      attr_obj = dataset_obj.attributes_kurz[input_atrr_names[i]]
+      lower_bound = attr_obj.lower_bound
+      upper_bound = dataset_obj.attributes_kurz[input_atrr_names[i]].upper_bound
+      if 'cat' in attr_obj.attr_type or 'ord' in attr_obj.attr_type or 'binary' in attr_obj.attr_type:
+        torch_model[0].weight[i][i] = 1.
+      else:
+        torch_model[0].weight[i][i] = 1 / float(upper_bound - lower_bound)
+        torch_model[0].bias[i] = - float(lower_bound) / (float(upper_bound - lower_bound))
+
+  n_prep = 0 if preprocessing is None else 1
+
+  for i in range(n_hidden_layers + 1):
+    torch_model[2*i + n_prep].weight = torch.nn.Parameter(torch.tensor(sklearn_model.coefs_[i].astype('float64'),
+                                                                       dtype=torch.float64).t(), requires_grad=False)
+  for i in range(n_hidden_layers + 1):
+    torch_model[2*i + n_prep].bias = torch.nn.Parameter(torch.tensor(sklearn_model.intercepts_[i].astype('float64'),
+                                                                     dtype=torch.float64), requires_grad=False)
 
   return torch_model
 
-# TODO: Gurobi can also make use of past computations
+
 def getNetworkBounds(sklearn_model, dataset_obj, factual_sample, norm_type, norm_lower, norm_upper):
   assert isinstance(sklearn_model, MLPClassifier), "Only MLP model supports the linear relaxation."
   input_dim = len(dataset_obj.getInputAttributeNames('kurz'))
@@ -403,7 +362,7 @@ def getNetworkBounds(sklearn_model, dataset_obj, factual_sample, norm_type, norm
   torch_model = getTorchFromSklearn(sklearn_model, input_dim)
 
   # Now create a linearized network
-  layers = [module for module in torch_model.modules() if type(module) != torch.nn.Sequential]
+  layers = [module for module in torch_model]
   lin_net = LinearizedNetwork(layers)
 
   # Get input domains
@@ -415,32 +374,11 @@ def getNetworkBounds(sklearn_model, dataset_obj, factual_sample, norm_type, norm
   domains = torch.from_numpy(domains)
 
   # Get lower and upper bounds on all neuron values
-  #TODO check factualsample.values() order
   feasible = lin_net.define_linear_approximation(domains, factual_sample, dataset_obj, norm_type, norm_lower, norm_upper)
   if not feasible:
     return False, None, None
 
-  # cnt = 0
-  # # print("lower bounds:--------------")
-  # for i, layer_bounds in enumerate(lin_net.lower_bounds):
-  #   # print(layer_bounds)
-  #   if i %2 == 0 and i > 0:
-  #     for bnd in layer_bounds:
-  #       if bnd > 0:
-  #         cnt += 1
-  #
-  # # print("upper bounds:--------------")
-  # for i, layer_bounds in enumerate(lin_net.upper_bounds):
-  #   # print(layer_bounds)
-  #   if i%2 == 0 and i > 0:
-  #     for bnd in layer_bounds:
-  #       if bnd == 0:
-  #         cnt += 1
-  #
-  # print("num of ReLUs with fixed state: ", cnt)
-
   return True, lin_net.lower_bounds, lin_net.upper_bounds
-
 
 
 def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, factual_sample, norm_type, approach_string, epsilon, log_file):

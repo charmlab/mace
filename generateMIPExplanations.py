@@ -34,7 +34,8 @@ DEBUG_FLAG = False
 
 
 def getTorchFromSklearn(dataset_obj, sklearn_model, input_dim, preprocessing=None, no_final_relu=False):
-  model_width = 10  # TODO make more dynamic later and move to separate function
+  model_width = sklearn_model.hidden_layer_sizes[0]
+
   if sklearn_model.hidden_layer_sizes == model_width:
     n_hidden_layers = 1
   else:
@@ -173,7 +174,6 @@ def findCFE4MLP(model_trained, dataset_obj, factual_sample, norm_type, norm_lowe
   # Solve the MIP
   solved, sol, _ = mip_net.solve(domains, factual_sample)
   # print("opt dist: ", mip_net.model.getVarByName("normalized_distance").x)
-
   return solved, sol
 
 

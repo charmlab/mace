@@ -40,7 +40,7 @@ def loadModelForDataset(model_class, dataset_string, return_one_hot = True, scm_
 
   log_file = sys.stdout if experiment_folder_name == None else open(f'{experiment_folder_name}/log_training.txt','w')
 
-  if not (model_class in {'lr', 'mlp', 'tree', 'forest', 'mlp1x10', 'mlp2x10', 'mlp3x10', 'mlp4x10'}):
+  if not(model_class in {'lr', 'mlp', 'tree', 'forest'}) and not('mlp' in model_class):
     raise Exception(f'{model_class} not supported.')
 
   if not (dataset_string in {'synthetic', 'mortgage', 'twomoon', 'german', 'credit', 'compass', 'adult', 'test'}):
@@ -61,16 +61,10 @@ def loadModelForDataset(model_class, dataset_string, return_one_hot = True, scm_
     # IMPORTANT: The default solver changed from ‘liblinear’ to ‘lbfgs’ in 0.22;
     #            therefore, results may differ slightly from paper.
     model_pretrain = LogisticRegression() # default penalty='l2', i.e., ridge
-  elif model_class == 'mlp':
-    model_pretrain = MLPClassifier(hidden_layer_sizes = (10, 10))
-  elif model_class == 'mlp1x10':
-    model_pretrain = MLPClassifier(hidden_layer_sizes = (10))
-  elif model_class == 'mlp2x10':
-    model_pretrain = MLPClassifier(hidden_layer_sizes = (10, 10))
-  elif model_class == 'mlp3x10':
-    model_pretrain = MLPClassifier(hidden_layer_sizes = (10, 10, 10))
-  elif model_class == 'mlp4x10':
-    model_pretrain = MLPClassifier(hidden_layer_sizes=(10, 10, 10, 10))
+  elif 'mlp' in model_class:
+    mlp_type = model_class.replace('mlp', '')
+    mlp_depth, mlp_width = int(mlp_type.split('x')[0]), int(mlp_type.split('x')[1])
+    model_pretrain = MLPClassifier(hidden_layer_sizes = mlp_depth * (mlp_width,))
   else:
     raise Exception(f"Model type {model_class} not supported.")
 
