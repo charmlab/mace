@@ -41,11 +41,14 @@ from debug import ipsh
 # # APPROACHES_VALUES = ['MINT_eps_1e-3']
 # APPROACHES_VALUES = ['MACE_eps_1e-3']
 
-DATASET_VALUES = ['compass'] #, 'twomoon', 'credit']
-MODEL_CLASS_VALUES = ['mlp1x10']
+DATASET_VALUES = ['compass', 'credit', 'adult']
+MODEL_CLASS_VALUES = []
+for i in range(1, 10):
+  MODEL_CLASS_VALUES.append(f'mlp{i}x10')
+for i in range(20, 401, 40):
+  MODEL_CLASS_VALUES.append(f'mlp2x{i}')
 NORM_VALUES = ['one_norm']
-APPROACHES_VALUES = ['MIP_MACE_eps_1e-5']
-# APPROACHES_VALUES = ['MACE_eps_1e-3', 'MINT_eps_1e-3']
+APPROACHES_VALUES = ['MACE_MIP_OBJ_eps_1e-3', 'MACE_MIP_EXP_eps_1e-3', 'MACE_MIP_SAT_eps_1e-3', 'MACE_SAT_eps_1e-3']
 
 
 
@@ -63,6 +66,12 @@ for dataset_string in DATASET_VALUES:
       for approach_string in APPROACHES_VALUES:
 
         counter = counter + 1
+
+        # if 'mlp' in model_class_string:
+        #   mlp_type = model_class_string.replace('mlp', '')
+        #   mlp_depth, mlp_width = int(mlp_type.split('x')[0]), int(mlp_type.split('x')[1])
+        #   if 'SAT' in approach_string and (mlp_depth > 5 or mlp_width > 50):
+        #     continue
 
         specific_experiment_path = f'{dataset_string}__{model_class_string}__{norm_type_string}__{approach_string}'
         # specific_experiment_path = 'adult__mlp__zero_norm__MACE_eps_1e-5'

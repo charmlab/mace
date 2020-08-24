@@ -848,6 +848,129 @@ def plotAllDistancesAppendix():
     ax.savefig(f'_results/all_{time_or_distance}__{model_string}.png', dpi = 400)
 
 
+def plotScalibility():
+
+  DATASET_VALUES = ['compass', 'credit', 'adult']
+  MODEL_CLASS_VALUES = []
+  for i in range(1, 21):
+    MODEL_CLASS_VALUES.append(f'mlp{i}x10')
+  # for i in range(20, 401, 20):
+  #   MODEL_CLASS_VALUES.append(f'mlp2x{i}')
+  NORM_VALUES = ['one_norm']
+  APPROACHES_VALUES = ['MACE_MIP_OBJ_eps_1e-3', 'MACE_MIP_EXP_eps_1e-3', 'MACE_MIP_SAT_eps_1e-3', 'MACE_SAT_eps_1e-3']
+
+  # tmp_constrained = 'constrained'
+  tmp_constrained = 'unconstrained'
+  # Remove FeatureTweaking / ActionableRecourse distances that were unsuccessful or non-plausible
+
+  df_all_distances = pickle.load(open(f'_results/df_all_distances_scalibility', 'rb'))
+
+  # Remove FeatureTweaking / ActionableRecourse distances that were unsuccessful or non-plausible
+  df_all_distances = df_all_distances.where(
+    (df_all_distances['counterfactual found'] == True) &
+    (df_all_distances['counterfactual plausible'] == True)
+  ).dropna()
+
+  # get the intersection of all approaches... (as some do not have perfect coverage)
+  filtered_df_all_distance = None
+  n_samples = {}
+  for model in MODEL_CLASS_VALUES:
+    n_samples[model] = {}
+    for i, norm in enumerate(NORM_VALUES):
+      n_samples[model][i] = {}
+      for dataset in DATASET_VALUES:
+        specific_df = df_all_distances.where(
+          (df_all_distances['model'] == model) &
+          (df_all_distances['norm'] == norm) &
+          (df_all_distances['dataset'] == dataset)
+        ).dropna()
+
+        n_approaches = len(specific_df['approach'].unique())
+        fac_sample_occurances = specific_df['factual sample index'].value_counts()
+        for fac_sample in fac_sample_occurances.keys():
+          if fac_sample_occurances[fac_sample] < n_approaches:
+            specific_df = specific_df.where(specific_df['factual sample index'] != fac_sample).dropna()
+
+        if len(specific_df) > 0:
+          assert len(specific_df) % n_approaches == 0
+          n_common_samples = int(len(specific_df) / n_approaches)
+        else:
+          n_common_samples = 0
+
+        if dataset == 'adult':
+          n_samples[model][i]['Adult'] = n_common_samples
+        elif dataset == 'credit':
+          n_samples[model][i]['Credit'] = n_common_samples
+        elif dataset == 'compass':
+          n_samples[model][i]['COMPAS'] = n_common_samples
+        else:
+          raise Exception(f"{dataset} not a recognized dataset.")
+
+        if filtered_df_all_distance is None:
+          filtered_df_all_distance = specific_df
+        else:
+          filtered_df_all_distance = pd.concat([filtered_df_all_distance, specific_df])
+
+
+  # change norms for plotting??????
+  # df_all_distances = df_all_distances.where(df_all_distances['norm'] != 'zero_norm').dropna()
+  df_all_distances = filtered_df_all_distance
+
+  df_all_distances['norm'] = df_all_distances['norm'].map({
+    'zero_norm': r'$\ell_0$',
+    'one_norm': r'$\ell_1$',
+    'two_norm': r'$\ell_2$',
+    'infty_norm': r'$\ell_\infty$',
+  })
+
+  df_all_distances['dataset'] = df_all_distances['dataset'].map({
+    'adult': 'Adult',
+    'credit': 'Credit',
+    'compass': 'COMPAS',
+  })
+
+  df_all_distances['approach'] = df_all_distances['approach'].map({
+    'MACE_MIP_EXP_eps_1e-3': r'MIP_EXP ($\epsilon = 10^{-3}$)',
+    'MACE_MIP_OBJ_eps_1e-3': r'MIP_OBJ ($\epsilon = 10^{-3}$)',
+    'MACE_SAT_eps_1e-3': r'SAT ($\epsilon = 10^{-3}$)',
+    'MACE_MIP_SAT_eps_1e-3': r'MIP_SAT ($\epsilon = 10^{-3}$)',
+    'dice': 'DiCE',
+  })
+
+  print(f'Plotting merged files.')
+
+  fig, axs = plt.subplots(1, len(DATASET_VALUES), figsize=(20, 6))
+
+  for i, dataset_string in enumerate(df_all_distances['dataset'].unique()):
+
+    dataset_specific_df = df_all_distances.where(df_all_distances['dataset'] == dataset_string).dropna()
+
+    for approach_string in dataset_specific_df['approach'].unique():
+
+      approach_specific_df = dataset_specific_df.where(dataset_specific_df['approach'] == approach_string).dropna()
+
+      runtimes, labels = [], []
+      for mlp_type in MODEL_CLASS_VALUES:
+        runtimes.append(approach_specific_df.where(approach_specific_df['model'] == mlp_type).dropna()['counterfactual time'].mean())
+        labels.append(mlp_type.split('x')[0].replace('mlp', ''))
+        # labels.append(n_samples[mlp_type][0][dataset_string])
+
+      ax = axs[i]
+      ax.scatter(np.arange(len(runtimes)), runtimes)
+      ax.plot(np.arange(len(runtimes)), runtimes, label=approach_string)
+      ax.set_xticks(np.arange(len(runtimes)))
+      ax.set_xticklabels(labels, rotation=65)
+      ax.set_title(f'{dataset_string}')
+      ax.set_xlabel('MLP depth')
+
+    axs[i].grid()
+    axs[i].set_yscale("log")
+    axs[0].set_ylabel("Runtime in seconds")
+    axs[0].legend()
+
+  # plt.show()
+  plt.savefig(f'_results/scalibility.png', bboc_inches='tight', pad_inches=0, dpi=400)
+
 def plotAvgDistanceRunTimeCoverageTradeoffAgainstIterations():
   DATASET_VALUES = ['credit', 'adult']
   MODEL_CLASS_VALUES = ['mlp2x10','tree','lr']
