@@ -235,8 +235,8 @@ class LinearizedNetwork:
             if 'two_norm' in norm_type:
                 self.model.setParam('NonConvex', 2)
             self.model.update()
-        applyPlausibilityConstrs(self.model, dataset_obj)
-        self.model.update()
+        # applyPlausibilityConstrs(self.model, dataset_obj)
+        # self.model.update()
 
         # Compute new bounds on input w.r.t. distance constraint
         for i, inp_v in enumerate(inp_gurobi_vars):
