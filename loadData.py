@@ -75,7 +75,7 @@ VALID_MUTABILITY_TYPES = { \
   False}
 
 from random import seed
-RANDOM_SEED = 54321
+RANDOM_SEED = 1122334455
 seed(RANDOM_SEED) # set the random seed so that the random permutations can be reproduced again
 np.random.seed(RANDOM_SEED)
 
