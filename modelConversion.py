@@ -475,7 +475,7 @@ def mlp2c(model, feature_names):
     return '\n'.join(lines)
 
 
-def mlp2formula(model, model_symbols, lower_bnds=None, upper_bnds=None):
+def mlp2formula(model, model_symbols, lower_bnds=None, upper_bnds=None, preprocessing=None):
 
     model_symbols['aux'] = {}
     layer_widths = []
@@ -493,6 +493,36 @@ def mlp2formula(model, model_symbols, lower_bnds=None, upper_bnds=None):
 
 
     formula_assign_feature_values = []
+
+    if preprocessing=='normalize':
+        for feature_idx in range(layer_widths[0]):
+            feature_string = 'f_{}_{}'.format(0, feature_idx)
+            model_symbols['aux'][feature_string] = {'symbol': Symbol(feature_string, REAL)}
+            input_layer_feature_string = list(model_symbols['counterfactual'].keys())[feature_idx]
+            if not('cat' in input_layer_feature_string or 'ord' in input_layer_feature_string or 'binary' in input_layer_feature_string):
+                formula_assign_feature_values.append(
+                    Equals(
+                        model_symbols['aux'][feature_string]['symbol'],
+                        Div(
+                            Minus(
+                                ToReal(model_symbols['counterfactual'][input_layer_feature_string]['symbol']),
+                                ToReal(model_symbols['counterfactual'][input_layer_feature_string]['lower_bound'])
+                            ),
+                            ToReal(
+                                model_symbols['counterfactual'][input_layer_feature_string]['upper_bound'] -
+                                model_symbols['counterfactual'][input_layer_feature_string]['lower_bound']
+                            )
+                        )
+                    )
+                )
+            else:
+                formula_assign_feature_values.append(
+                    Equals(
+                        model_symbols['aux'][feature_string]['symbol'],
+                        ToReal(model_symbols['counterfactual'][input_layer_feature_string]['symbol'])
+                    )
+                )
+
     for layer_idx in range(1, len(layer_widths)):
 
         interlayer_weight_matrix = model.coefs_[layer_idx - 1]
@@ -517,14 +547,27 @@ def mlp2formula(model, model_symbols, lower_bnds=None, upper_bnds=None):
             for prev_layer_feature_idx in range(layer_widths[layer_idx - 1]):
 
                 if layer_idx == 1:
-                    input_layer_feature_string = list(model_symbols['counterfactual'].keys())[prev_layer_feature_idx]
-                    weight_string = 'w_{}_{}_{}'.format(layer_idx - 1, prev_layer_feature_idx, curr_layer_feature_idx)
-                    inputs_to_curr_layer_feature.append(
-                        Times(
-                            ToReal(model_symbols['counterfactual'][input_layer_feature_string]['symbol']),
-                            Real(float(interlayer_weight_matrix[prev_layer_feature_idx, curr_layer_feature_idx]))
+                    if preprocessing=='normalize':
+                        zeroth_layer_feature_string = 'f_{}_{}'.format(0, prev_layer_feature_idx)
+                        weight_string = 'w_{}_{}_{}'.format(layer_idx - 1, prev_layer_feature_idx,
+                                                            curr_layer_feature_idx)
+                        inputs_to_curr_layer_feature.append(
+                            Times(
+                                model_symbols['aux'][zeroth_layer_feature_string]['symbol'],
+                                Real(float(interlayer_weight_matrix[prev_layer_feature_idx, curr_layer_feature_idx]))
+                            )
                         )
-                    )
+                    elif preprocessing is None:
+                        input_layer_feature_string = list(model_symbols['counterfactual'].keys())[prev_layer_feature_idx]
+                        weight_string = 'w_{}_{}_{}'.format(layer_idx - 1, prev_layer_feature_idx, curr_layer_feature_idx)
+                        inputs_to_curr_layer_feature.append(
+                            Times(
+                                ToReal(model_symbols['counterfactual'][input_layer_feature_string]['symbol']),
+                                Real(float(interlayer_weight_matrix[prev_layer_feature_idx, curr_layer_feature_idx]))
+                            )
+                        )
+                    else:
+                        raise Exception(f"{preprocessing} not a recognized preprocessing")
                 else:
                     prev_layer_feature_string_2 = 'f_{}_{}_post_nonlin'.format(layer_idx - 1, prev_layer_feature_idx)
                     weight_string = 'w_{}_{}_{}'.format(layer_idx - 1, prev_layer_feature_idx, curr_layer_feature_idx)
@@ -593,11 +636,3 @@ def mlp2formula(model, model_symbols, lower_bnds=None, upper_bnds=None):
     tmp.append(output_formula)
 
     return And(tmp)
-
-
-
-
-
-
-
-

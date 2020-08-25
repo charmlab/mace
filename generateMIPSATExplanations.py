@@ -34,7 +34,9 @@ np.random.seed(RANDOM_SEED)
 DEBUG_FLAG = False
 
 
-def getModelFormula(model_symbols, model_trained, mlp_lbs=None, mlp_ubs=None):
+def getModelFormula(model_symbols, model_trained, mlp_lbs=None, mlp_ubs=None, preprocessing=None):
+  if preprocessing is not None:
+    assert(isinstance(model_trained, MLPClassifier))
   if isinstance(model_trained, DecisionTreeClassifier):
     model2formula = lambda a,b : tree2formula(a,b)
   elif isinstance(model_trained, LogisticRegression):
@@ -42,8 +44,7 @@ def getModelFormula(model_symbols, model_trained, mlp_lbs=None, mlp_ubs=None):
   elif isinstance(model_trained, RandomForestClassifier):
     model2formula = lambda a,b : forest2formula(a,b)
   elif isinstance(model_trained, MLPClassifier):
-    # model2formula = lambda a,b : mlp2formula(a,b)
-    return mlp2formula(model_trained, model_symbols, mlp_lbs, mlp_ubs)
+    return mlp2formula(model_trained, model_symbols, mlp_lbs, mlp_ubs, preprocessing)
 
   return model2formula(
     model_trained,
@@ -295,7 +296,7 @@ def getDistanceFormula(model_symbols, dataset_obj, factual_sample, norm_type, ap
 
 
 
-def getTorchFromSklearn(sklearn_model, input_dim, dataset_obj=None, preprocessing=None, no_final_relu=False):
+def getTorchFromSklearn(dataset_obj, sklearn_model, input_dim, preprocessing=None, no_final_relu=False):
   model_width = sklearn_model.hidden_layer_sizes[0]
 
   if sklearn_model.hidden_layer_sizes == model_width:
@@ -354,12 +355,12 @@ def getTorchFromSklearn(sklearn_model, input_dim, dataset_obj=None, preprocessin
   return torch_model
 
 
-def getNetworkBounds(sklearn_model, dataset_obj, factual_sample, norm_type, norm_lower, norm_upper):
+def getNetworkBounds(sklearn_model, dataset_obj, factual_sample, norm_type, norm_lower, norm_upper, preprocessing):
   assert isinstance(sklearn_model, MLPClassifier), "Only MLP model supports the linear relaxation."
   input_dim = len(dataset_obj.getInputAttributeNames('kurz'))
 
   # First, translate sklearn model to PyTorch model
-  torch_model = getTorchFromSklearn(sklearn_model, input_dim)
+  torch_model = getTorchFromSklearn(dataset_obj, sklearn_model, input_dim, preprocessing=preprocessing)
 
   # Now create a linearized network
   layers = [module for module in torch_model]
@@ -381,7 +382,7 @@ def getNetworkBounds(sklearn_model, dataset_obj, factual_sample, norm_type, norm
   return True, lin_net.lower_bounds, lin_net.upper_bounds
 
 
-def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, factual_sample, norm_type, approach_string, epsilon, log_file):
+def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, factual_sample, norm_type, approach_string, epsilon, log_file, preprocessing):
 
   def getCenterNormThresholdInRange(lower_bound, upper_bound):
     return (lower_bound + upper_bound) / 2
@@ -389,7 +390,16 @@ def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, f
   def assertPrediction(dict_sample, model_trained, dataset_obj):
     vectorized_sample = []
     for attr_name_kurz in dataset_obj.getInputAttributeNames('kurz'):
-      vectorized_sample.append(dict_sample[attr_name_kurz])
+      if preprocessing == 'normalize':
+        attr_obj = dataset_obj.attributes_kurz[attr_name_kurz]
+        lower_bound = attr_obj.lower_bound
+        upper_bound = attr_obj.upper_bound
+        if not ('cat' in attr_obj.attr_type or 'ord' in attr_obj.attr_type or 'binary' in attr_obj.attr_type):
+          vectorized_sample.append((dict_sample[attr_name_kurz] - lower_bound) / (upper_bound - lower_bound))
+        else:
+          vectorized_sample.append(dict_sample[attr_name_kurz])
+      else:
+        vectorized_sample.append(dict_sample[attr_name_kurz])
 
     sklearn_prediction = int(model_trained.predict([vectorized_sample])[0])
     pysmt_prediction = int(dict_sample['y'])
@@ -430,7 +440,7 @@ def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, f
 
   # Get and merge all constraints
   print('Constructing initial formulas: model, counterfactual, distance, plausibility, diversity\t\t', end = '', file = log_file)
-  model_formula = getModelFormula(model_symbols, model_trained)
+  model_formula = getModelFormula(model_symbols, model_trained, preprocessing=preprocessing)
   counterfactual_formula = getCounterfactualFormula(model_symbols, factual_pysmt_sample)
   plausibility_formula = getPlausibilityFormula(model_symbols, dataset_obj, factual_pysmt_sample, approach_string)
   distance_formula = getDistanceFormula(model_symbols, dataset_obj, factual_pysmt_sample, norm_type, approach_string, norm_lower_bound, curr_norm_threshold)
@@ -452,11 +462,11 @@ def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, f
   while (not solved):
     lower = reverse_norm_threshold/2.0 if reverse_norm_threshold != epsilon else 0.0
 
-    feasible, mlp_lbs, mlp_ubs = getNetworkBounds(model_trained, dataset_obj, factual_sample, norm_type, lower, reverse_norm_threshold)
+    feasible, mlp_lbs, mlp_ubs = getNetworkBounds(model_trained, dataset_obj, factual_sample, norm_type, lower, reverse_norm_threshold, preprocessing)
     if not feasible:
       reverse_norm_threshold *= 2.0
       continue
-    model_formula = getModelFormula(model_symbols, model_trained, mlp_lbs, mlp_ubs)
+    model_formula = getModelFormula(model_symbols, model_trained, mlp_lbs, mlp_ubs, preprocessing=preprocessing)
     distance_formula = getDistanceFormula(model_symbols, dataset_obj, factual_pysmt_sample, norm_type,
                                           approach_string, lower, reverse_norm_threshold)
     # distance_formula = distance_formula.simplify()
@@ -516,9 +526,9 @@ def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, f
       if not first_iter: # In the first iter, only the CFE from the exponential part will be saved.
 
         feasible, mlp_lbs, mlp_ubs = getNetworkBounds(model_trained, dataset_obj, factual_sample, norm_type,
-                                            norm_lower_bound, curr_norm_threshold)
+                                            norm_lower_bound, curr_norm_threshold, preprocessing)
         if feasible:
-          model_formula = getModelFormula(model_symbols, model_trained, mlp_lbs, mlp_ubs)
+          model_formula = getModelFormula(model_symbols, model_trained, mlp_lbs, mlp_ubs, preprocessing=preprocessing)
           # model_formula = getModelFormula(model_symbols, model_trained)
 
           formula = And(  # works for both initial iteration and all subsequent iterations
@@ -706,7 +716,8 @@ def genExp(
   factual_sample,
   norm_type,
   approach_string,
-  epsilon):
+  epsilon,
+  preprocessing):
 
   # # ONLY TO BE USED FOR TEST PURPOSES ON MORTGAGE DATASET
   # factual_sample = {'x0': 75000, 'x1': 25000, 'y': False}
@@ -774,7 +785,8 @@ def genExp(
     norm_type,
     approach_string,
     epsilon,
-    log_file
+    log_file,
+    preprocessing
   )
 
   print('\n', file = log_file)

@@ -61,7 +61,8 @@ def generateExplanations(
       factual_sample,
       norm_type_string,
       'mace',
-      getEpsilonInString(approach_string)
+      getEpsilonInString(approach_string),
+      preprocessing
     )
 
   elif 'MACE_MIP_EXP' in approach_string or 'MACE_MIP_OBJ' in approach_string:
@@ -84,7 +85,8 @@ def generateExplanations(
       factual_sample,
       norm_type_string,
       'mace',
-      getEpsilonInString(approach_string)
+      getEpsilonInString(approach_string),
+      preprocessing
     )
 
   elif 'MINT' in approach_string: # 'MINT_counterfactual':
@@ -184,7 +186,7 @@ def runExperiments(dataset_values, model_class_values, norm_values, approaches_v
             raise Exception(f'{model_class_string} not recognized as a valid `model_class_string`.')
 
           # prepare experiment folder
-          experiment_name = f'{dataset_string}__{model_class_string}__{norm_type_string}__{approach_string}__batch{batch_number}__samples{sample_count}__pid{process_id}'
+          experiment_name = f'{dataset_string}__{model_class_string}__{norm_type_string}__{approach_string}__prep_{preprocessing}__batch{batch_number}__samples{sample_count}__pid{process_id}'
           experiment_folder_name = f"_experiments/{datetime.now().strftime('%Y.%m.%d_%H.%M.%S')}__{experiment_name}"
           explanation_folder_name = f'{experiment_folder_name}/__explanation_log'
           minimum_distance_folder_name = f'{experiment_folder_name}/__minimum_distances'

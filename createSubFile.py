@@ -14,7 +14,7 @@ for i in range(20, 401, 40):
   MODEL_CLASS_VALUES.append(f'mlp2x{i}')
 NORM_VALUES = ['one_norm']
 APPROACHES_VALUES = ['MACE_MIP_OBJ_eps_1e-3', 'MACE_MIP_EXP_eps_1e-3', 'MACE_MIP_SAT_eps_1e-3', 'MACE_SAT_eps_1e-3']
-PREPROCESSING = 'normalization'
+PREPROCESSING = 'normalize'
 
 NUM_BATCHES = 50
 NUM_SAMPLES_PER_BATCH = 1
@@ -62,29 +62,22 @@ for dataset_string in DATASET_VALUES:
 
         for batch_number in range(NUM_BATCHES):
 
-          # if 'mlp' in model_class_string:
-          #   mlp_type = model_class_string.replace('mlp', '')
-          #   mlp_depth, mlp_width = int(mlp_type.split('x')[0]), int(mlp_type.split('x')[1])
-          #   if 'SAT' in approach_string and (mlp_depth>5 or mlp_width>50):
-          #     continue
-
           print(f'arguments = batchTest.py' + \
              f' -d {dataset_string}' \
              f' -m {model_class_string}' \
              f' -n {norm_type_string}' \
              f' -a {approach_string}' \
-             f' -p {PREPROCESSING}'\
+             f' -pr {PREPROCESSING}'\
              f' -b {batch_number}' \
              f' -s {NUM_SAMPLES_PER_BATCH}', \
              f' -g {GEN_CF_FOR}', \
              f' -p $(Process)', \
                 file=sub_file)
           # print(f'requirements = CpuModel =?= "Intel(R) Xeon(R) Gold 5220 CPU @ 2.20GHz"', file=sub_file)
-          print(f'periodic_remove = (JobStatus =?= 2) && ((CurrentTime - JobCurrentStartDate) >= 7200)', file=sub_file)
+          print(f'periodic_remove = (JobStatus =?= 2) && ((CurrentTime - JobCurrentStartDate) >= 8000)', file=sub_file)
           print(f'environment = GRB_LICENSE_FILE=/is/software/gurobi/gurobi.lic', file=sub_file)
           print(f'queue', file=sub_file)
           print('\n', file=sub_file)
-
 
 
 

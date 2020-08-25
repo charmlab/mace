@@ -30,7 +30,9 @@ np.random.seed(RANDOM_SEED)
 DEBUG_FLAG = False
 
 
-def getModelFormula(model_symbols, model_trained):
+def getModelFormula(model_symbols, model_trained, preprocessing=None):
+  if preprocessing is not None:
+    assert isinstance(model_trained, MLPClassifier)
   if isinstance(model_trained, DecisionTreeClassifier):
     model2formula = lambda a,b : tree2formula(a,b)
   elif isinstance(model_trained, LogisticRegression):
@@ -38,7 +40,7 @@ def getModelFormula(model_symbols, model_trained):
   elif isinstance(model_trained, RandomForestClassifier):
     model2formula = lambda a,b : forest2formula(a,b)
   elif isinstance(model_trained, MLPClassifier):
-    model2formula = lambda a,b : mlp2formula(a,b)
+    return mlp2formula(model_trained, model_symbols, preprocessing=preprocessing)
 
   return model2formula(
     model_trained,
@@ -510,7 +512,7 @@ def getDiversityFormulaUpdate(model):
   )
 
 
-def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, factual_sample, norm_type, approach_string, epsilon, log_file):
+def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, factual_sample, norm_type, approach_string, epsilon, log_file, preprocessing):
 
   def getCenterNormThresholdInRange(lower_bound, upper_bound):
     return (lower_bound + upper_bound) / 2
@@ -518,7 +520,16 @@ def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, f
   def assertPrediction(dict_sample, model_trained, dataset_obj):
     vectorized_sample = []
     for attr_name_kurz in dataset_obj.getInputAttributeNames('kurz'):
-      vectorized_sample.append(dict_sample[attr_name_kurz])
+      if preprocessing == 'normalize':
+        attr_obj = dataset_obj.attributes_kurz[attr_name_kurz]
+        lower_bound = attr_obj.lower_bound
+        upper_bound = attr_obj.upper_bound
+        if not ('cat' in attr_obj.attr_type or 'ord' in attr_obj.attr_type or 'binary' in attr_obj.attr_type):
+          vectorized_sample.append((dict_sample[attr_name_kurz] - lower_bound) / (upper_bound - lower_bound))
+        else:
+          vectorized_sample.append(dict_sample[attr_name_kurz])
+      else:
+        vectorized_sample.append(dict_sample[attr_name_kurz])
 
     sklearn_prediction = int(model_trained.predict([vectorized_sample])[0])
     pysmt_prediction = int(dict_sample['y'])
@@ -544,7 +555,7 @@ def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, f
 
   # Get and merge all constraints
   print('Constructing initial formulas: model, counterfactual, distance, plausibility, diversity\t\t', end = '', file = log_file)
-  model_formula = getModelFormula(model_symbols, model_trained)
+  model_formula = getModelFormula(model_symbols, model_trained, preprocessing=preprocessing)
   counterfactual_formula = getCounterfactualFormula(model_symbols, factual_pysmt_sample)
   plausibility_formula = getPlausibilityFormula(model_symbols, dataset_obj, factual_pysmt_sample, approach_string)
   distance_formula = getDistanceFormula(model_symbols, dataset_obj, factual_pysmt_sample, norm_type, approach_string, curr_norm_threshold)
@@ -747,7 +758,8 @@ def genExp(
   factual_sample,
   norm_type,
   approach_string,
-  epsilon):
+  epsilon,
+  preprocessing):
 
   # # ONLY TO BE USED FOR TEST PURPOSES ON MORTGAGE DATASET
   # factual_sample = {'x0': 75000, 'x1': 25000, 'y': False}
@@ -815,7 +827,8 @@ def genExp(
     norm_type,
     approach_string,
     epsilon,
-    log_file
+    log_file,
+    preprocessing
   )
 
   print('\n', file = log_file)
