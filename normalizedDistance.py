@@ -83,3 +83,23 @@ def getDistanceBetweenSamples(sample_1, sample_2, norm_type, dataset_obj):
   else:
     raise Exception(f'{norm_type} not recognized as a valid `norm_type`.')
   # TODO: implement combinations of distances
+
+
+def getMeanProximity(all_counterfactuals, k_cfes):
+  assert len(all_counterfactuals) == k_cfes
+  tot_proximity = 0
+  for i in range(len(all_counterfactuals)):
+    tot_proximity += all_counterfactuals[i]['counterfactual_distance']
+  return tot_proximity / k_cfes
+
+def getMeanDiversity(all_counterfactuals, k_cfes, norm_type, dataset_obj):
+  assert len(all_counterfactuals) == k_cfes
+  tot_diversity = 0
+  for i in range(len(all_counterfactuals)):
+    for j in range(i+1, len(all_counterfactuals)):
+      tot_diversity += getDistanceBetweenSamples(all_counterfactuals[i]['counterfactual_sample'],
+                                                 all_counterfactuals[j]['counterfactual_sample'],
+                                                 norm_type,
+                                                 dataset_obj)
+  return tot_diversity / (k_cfes * (k_cfes-1) / 2)
+

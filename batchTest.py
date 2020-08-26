@@ -29,7 +29,7 @@ except:
 
 
 from random import seed
-RANDOM_SEED = 54321
+RANDOM_SEED = 1122334455
 seed(RANDOM_SEED) # set the random seed so that the random permutations can be reproduced again
 np.random.seed(RANDOM_SEED)
 
@@ -49,7 +49,8 @@ def generateExplanations(
   norm_type_string,
   observable_data_dict,
   standard_deviations,
-  preprocessing):
+  preprocessing,
+  k_cfes):
 
 
   if 'MACE_SAT' in approach_string: # 'MACE_counterfactual':
@@ -74,7 +75,8 @@ def generateExplanations(
       norm_type_string,
       approach_string,
       getEpsilonInString(approach_string),
-      preprocessing
+      preprocessing,
+      k_cfes
     )
 
   elif 'MACE_MIP_SAT' in approach_string:
@@ -157,7 +159,7 @@ def generateExplanations(
     raise Exception(f'{approach_string} not recognized as a valid `approach_string`.')
 
 
-def runExperiments(dataset_values, model_class_values, norm_values, approaches_values, batch_number, sample_count, gen_cf_for, process_id, preprocessing):
+def runExperiments(dataset_values, model_class_values, norm_values, approaches_values, batch_number, sample_count, gen_cf_for, process_id, preprocessing, k_cfes):
 
   for dataset_string in dataset_values:
 
@@ -187,6 +189,8 @@ def runExperiments(dataset_values, model_class_values, norm_values, approaches_v
 
           # prepare experiment folder
           experiment_name = f'{dataset_string}__{model_class_string}__{norm_type_string}__{approach_string}__prep_{preprocessing}__batch{batch_number}__samples{sample_count}__pid{process_id}'
+          if 'DIVERSE' in approach_string:
+            experiment_name = f'{dataset_string}__{model_class_string}__{norm_type_string}__{approach_string}__cfs{k_cfes}__prep_{preprocessing}__batch{batch_number}__samples{sample_count}__pid{process_id}'
           experiment_folder_name = f"_experiments/{datetime.now().strftime('%Y.%m.%d_%H.%M.%S')}__{experiment_name}"
           explanation_folder_name = f'{experiment_folder_name}/__explanation_log'
           minimum_distance_folder_name = f'{experiment_folder_name}/__minimum_distances'
@@ -278,6 +282,7 @@ def runExperiments(dataset_values, model_class_values, norm_values, approaches_v
               observable_data_dict, # used solely for minimum_observable method
               standard_deviations, # used solely for feature_tweaking method
               preprocessing, # used solely for MACE_MIP to support range-normalized trained models for comparing against DiCE
+              k_cfes, # used solely for MACE_MIP_OBJ_DIVERSE to generate diverse counterfactuals
             )
 
             if 'MINT' in approach_string:
@@ -368,6 +373,12 @@ if __name__ == '__main__':
     default=None,
     help='Determines the kind of preprocessing to be performed on data before training the model.')
 
+  parser.add_argument(
+    '-k', '--k_cfes',
+    type=int,
+    default=5,
+    help='number of diverse counterfactual samples')
+
 
   # parsing the args
   args = parser.parse_args()
@@ -390,7 +401,8 @@ if __name__ == '__main__':
     args.sample_count,
     args.gen_cf_for,
     args.process_id,
-    args.preprocessing)
+    args.preprocessing,
+    args.k_cfes)
 
 
 

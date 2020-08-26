@@ -15,11 +15,6 @@ import numpy as np
 from pprint import pprint
 from datetime import datetime
 
-from random import seed
-RANDOM_SEED = 54321
-seed(RANDOM_SEED) # set the random seed so that the random permutations can be reproduced again
-np.random.seed(RANDOM_SEED)
-
 import loadData
 import loadModel
 import normalizedDistance
@@ -32,6 +27,10 @@ from dice_ml.utils import helpers # helper functions
 import tensorflow as tf
 from tensorflow import keras
 
+from random import seed
+RANDOM_SEED = 1122334455
+seed(RANDOM_SEED) # set the random seed so that the random permutations can be reproduced again
+np.random.seed(RANDOM_SEED)
 
 def getPrediction(sklearn_model, instance):
   prediction = sklearn_model.predict(np.array(list(instance.values())).reshape(1,-1))[0]
@@ -233,9 +232,9 @@ def cat_from_dice(data_point, dataset_obj):
                     new_data_point[sibling] = 0.0
     return new_data_point
 
-def generateDiCEExplanations(APPROACH, DATASET, MODEL_CLASS, LEARNING_RATE, PROXIMITY_WEIGHT, PROCESS_ID, GEN_CF_FOR, SAMPLES):
+def generateDiCEExplanations(APPROACH, DATASET, MODEL_CLASS, LEARNING_RATE, PROXIMITY_WEIGHT, DIVERSITY_WEIGHT, PROCESS_ID, GEN_CF_FOR, SAMPLES, k_cfes):
 
-    setup_name = f'{DATASET}__{MODEL_CLASS}__one_norm__{APPROACH}__lr{LEARNING_RATE}__pr{PROXIMITY_WEIGHT}'
+    setup_name = f'{DATASET}__{MODEL_CLASS}__one_norm__{APPROACH}__cfs{k_cfes}__lr{LEARNING_RATE}__pr{PROXIMITY_WEIGHT}'
     experiment_name = f'{setup_name}__pid{PROCESS_ID}'
     experiment_folder_name = f"_experiments/{datetime.now().strftime('%Y.%m.%d_%H.%M.%S')}__{experiment_name}"
     os.mkdir(experiment_folder_name)
@@ -303,7 +302,7 @@ def generateDiCEExplanations(APPROACH, DATASET, MODEL_CLASS, LEARNING_RATE, PROX
         iterate_over_data_df_normalized = all_pred_data_df_normalized[0: SAMPLES]  # choose only a subset to compare
         observable_data_df_normalized = all_pred_data_df_normalized
     else:
-        raise Exception(f'{gen_cf_for} not recognized as a valid `gen_cf_for`.')
+        raise Exception(f'{GEN_CF_FOR} not recognized as a valid `gen_cf_for`.')
 
     # convert to dictionary for easier enumeration (iteration)
     iterate_over_data_dict_normalized = iterate_over_data_df_normalized.T.to_dict()
@@ -355,8 +354,12 @@ def generateDiCEExplanations(APPROACH, DATASET, MODEL_CLASS, LEARNING_RATE, PROX
     # (to be saved as part of the same file of minimum distances)
     explanation_counter = 1
     all_minimum_distances, all_fcs, all_cfs = {}, {}, {}
-    tot_dist_flipped, tot_flipped = 0, 0
+    unnormalized_dataset_obj = loadData.loadDataset(DATASET, return_one_hot=True, load_from_cache=False, debug_flag=False)
+
     for factual_sample_index, factual_sample_normalized in iterate_over_data_dict_normalized.items():
+
+        # if factual_sample_index != 1308:
+        #     continue
 
         print('-'*80 + ' factual sample #' + str(factual_sample_index))
         init_label = factual_sample_normalized['y']
@@ -378,67 +381,68 @@ def generateDiCEExplanations(APPROACH, DATASET, MODEL_CLASS, LEARNING_RATE, PROX
         # Generate DiCE explanations
         start_time = time.time()
         dice_exp = exp.generate_counterfactuals(dice_sample,
-                                                total_CFs=1, desired_class="opposite",
-                                                algorithm="DiverseCF", proximity_weight=PROXIMITY_WEIGHT, diversity_weight=0.0,
+                                                total_CFs=k_cfes, desired_class="opposite",
+                                                algorithm="DiverseCF", proximity_weight=PROXIMITY_WEIGHT,
+                                                diversity_weight=DIVERSITY_WEIGHT,
                                                 learning_rate=LEARNING_RATE)
         end_time = time.time()
 
+        all_counterfactuals = []
         # Print counterfactual explanation
-        if len(dice_exp.final_cfs_list) > 0:
-            # dice_exp.visualize_as_list()
-            cfe_label = (dice_exp.final_cfs_list[0][-1] >= 0.5)
-
-            dice_counterfactual_sample_normalized = normalize(dice_exp.final_cfs_df.T.to_dict()[0], dice_dataset_features)
-
-            if len(dataset_obj.getOneHotAttributesNames()) > 0:
-                counterfactual_sample_normalized = cat_from_dice(dice_counterfactual_sample_normalized, dataset_obj)
-            else:
-                counterfactual_sample_normalized = dice_counterfactual_sample_normalized
-
-            fixed_model_output_on_cfe = tf.keras.backend.get_value(
-                fixed_model(tf.convert_to_tensor([list(counterfactual_sample_normalized.values())[:-1]])))[0][0]
-            assert abs(fixed_model_output_on_cfe - dice_exp.final_cfs_list[0][-1] < 1e-2), \
-                f"DiCE model prob output does not match fixed model output, {dice_exp.final_cfs_list[0][-1]} and " \
-                f"{fixed_model_output_on_cfe} \n factual: {factual_sample_normalized} \n counterfactual: {counterfactual_sample_normalized}"
-
+        if len(dice_exp.final_cfs_list) >= k_cfes:
+            print(f"Total CFs: {len(dice_exp.final_cfs_list)}")
             factual_sample_normalized['y'] = init_label
-            distance = normalizedDistance.getDistanceBetweenSamples(
-                factual_sample_normalized,
-                counterfactual_sample_normalized,
-                'one_norm',
-                dataset_obj  # is normalized thus [0, 1] bounds
-            )
+            cfe_found = True
+            for i in range(k_cfes):
+                cfe_label = (dice_exp.final_cfs_list[i][-1] >= 0.5)
+                cfe_found = cfe_found and (cfe_label != init_label)
+
+                dice_counterfactual_sample_normalized = normalize(dice_exp.final_cfs_df.T.to_dict()[i], dice_dataset_features)
+                if len(dataset_obj.getOneHotAttributesNames()) > 0:
+                    counterfactual_sample_normalized = cat_from_dice(dice_counterfactual_sample_normalized, dataset_obj)
+                else:
+                    counterfactual_sample_normalized = dice_counterfactual_sample_normalized
+
+                fixed_model_output_on_cfe = tf.keras.backend.get_value(
+                    fixed_model(tf.convert_to_tensor([list(counterfactual_sample_normalized.values())[:-1]])))[0][0]
+                assert abs(fixed_model_output_on_cfe - dice_exp.final_cfs_list[i][-1] < 1e-2), \
+                    f"DiCE model prob output does not match fixed model output, {dice_exp.final_cfs_list[i][-1]} and " \
+                    f"{fixed_model_output_on_cfe} \n factual: {factual_sample_normalized} \n counterfactual: {counterfactual_sample_normalized}"
+
+                distance = normalizedDistance.getDistanceBetweenSamples(
+                    factual_sample_normalized,
+                    counterfactual_sample_normalized,
+                    'one_norm',
+                    dataset_obj  # is normalized thus [0, 1] bounds
+                )
+
+                all_counterfactuals.append({
+                    'counterfactual_sample': de_normalize(counterfactual_sample_normalized, dice_dataset_features),
+                    'counterfactual_distance': distance,
+                    'time': None,
+                    'norm_type': 'one_norm'})
 
         else:
-            raise Exception("CFE list is empty!")
+            cfe_found = False
 
-        if cfe_label != init_label:
-            tot_dist_flipped += distance
-            tot_flipped += 1
-            all_minimum_distances[f'sample_{factual_sample_index}'] = {
-                'fac_sample': de_normalize(factual_sample_normalized, dice_dataset_features),
-                'cfe_sample': de_normalize(counterfactual_sample_normalized, dice_dataset_features),
-                'cfe_found': True,
-                'cfe_plausible': True,
-                'cfe_distance': distance,
-                'cfe_time': end_time - start_time,
-            }
-            del counterfactual_sample_normalized['y']
-            del factual_sample_normalized['y']
-            all_cfs[factual_sample_index] = counterfactual_sample_normalized
-            all_fcs[factual_sample_index] = factual_sample_normalized
-        else:
-            all_minimum_distances[f'sample_{factual_sample_index}'] = {
-                'fac_sample': de_normalize(factual_sample_normalized, dice_dataset_features),
-                'cfe_sample': de_normalize(counterfactual_sample_normalized, dice_dataset_features),
-                'cfe_found': False,
-                'cfe_plausible': False,
-                'cfe_distance': np.infty,
-                'cfe_time': end_time - start_time,
-            }
-            print("prediction proba: ", dice_exp.final_cfs_list[0][-1])
-            print(f"init label: {init_label}")
-            print("*** CFE not found. ***")
+        mean_proximity = normalizedDistance.getMeanProximity(all_counterfactuals, k_cfes)
+        mean_diversity = normalizedDistance.getMeanDiversity(all_counterfactuals, k_cfes, 'one_norm', unnormalized_dataset_obj)
+
+        all_minimum_distances[f'sample_{factual_sample_index}'] = {
+            'fac_sample': de_normalize(factual_sample_normalized, dice_dataset_features),
+            'cfe_sample': sorted(all_counterfactuals, key=lambda x: x['counterfactual_distance'])[0]['counterfactual_sample'],
+            'cfe_found': cfe_found,
+            'cfe_plausible': cfe_found,
+            'cfe_distance': sorted(all_counterfactuals, key=lambda x: x['counterfactual_distance'])[0]['counterfactual_distance'],
+            'cfe_time': end_time - start_time,
+            'mean_proximity': mean_proximity,
+            'mean_diversity': mean_diversity,
+            'num_cfs': k_cfes,
+            'all_counterfactuals': all_counterfactuals
+        }
+
+        if not cfe_found:
+            print(f"^^^^^^^^ cfe_found is False ^^^^^^^^^^^^")
 
     if len(dataset_obj.getOneHotAttributesNames()) == 0:
         printAndVisualizeTestStatistics( experiment_name, all_fcs, all_cfs, True, DATASET, MODEL_CLASS,
@@ -446,15 +450,6 @@ def generateDiCEExplanations(APPROACH, DATASET, MODEL_CLASS, LEARNING_RATE, PROX
 
     pickle.dump(all_minimum_distances, open(f'{experiment_folder_name}/_minimum_distances', 'wb'))
     pprint(all_minimum_distances, open(f'{experiment_folder_name}/minimum_distances.txt', 'w'))
-
-    avg_dist = tot_dist_flipped / tot_flipped
-    avg_flip = tot_flipped / SAMPLES * 100
-    # writer.add_scalars(f'metrics/avg_flip', {'avg_flip': avg_flip}, 0)
-    # writer.add_scalars(f'metrics/avg_flip', {'avg_flip': avg_flip}, 1)
-    # writer.add_scalars(f'metrics/avg_dist', {'avg_dist': avg_dist}, 0)
-    # writer.add_scalars(f'metrics/avg_dist', {'avg_dist': avg_dist}, 1)
-    # writer.flush()
-    # writer.close()
 
 if __name__ == "__main__":
 
@@ -485,16 +480,28 @@ if __name__ == "__main__":
         help = 'learning_rate')
 
     parser.add_argument(
-        '-w', '--proximity_weight',
+        '-pw', '--proximity_weight',
         type=float,
         default=0.5,
         help='proximity weight for DiCE')
+
+    parser.add_argument(
+        '-dw', '--diversity_weight',
+        type=float,
+        default=1.0,
+        help='diversity weight for DiCE')
 
     parser.add_argument(
         '-s', '--samples',
         type=int,
         default=25,
         help='number of factual samples')
+
+    parser.add_argument(
+        '-k', '--k_cfes',
+        type=int,
+        default=10,
+        help='number of diverse counterfactual samples')
 
     parser.add_argument(
         '-g', '--gen_cf_for',
@@ -516,6 +523,8 @@ if __name__ == "__main__":
                              args.model_class,
                              args.learning_rate,
                              args.proximity_weight,
+                             args.diversity_weight,
                              args.process_id,
                              args.gen_cf_for,
-                             args.samples)
+                             args.samples,
+                             args.k_cfes)

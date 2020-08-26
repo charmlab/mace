@@ -253,7 +253,8 @@ class MIPNetwork:
                     sym_bounds=False,
                     dist_as_constr=False,
                     bounds="opt",
-                    parameter_file=None):
+                    parameter_file=None,
+                    diverse_cfs=None):
         '''
         inp_domain: Tensor containing in each row the lower and upper bound
                     for the corresponding dimension
@@ -371,6 +372,10 @@ class MIPNetwork:
         self.model.update()
         applyDistanceConstrs(self.model, dataset_obj, factual_sample, norm_type, norm_lower, norm_upper)
         self.model.update()
+        if diverse_cfs is not None:
+            for i, diverse_cf in enumerate(diverse_cfs):
+                applyDistanceConstrs(self.model, dataset_obj, diverse_cf, norm_type, norm_lower=0.01, id=i)
+                self.model.update()
         applyPlausibilityConstrs(self.model, dataset_obj)
         self.model.update()
 

@@ -146,7 +146,7 @@ def setupMIPModelWithInputVars(dataset_obj):
 
   return mip_model, model_vars
 
-def findCFE4MLP(model_trained, dataset_obj, factual_sample, norm_type, norm_lower, norm_upper, epsilon, preprocessing):
+def findCFE4MLP(model_trained, dataset_obj, factual_sample, norm_type, norm_lower, norm_upper, epsilon, preprocessing, diverse_cfs=None):
   assert isinstance(model_trained, MLPClassifier), "Only MLP model supports the linear relaxation."
   input_dim = len(dataset_obj.getInputAttributeNames('kurz'))
 
@@ -167,7 +167,7 @@ def findCFE4MLP(model_trained, dataset_obj, factual_sample, norm_type, norm_lowe
 
   # Setup MIP model and check bounds feasibility w.r.t. distance formula
   feasible = mip_net.setup_model(domains, factual_sample, dataset_obj, norm_type, norm_lower, norm_upper, epsilon=epsilon,
-                                 sym_bounds=False, dist_as_constr=not('obj' in norm_type), bounds='opt')
+                                 sym_bounds=False, dist_as_constr=not('obj' in norm_type), bounds='opt', diverse_cfs=diverse_cfs)
   if not feasible:
     return False, None
 
@@ -228,7 +228,7 @@ def findCFE4Others(approach, model_trained, dataset_obj, factual_sample, norm_ty
 
   return True, counterfactual_sample, mip_model
 
-def findClosestCounterfactualSample(model_trained, dataset_obj, factual_sample, norm_type, approach_string, epsilon, log_file, preprocessing=None):
+def findClosestCounterfactualSample(model_trained, dataset_obj, factual_sample, norm_type, approach_string, epsilon, log_file, preprocessing=None, k_cfes=None):
 
   def getCenterNormThresholdInRange(lower_bound, upper_bound):
     return (lower_bound + upper_bound) / 2
@@ -292,23 +292,52 @@ def findClosestCounterfactualSample(model_trained, dataset_obj, factual_sample, 
                                                         norm_type, epsilon=epsilon)
       assert preprocessing is None, "Preprocessing is currently supported only for MLP models."
 
-    norm_type = norm_type.replace('_obj', '')
-
     # Assert samples have correct prediction label according to sklearn model
     assertPrediction(counterfactual_sample, model_trained, dataset_obj)
     counterfactual_distance = normalizedDistance.getDistanceBetweenSamples(
       factual_sample,
       counterfactual_sample,
-      norm_type,
+      norm_type.replace('_obj', ''),
       dataset_obj)
-
-    # print("found dist: ", counterfactual_distance)
 
     counterfactuals.append({
       'counterfactual_sample': counterfactual_sample,
       'counterfactual_distance': counterfactual_distance,
       'time': None,
       'norm_type': norm_type})
+
+    if 'DIVERSE' in approach_string:
+      assert(isinstance(model_trained, MLPClassifier))
+      diverse_counterfactuals = []
+      diverse_counterfactuals.append(counterfactual_sample) # closest
+      done = False
+      for i in range(k_cfes-1):
+        if not done:
+          solved, counterfactual_sample = findCFE4MLP(model_trained, dataset_obj, factual_sample, norm_type, 0, 0,
+                                                      epsilon=epsilon, preprocessing=preprocessing,
+                                                      diverse_cfs=diverse_counterfactuals)
+        else:
+          solved = True
+          counterfactual_sample = diverse_counterfactuals[0]
+
+        if solved is False:
+          print(f"Only {i+1} diverse CFs found. Repeating the closest to minimize mean distance.")
+          done = True
+          counterfactual_sample = diverse_counterfactuals[0]
+
+        diverse_counterfactuals.append(counterfactual_sample)
+        assertPrediction(counterfactual_sample, model_trained, dataset_obj)
+        counterfactual_distance = normalizedDistance.getDistanceBetweenSamples(
+          factual_sample,
+          counterfactual_sample,
+          norm_type.replace('_obj', ''),
+          dataset_obj)
+        counterfactuals.append({
+          'counterfactual_sample': counterfactual_sample,
+          'counterfactual_distance': counterfactual_distance,
+          'time': None,
+          'norm_type': norm_type})
+
 
   elif 'MACE_MIP_EXP' in approach_string:
 
@@ -449,7 +478,8 @@ def genExp(
   norm_type,
   approach_string,
   epsilon,
-  preprocessing):
+  preprocessing,
+  k_cfes):
 
   # # ONLY TO BE USED FOR TEST PURPOSES ON MORTGAGE DATASET
   # factual_sample = {'x0': 75000, 'x1': 25000, 'y': False}
@@ -476,7 +506,8 @@ def genExp(
     approach_string,
     epsilon,
     log_file,
-    preprocessing
+    preprocessing,
+    k_cfes
   )
 
   end_time = time.time()
@@ -487,12 +518,36 @@ def genExp(
   print(f"Nearest counterfactual sample:\t {getPrettyStringForSampleDictionary(closest_counterfactual_sample['counterfactual_sample'], dataset_obj)} (verified)", file = log_file)
   print(f"Minimum counterfactual distance: {closest_counterfactual_sample['counterfactual_distance']:.6f}", file = log_file)
 
-  return {
-    'fac_sample': factual_sample,
-    'cfe_found': True,
-    'cfe_plausible': True,
-    'cfe_time': end_time - start_time,
-    'cfe_sample': closest_counterfactual_sample['counterfactual_sample'],
-    'cfe_distance': closest_counterfactual_sample['counterfactual_distance'],
-    # 'all_counterfactuals': all_counterfactuals
-  }
+  if 'DIVERSE' in approach_string:
+    if not all_counterfactuals[0]['counterfactual_sample']:
+      all_counterfactuals.remove(all_counterfactuals[0])
+    else:
+      raise Exception("First CF must be template.")
+
+    assert len(all_counterfactuals) == k_cfes, f"Only {len(all_counterfactuals)} Diverse CFEs found. (< {k_cfes})"
+
+    mean_proximity = normalizedDistance.getMeanProximity(all_counterfactuals, k_cfes)
+    mean_diversity = normalizedDistance.getMeanDiversity(all_counterfactuals, k_cfes, norm_type, dataset_obj)
+
+    return {
+      'fac_sample': factual_sample,
+      'cfe_found': True,
+      'cfe_plausible': True,
+      'cfe_time': end_time - start_time,
+      'cfe_sample': closest_counterfactual_sample['counterfactual_sample'],
+      'cfe_distance': closest_counterfactual_sample['counterfactual_distance'],
+      'mean_proximity': mean_proximity,
+      'mean_diversity': mean_diversity,
+      'num_cfs': k_cfes,
+      'all_counterfactuals': all_counterfactuals
+    }
+  else:
+    return {
+      'fac_sample': factual_sample,
+      'cfe_found': True,
+      'cfe_plausible': True,
+      'cfe_time': end_time - start_time,
+      'cfe_sample': closest_counterfactual_sample['counterfactual_sample'],
+      'cfe_distance': closest_counterfactual_sample['counterfactual_distance'],
+      'all_counterfactuals': all_counterfactuals
+    }

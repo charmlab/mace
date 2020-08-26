@@ -9,37 +9,10 @@ import matplotlib.pyplot as plt
 # sns.set(style="darkgrid")
 sns.set_context("paper")
 
-
-
 from pprint import pprint
 
 from debug import ipsh
 
-
-
-# 48 tests (54 tests - PFT x Adult x {tree, forest})
-# DATASET_VALUES = ['adult', 'credit', 'compass']
-# MODEL_CLASS_VALUES = ['tree', 'forest']
-# NORM_VALUES = ['zero_norm', 'one_norm', 'infty_norm']
-# APPROACHES_VALUES = ['MACE_eps_1e-5', 'MO', 'PFT']
-
-# 18 tests
-# DATASET_VALUES = ['adult', 'credit', 'compass']
-# MODEL_CLASS_VALUES = ['lr']
-# NORM_VALUES = ['zero_norm', 'one_norm', 'infty_norm']
-# APPROACHES_VALUES = ['MACE_eps_1e-5', 'MO']
-
-# 6 tests
-# DATASET_VALUES = ['adult', 'credit', 'compass']
-# MODEL_CLASS_VALUES = ['lr']
-# NORM_VALUES = ['one_norm', 'infty_norm']
-# APPROACHES_VALUES = ['AR']
-
-# 18 tests
-# DATASET_VALUES = ['adult', 'credit', 'compass']
-# MODEL_CLASS_VALUES = ['mlp']
-# NORM_VALUES = ['zero_norm', 'one_norm', 'infty_norm']
-# APPROACHES_VALUES = ['MACE_eps_1e-5', 'MO']
 
 
 def gatherAndSaveDistances():
@@ -278,6 +251,158 @@ def gatherAndSaveDistances():
 
   pickle.dump(df_all_distances, open(f'_results/df_all_distances', 'wb'))
 
+
+def gatherAndSaveDiversities():
+
+  parent_folders = [
+    './_experiments'
+    # '/Users/a6karimi/dev/mace/_experiments/__merged_german-lr-one_norm-MACE_eps_1e-3'
+  ]
+  year = '2020'
+
+  all_child_folders = []
+  for parent_folder in parent_folders:
+    child_folders = os.listdir(parent_folder)
+    child_folders = [x for x in child_folders if year in x and x[0] != '.'] # remove .DS_Store, etc.
+    child_folders = [os.path.join(parent_folder, x) for x in child_folders]
+    all_child_folders.extend(child_folders) # happens in place
+
+  DATASET_VALUES = ['compass']
+  MODEL_CLASS_VALUES = ['mlp2x10']
+  NORM_VALUES = ['one_norm']
+  APPROACHES_VALUES = ['MACE_MIP_OBJ_DIVERSE_eps_1e-3', 'dice']
+  K_CFES = ['2', '3', '4', '5', '6', '7', '8', '9', '10'] # Number of diverse CFs
+
+  # all_counter = 72 + 18 + 6 # (without the unneccessary FT folders for LR and MLP)
+  # assert len(all_child_folders) == all_counter, 'missing, or too many experiment folders'
+  all_counter = len(DATASET_VALUES) * len(MODEL_CLASS_VALUES) * len(NORM_VALUES) * len(APPROACHES_VALUES)
+
+  df_all_distances = pd.DataFrame({ \
+    'dataset': [], \
+    'model': [], \
+    'norm': [], \
+    'approach': [], \
+    # 'approach_param': [], \
+    'factual sample index': [], \
+    'counterfactual found': [], \
+    'counterfactual plausible': [], \
+    'counterfactual distance': [], \
+    'counterfactual time': [], \
+    'all counterfactual distances': [], \
+    'all counterfactual times': [], \
+    'mean diversity': [], \
+    'mean proximity': [], \
+    'num of cfs': [], \
+    'changed age': [], \
+    'changed gender': [], \
+    'changed race': [], \
+    'age constant': [], \
+    'age increased': [], \
+    'age decreased': [], \
+  })
+
+  print('Loading and merging all distance files.')
+
+  counter = 0
+
+  for dataset_string in DATASET_VALUES:
+
+    for model_class_string in MODEL_CLASS_VALUES:
+
+      for norm_type_string in NORM_VALUES:
+
+        for approach_string in APPROACHES_VALUES:
+
+          for k_cfe_string in K_CFES:
+
+            counter = counter + 1
+
+            matching_child_folders = [
+              x for x in all_child_folders if
+              f'__{dataset_string}__' in x.split('/')[-1] and
+              f'__{model_class_string}__' in x.split('/')[-1] and
+              f'__{norm_type_string}__' in x.split('/')[-1] and
+              f'__{approach_string}' in x.split('/')[-1] and
+              f'__cfs{k_cfe_string}__' in x.split('/')[-1]
+            ]
+
+            # Find results folder
+            try:
+              assert len(matching_child_folders) == 1, f'Expecting only 1 folder, but we found {len(matching_child_folders)}.'
+              matching_child_folder = matching_child_folders[0]
+              minimum_distance_file_path = os.path.join(matching_child_folder, '_minimum_distances')
+            except:
+              print(f'\t[{counter} / (max {all_counter})] Cannot find folder for {dataset_string}-{model_class_string}-{norm_type_string}-{approach_string}')
+              continue
+
+            # Find results file
+            try:
+              assert os.path.isfile(minimum_distance_file_path)
+              print(f'\t[{counter} / (max {all_counter})] Successfully found folder {matching_child_folder.split("/")[-1]}, found min dist file, ', end = '')
+              minimum_distance_file = pickle.load(open(minimum_distance_file_path, 'rb'))
+              print(f'adding {len(minimum_distance_file.keys())} distances.')
+            except:
+              print(f'Cannot find file {minimum_distance_file_path}')
+              continue
+
+            # Add results to global results data frame
+            # try:
+            for key in minimum_distance_file.keys():
+              factual_sample = minimum_distance_file[key]['fac_sample']
+              counterfactual_sample = minimum_distance_file[key]['cfe_sample']
+              changed_age = False
+              changed_gender = False
+              changed_race = False
+
+              age_constant = False
+              age_increased = False
+              age_decreased = False
+
+              if 'MACE' in approach_string and 'all_counterfactuals' in minimum_distance_file.keys():
+                all_counterfactual_distances = list(map(lambda x: x['counterfactual_distance'], minimum_distance_file[key]['all_counterfactuals']))
+                all_counterfactual_times = list(map(lambda x: x['time'], minimum_distance_file[key]['all_counterfactuals']))
+              else:
+                all_counterfactual_distances = []
+                all_counterfactual_times = []
+
+              d = minimum_distance_file[key]['cfe_distance']
+
+              # MACE_SAT and MACE_MIP_SAT do have perfect coverage but they simply don't terminate on some samples.
+              if (d == np.infty or not(0.0 <= d <= 1.0)) and not('MACE_SAT' in approach_string or 'MACE_MIP_SAT' in approach_string or 'dice' in approach_string):
+                raise Exception("Not perfect coverage.")
+
+              df_all_distances = df_all_distances.append({
+                'dataset': dataset_string,
+                'model': model_class_string,
+                'norm': norm_type_string,
+                'approach': approach_string,
+                # 'approach_param': approach_param,
+                'factual sample index': key,
+                'counterfactual found': (minimum_distance_file[key]['cfe_found'] and minimum_distance_file[key]['cfe_distance'] != np.infty),
+                'counterfactual plausible': (minimum_distance_file[key]['cfe_plausible'] and minimum_distance_file[key]['cfe_distance'] != np.infty),
+                'counterfactual distance': minimum_distance_file[key]['cfe_distance'],
+                'counterfactual time': minimum_distance_file[key]['cfe_time'],
+                'all counterfactual distances': all_counterfactual_distances,
+                'all counterfactual times': all_counterfactual_times,
+                'mean diversity': minimum_distance_file[key]['mean_diversity'],
+                'mean proximity': minimum_distance_file[key]['mean_proximity'],
+                'num of cfs': minimum_distance_file[key]['num_cfs'],
+                'changed age': changed_age,
+                'changed gender': changed_gender,
+                'changed race': changed_race,
+                # 'changed attributes': changed_attributes,
+                'age constant': age_constant,
+                'age increased': age_increased,
+                'age decreased': age_decreased,
+                # 'interventional distance': minimum_distance_file[key]['interventional_distance'],
+              }, ignore_index =  True)
+
+
+  print('Processing merged distance files.')
+
+  print('Saving merged distance files.')
+
+  pickle.dump(df_all_distances, open(f'_results/df_all_diversities', 'wb'))
 
 def gatherAndSaveDistanceTimeTradeoffData():
 
@@ -939,7 +1064,7 @@ def plotScalibility():
 
   print(f'Plotting merged files.')
 
-  fig, axs = plt.subplots(1, len(DATASET_VALUES), figsize=(20, 6))
+  fig, axs = plt.subplots(1, len(DATASET_VALUES), figsize=(16, 6))
 
   for i, dataset_string in enumerate(df_all_distances['dataset'].unique()):
 
@@ -949,16 +1074,22 @@ def plotScalibility():
 
       approach_specific_df = dataset_specific_df.where(dataset_specific_df['approach'] == approach_string).dropna()
 
-      runtimes, labels = [], []
+      mean_runtimes, std_runtimes, labels = [], [], []
       for mlp_type in MODEL_CLASS_VALUES:
-        runtimes.append(approach_specific_df.where(approach_specific_df['model'] == mlp_type).dropna()['counterfactual time'].mean())
+        mean_runtimes.append(
+          approach_specific_df.where(approach_specific_df['model'] == mlp_type).dropna()['counterfactual time'].mean())
+        std_runtimes.append(
+          approach_specific_df.where(approach_specific_df['model'] == mlp_type).dropna()['counterfactual time'].std())
         labels.append(mlp_type.split('x')[0].replace('mlp', ''))
         # labels.append(n_samples[mlp_type][0][dataset_string])
 
+      est = np.array(mean_runtimes)
+      sd = np.array(std_runtimes)
       ax = axs[i]
-      ax.scatter(np.arange(len(runtimes)), runtimes)
-      ax.plot(np.arange(len(runtimes)), runtimes, label=approach_string)
-      ax.set_xticks(np.arange(len(runtimes)))
+      ax.scatter(np.arange(len(mean_runtimes)), mean_runtimes)
+      ax.plot(np.arange(len(mean_runtimes)), mean_runtimes, label=approach_string)
+      # ax.fill_between(np.arange(len(mean_runtimes)), est-sd, est+sd, alpha=0.2)
+      ax.set_xticks(np.arange(len(mean_runtimes)))
       ax.set_xticklabels(labels, rotation=65)
       ax.set_title(f'{dataset_string}')
       ax.set_xlabel('MLP depth')
@@ -969,7 +1100,131 @@ def plotScalibility():
     axs[0].legend()
 
   # plt.show()
+  fig.tight_layout()
   plt.savefig(f'_results/scalibility.png', bboc_inches='tight', pad_inches=0, dpi=400)
+
+
+def plotDiversity():
+
+  DATASET_VALUES = ['compass']
+  MODEL_CLASS_VALUES = ['mlp2x10']
+  NORM_VALUES = ['one_norm']
+  APPROACHES_VALUES = ['MACE_MIP_OBJ_DIVERSE_eps_1e-3', 'dice']
+  K_CFES = [2, 3, 4, 5, 6, 7, 8, 9, 10]
+  KEY_TO_PLOT = 'counterfactual time'
+
+  df_all_distances = pickle.load(open(f'_results/df_all_diversities', 'rb'))
+
+  # Remove FeatureTweaking / ActionableRecourse distances that were unsuccessful or non-plausible
+  df_all_distances = df_all_distances.where(
+    (df_all_distances['counterfactual found'] == True) &
+    (df_all_distances['counterfactual plausible'] == True)
+  ).dropna()
+
+  # get the intersection of all approaches... (as some do not have perfect coverage)
+  filtered_df_all_distance = None
+  n_samples = {}
+  for model in MODEL_CLASS_VALUES:
+    n_samples[model] = {}
+    for i, norm in enumerate(NORM_VALUES):
+      n_samples[model][i] = {}
+      for dataset in DATASET_VALUES:
+        n_samples[model][i][dataset] = {}
+        for k_cfe in K_CFES:
+
+          specific_df = df_all_distances.where(
+            (df_all_distances['model'] == model) &
+            (df_all_distances['norm'] == norm) &
+            (df_all_distances['dataset'] == dataset) &
+            (df_all_distances['num of cfs'] == k_cfe)
+          ).dropna()
+
+          n_approaches = len(specific_df['approach'].unique())
+          fac_sample_occurances = specific_df['factual sample index'].value_counts()
+          for fac_sample in fac_sample_occurances.keys():
+            if fac_sample_occurances[fac_sample] < n_approaches:
+              specific_df = specific_df.where(specific_df['factual sample index'] != fac_sample).dropna()
+
+          if len(specific_df) > 0:
+            assert len(specific_df) % n_approaches == 0
+            n_common_samples = int(len(specific_df) / n_approaches)
+          else:
+            n_common_samples = 0
+
+          n_samples[model][i][dataset][k_cfe] = n_common_samples
+
+          if filtered_df_all_distance is None:
+            filtered_df_all_distance = specific_df
+          else:
+            filtered_df_all_distance = pd.concat([filtered_df_all_distance, specific_df])
+
+
+  # change norms for plotting??????
+  # df_all_distances = df_all_distances.where(df_all_distances['norm'] != 'zero_norm').dropna()
+  df_all_distances = filtered_df_all_distance
+
+  df_all_distances['norm'] = df_all_distances['norm'].map({
+    'zero_norm': r'$\ell_0$',
+    'one_norm': r'$\ell_1$',
+    'two_norm': r'$\ell_2$',
+    'infty_norm': r'$\ell_\infty$',
+  })
+
+  df_all_distances['dataset'] = df_all_distances['dataset'].map({
+    'adult': 'Adult',
+    'credit': 'Credit',
+    'compass': 'COMPAS',
+  })
+
+  df_all_distances['approach'] = df_all_distances['approach'].map({
+    'MACE_MIP_OBJ_DIVERSE_eps_1e-3': r'MIP_DIVERSE ($\epsilon = 10^{-3}$)',
+    'dice': 'DiCE',
+  })
+
+  markers = {
+    'MIP_DIVERSE ($\epsilon = 10^{-3}$)' : 'D',
+    'DiCE': 's'
+  }
+
+  print(f'Plotting merged files.')
+
+  fig, axs = plt.subplots(1, len(DATASET_VALUES), figsize=(6, 6))
+
+  for model in MODEL_CLASS_VALUES:
+    for norm in df_all_distances['norm'].unique():
+      for i, dataset_string in enumerate(df_all_distances['dataset'].unique()):
+        ax = axs[i] if len(DATASET_VALUES) > 1 else axs
+        for approach_string in df_all_distances['approach'].unique():
+
+          specific_df = df_all_distances.where(
+            (df_all_distances['model'] == model) &
+            (df_all_distances['norm'] == norm) &
+            (df_all_distances['dataset'] == dataset_string) &
+            (df_all_distances['approach'] == approach_string)
+          ).dropna()
+
+          feature_to_plot, labels = [], []
+          for k_cfe in K_CFES:
+            feature_to_plot.append(specific_df.where(specific_df['num of cfs'] == k_cfe).dropna()[KEY_TO_PLOT].mean())
+            labels.append(f'{k_cfe} CFs')
+
+          ax.scatter(np.arange(len(feature_to_plot)), feature_to_plot)
+          ax.plot(np.arange(len(feature_to_plot)), feature_to_plot, label=approach_string, marker=markers[approach_string], markersize=8)
+          ax.set_xticks(np.arange(len(feature_to_plot)))
+          ax.set_xticklabels(labels, rotation=65)
+          ax.set_title(f'{dataset_string}')
+          # ax.set_xlabel('')
+
+        ax.grid()
+        if 'time' in KEY_TO_PLOT:
+          ax.set_yscale("log")
+        ax.set_ylabel(KEY_TO_PLOT)
+        ax.legend()
+
+  # plt.show()
+  fig.tight_layout()
+  plt.savefig(f'_results/diversity_{KEY_TO_PLOT}.png', bboc_inches='tight', pad_inches=0, dpi=400)
+
 
 def plotAvgDistanceRunTimeCoverageTradeoffAgainstIterations():
   DATASET_VALUES = ['credit', 'adult']
@@ -1188,6 +1443,7 @@ def compareMACEandMINT():
 
 if __name__ == '__main__':
   # gatherAndSaveDistances()
+  # gatherAndSaveDiversities()
   # compareMACEandMINT()
   # gatherAndSaveDistanceTimeTradeoffData()
 
@@ -1195,7 +1451,9 @@ if __name__ == '__main__':
   # analyzeAverageDistanceRunTimeCoverage()
 
   # plotDistancesMainBody()
-  plotAllDistancesAppendix()
+  # plotAllDistancesAppendix()
+  # plotScalibility()
+  plotDiversity()
   # plotAvgDistanceRunTimeCoverageTradeoffAgainstIterations()
 
 
