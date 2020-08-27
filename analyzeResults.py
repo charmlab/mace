@@ -270,12 +270,14 @@ def gatherAndSaveDiversities():
   DATASET_VALUES = ['compass']
   MODEL_CLASS_VALUES = ['mlp2x10']
   NORM_VALUES = ['one_norm']
-  APPROACHES_VALUES = ['MACE_MIP_OBJ_DIVERSE_eps_1e-3', 'dice']
+  APPROACHES_VALUES = ['MACE_MIP_OBJ_DIVERSE_eps_1e-3_delta_1e-2', 'MACE_MIP_OBJ_DIVERSE_eps_1e-3_delta_3e-2',
+                       'MACE_MIP_OBJ_DIVERSE_eps_1e-3_delta_5e-2', 'MACE_MIP_OBJ_DIVERSE_eps_1e-3_delta_1e-1',
+                       'MACE_MIP_OBJ_DIVERSE_eps_1e-3_delta_2e-1', 'dice']
   K_CFES = ['2', '3', '4', '5', '6', '7', '8', '9', '10'] # Number of diverse CFs
 
   # all_counter = 72 + 18 + 6 # (without the unneccessary FT folders for LR and MLP)
   # assert len(all_child_folders) == all_counter, 'missing, or too many experiment folders'
-  all_counter = len(DATASET_VALUES) * len(MODEL_CLASS_VALUES) * len(NORM_VALUES) * len(APPROACHES_VALUES)
+  all_counter = len(DATASET_VALUES) * len(MODEL_CLASS_VALUES) * len(NORM_VALUES) * len(APPROACHES_VALUES) * len(K_CFES)
 
   df_all_distances = pd.DataFrame({ \
     'dataset': [], \
@@ -1109,7 +1111,8 @@ def plotDiversity():
   DATASET_VALUES = ['compass']
   MODEL_CLASS_VALUES = ['mlp2x10']
   NORM_VALUES = ['one_norm']
-  APPROACHES_VALUES = ['MACE_MIP_OBJ_DIVERSE_eps_1e-3', 'dice']
+  APPROACHES_VALUES = ['MACE_MIP_OBJ_DIVERSE_eps_1e-3_delta_1e-2', 'MACE_MIP_OBJ_DIVERSE_eps_1e-3_delta_3e-2',
+                       'MACE_MIP_OBJ_DIVERSE_eps_1e-3_delta_5e-2', 'MACE_MIP_OBJ_DIVERSE_eps_1e-3_delta_1e-1', 'dice']
   K_CFES = [2, 3, 4, 5, 6, 7, 8, 9, 10]
   KEY_TO_PLOT = 'counterfactual time'
 
@@ -1120,6 +1123,8 @@ def plotDiversity():
     (df_all_distances['counterfactual found'] == True) &
     (df_all_distances['counterfactual plausible'] == True)
   ).dropna()
+
+  # df_all_distances = df_all_distances.where(df_all_distances['approach'] != 'MACE_MIP_OBJ_DIVERSE_eps_1e-3_delta_2e-1').dropna()
 
   # get the intersection of all approaches... (as some do not have perfect coverage)
   filtered_df_all_distance = None
@@ -1177,12 +1182,20 @@ def plotDiversity():
   })
 
   df_all_distances['approach'] = df_all_distances['approach'].map({
-    'MACE_MIP_OBJ_DIVERSE_eps_1e-3': r'MIP_DIVERSE ($\epsilon = 10^{-3}$)',
+    'MACE_MIP_OBJ_DIVERSE_eps_1e-3_delta_1e-2': r'MIP_DIVERSE ($\delta = 0.01$)',
+    'MACE_MIP_OBJ_DIVERSE_eps_1e-3_delta_3e-2': r'MIP_DIVERSE ($\delta = 0.03$)',
+    'MACE_MIP_OBJ_DIVERSE_eps_1e-3_delta_5e-2': r'MIP_DIVERSE ($\delta = 0.05$)',
+    'MACE_MIP_OBJ_DIVERSE_eps_1e-3_delta_1e-1': r'MIP_DIVERSE ($\delta = 0.1$)',
+    'MACE_MIP_OBJ_DIVERSE_eps_1e-3_delta_2e-1': r'MIP_DIVERSE ($\delta = 0.2$)',
     'dice': 'DiCE',
   })
 
   markers = {
-    'MIP_DIVERSE ($\epsilon = 10^{-3}$)' : 'D',
+    'MIP_DIVERSE ($\delta = 0.01$)': 'D',
+    'MIP_DIVERSE ($\delta = 0.03$)': 'v',
+    'MIP_DIVERSE ($\delta = 0.05$)': 'h',
+    'MIP_DIVERSE ($\delta = 0.1$)': 'o',
+    'MIP_DIVERSE ($\delta = 0.2$)': 'd',
     'DiCE': 's'
   }
 
@@ -1194,7 +1207,7 @@ def plotDiversity():
     for norm in df_all_distances['norm'].unique():
       for i, dataset_string in enumerate(df_all_distances['dataset'].unique()):
         ax = axs[i] if len(DATASET_VALUES) > 1 else axs
-        for approach_string in df_all_distances['approach'].unique():
+        for approach_string in sorted(df_all_distances['approach'].unique()):
 
           specific_df = df_all_distances.where(
             (df_all_distances['model'] == model) &
@@ -1212,14 +1225,18 @@ def plotDiversity():
           ax.plot(np.arange(len(feature_to_plot)), feature_to_plot, label=approach_string, marker=markers[approach_string], markersize=8)
           ax.set_xticks(np.arange(len(feature_to_plot)))
           ax.set_xticklabels(labels, rotation=65)
-          ax.set_title(f'{dataset_string}')
+          if 'time' in KEY_TO_PLOT:
+            ax.set_title('Time (s)')
+            ax.legend()
+          else:
+            ax.set_title(f'{KEY_TO_PLOT.title()}')
           # ax.set_xlabel('')
 
         ax.grid()
         if 'time' in KEY_TO_PLOT:
           ax.set_yscale("log")
-        ax.set_ylabel(KEY_TO_PLOT)
-        ax.legend()
+        # ax.set_ylabel(KEY_TO_PLOT)
+
 
   # plt.show()
   fig.tight_layout()
