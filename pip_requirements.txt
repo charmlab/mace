@@ -3,6 +3,7 @@ backcall==0.1.0
 cycler==0.10.0
 decorator==4.4.2
 graphviz==0.13.2
+gurobi=9.0.1
 ipython==7.13.0
 ipython-genutils==0.2.0
 jedi==0.16.0
