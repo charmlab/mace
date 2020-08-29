@@ -425,8 +425,12 @@ def generateDiCEExplanations(APPROACH, DATASET, MODEL_CLASS, LEARNING_RATE, PROX
         else:
             cfe_found = False
 
-        mean_proximity = normalizedDistance.getMeanProximity(all_counterfactuals, k_cfes)
-        mean_diversity = normalizedDistance.getMeanDiversity(all_counterfactuals, k_cfes, 'one_norm', unnormalized_dataset_obj)
+        if k_cfes>1:
+            mean_proximity = normalizedDistance.getMeanProximity(all_counterfactuals, k_cfes)
+            mean_diversity = normalizedDistance.getMeanDiversity(all_counterfactuals, k_cfes, 'one_norm', unnormalized_dataset_obj)
+        else:
+            mean_proximity = None
+            mean_diversity = None
 
         all_minimum_distances[f'sample_{factual_sample_index}'] = {
             'fac_sample': de_normalize(factual_sample_normalized, dice_dataset_features),
@@ -442,7 +446,7 @@ def generateDiCEExplanations(APPROACH, DATASET, MODEL_CLASS, LEARNING_RATE, PROX
         }
 
         if not cfe_found:
-            print(f"^^^^^^^^ cfe_found is False ^^^^^^^^^^^^")
+            print(f"No or not enough CFEs found.")
 
     if len(dataset_obj.getOneHotAttributesNames()) == 0:
         printAndVisualizeTestStatistics( experiment_name, all_fcs, all_cfs, True, DATASET, MODEL_CLASS,

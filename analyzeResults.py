@@ -58,8 +58,8 @@ def gatherAndSaveDistances():
   DATASET_VALUES = ['compass', 'credit', 'adult']
   # MODEL_CLASS_VALUES = ['lr', 'tree', 'forest', 'mlp2x10']
   MODEL_CLASS_VALUES = ['mlp2x10']
-  NORM_VALUES = ['zero_norm', 'one_norm', 'two_norm', 'infty_norm']
-  APPROACHES_VALUES = ['MACE_MIP_OBJ_eps_1e-3', 'MACE_MIP_EXP_eps_1e-3', 'MACE_MIP_SAT_eps_1e-3', 'MACE_SAT_eps_1e-3']
+  NORM_VALUES = ['one_norm']
+  APPROACHES_VALUES = ['MACE_MIP_OBJ_eps_1e-3', 'dice']
 
   # all_counter = 72 + 18 + 6 # (without the unneccessary FT folders for LR and MLP)
   # assert len(all_child_folders) == all_counter, 'missing, or too many experiment folders'
@@ -818,17 +818,23 @@ def analyzeAverageDistanceRunTimeCoverage():
 def plotAllDistancesAppendix():
   time_or_distance = 'distance'
 
-  MODEL_CLASS_VALUES = ['lr', 'tree', 'forest']
-  # MODEL_CLASS_VALUES = ['mlp2x10']
-  NORM_VALUES = ['zero_norm', 'one_norm', 'two_norm', 'infty_norm']
+  # MODEL_CLASS_VALUES = ['lr', 'tree', 'forest']
+  # # MODEL_CLASS_VALUES = ['mlp2x10']
+  # NORM_VALUES = ['zero_norm', 'one_norm', 'two_norm', 'infty_norm']
+  # DATASET_VALUES = ['compass', 'credit', 'adult']
+  # # APPROACHES_VALUES = ['MACE_MIP_OBJ_eps_1e-3', 'MACE_MIP_EXP_eps_1e-3', 'MACE_MIP_SAT_eps_1e-3', 'MACE_SAT_eps_1e-3']
+  # APPROACHES_VALUES = ['MACE_MIP_OBJ_eps_1e-3', 'MACE_MIP_EXP_eps_1e-3', 'MACE_SAT_eps_1e-3']
+
+  MODEL_CLASS_VALUES = ['mlp2x10']
+  NORM_VALUES = ['one_norm']
   DATASET_VALUES = ['compass', 'credit', 'adult']
   # APPROACHES_VALUES = ['MACE_MIP_OBJ_eps_1e-3', 'MACE_MIP_EXP_eps_1e-3', 'MACE_MIP_SAT_eps_1e-3', 'MACE_SAT_eps_1e-3']
-  APPROACHES_VALUES = ['MACE_MIP_OBJ_eps_1e-3', 'MACE_MIP_EXP_eps_1e-3', 'MACE_SAT_eps_1e-3']
+  APPROACHES_VALUES = ['MACE_MIP_OBJ_eps_1e-3', 'dice']
 
   # tmp_constrained = 'constrained'
   tmp_constrained = 'unconstrained'
   # Remove FeatureTweaking / ActionableRecourse distances that were unsuccessful or non-plausible
-  df_all_distances = pickle.load(open(f'_results/df_all_distances_otherThanMLP', 'rb'))
+  df_all_distances = pickle.load(open(f'_results/df_all_distances', 'rb'))
 
   # Remove FeatureTweaking / ActionableRecourse distances that were unsuccessful or non-plausible
   df_all_distances = df_all_distances.where(
@@ -917,8 +923,7 @@ def plotAllDistancesAppendix():
 
     # hue_order = [r'MIP\_OBJ ($\epsilon = 10^{-3}$)', r'MIP\_EXP ($\epsilon = 10^{-3}$)',
     #              r'MIP\_SAT ($\epsilon = 10^{-3}$)', r'SAT ($\epsilon = 10^{-3}$)']
-    hue_order = [r'MIP\_OBJ ($\epsilon = 10^{-3}$)', r'MIP\_EXP ($\epsilon = 10^{-3}$)',
-                 r'SAT ($\epsilon = 10^{-3}$)']
+    hue_order = [r'MIP\_OBJ ($\epsilon = 10^{-3}$)', r'DiCE']
     # hue_order = [r'MIP\_OBJ ($\epsilon = 10^{-3}$)', 'DiCE']
     # hue_order = [r'MACE ($\epsilon = 10^{-3}$)']
     # if model_string == 'tree' or model_string == 'forest':
@@ -1219,17 +1224,18 @@ def plotDiversity():
           feature_to_plot, labels = [], []
           for k_cfe in K_CFES:
             feature_to_plot.append(specific_df.where(specific_df['num of cfs'] == k_cfe).dropna()[KEY_TO_PLOT].mean())
-            labels.append(f'{k_cfe} CFs')
+            labels.append(f'{k_cfe} CFEs')
 
           ax.scatter(np.arange(len(feature_to_plot)), feature_to_plot)
           ax.plot(np.arange(len(feature_to_plot)), feature_to_plot, label=approach_string, marker=markers[approach_string], markersize=8)
           ax.set_xticks(np.arange(len(feature_to_plot)))
-          ax.set_xticklabels(labels, rotation=65)
+          ax.set_xticklabels(labels, rotation=45, fontsize=12)
           if 'time' in KEY_TO_PLOT:
-            ax.set_title('Time (s)')
-            ax.legend()
+            ax.set_title('Time (s)', fontsize=16)
           else:
-            ax.set_title(f'{KEY_TO_PLOT.title()}')
+            ax.set_title(f'{KEY_TO_PLOT.title()}', fontsize=16)
+          if 'proximity' in KEY_TO_PLOT:
+            ax.legend()
           # ax.set_xlabel('')
 
         ax.grid()
@@ -1468,9 +1474,9 @@ if __name__ == '__main__':
   # analyzeAverageDistanceRunTimeCoverage()
 
   # plotDistancesMainBody()
-  # plotAllDistancesAppendix()
+  plotAllDistancesAppendix()
   # plotScalibility()
-  plotDiversity()
+  # plotDiversity()
   # plotAvgDistanceRunTimeCoverageTradeoffAgainstIterations()
 
 
