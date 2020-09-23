@@ -234,7 +234,7 @@ def cat_from_dice(data_point, dataset_obj):
 
 def generateDiCEExplanations(APPROACH, DATASET, MODEL_CLASS, LEARNING_RATE, PROXIMITY_WEIGHT, DIVERSITY_WEIGHT, PROCESS_ID, GEN_CF_FOR, SAMPLES, k_cfes):
 
-    setup_name = f'{DATASET}__{MODEL_CLASS}__one_norm__{APPROACH}__cfs{k_cfes}__lr{LEARNING_RATE}__pr{PROXIMITY_WEIGHT}'
+    setup_name = f'{DATASET}__{MODEL_CLASS}__one_norm__{APPROACH}__cfs{k_cfes}__lr{LEARNING_RATE}__pr{PROXIMITY_WEIGHT}__div{DIVERSITY_WEIGHT}'
     experiment_name = f'{setup_name}__pid{PROCESS_ID}'
     experiment_folder_name = f"_experiments/{datetime.now().strftime('%Y.%m.%d_%H.%M.%S')}__{experiment_name}"
     os.mkdir(experiment_folder_name)
@@ -316,25 +316,25 @@ def generateDiCEExplanations(APPROACH, DATASET, MODEL_CLASS, LEARNING_RATE, PROX
     ################################################################################
     print(f'[INFO] Loading the `{DATASET}` fixed predictor...\t', end = '')
 
-    if MODEL_CLASS == 'mlp2x10':
-        fixed_model_width = 10 # TODO make more dynamic later and move to separate function
-        assert sklearn_model.hidden_layer_sizes == (fixed_model_width, fixed_model_width)
+    if 'mlp' in MODEL_CLASS:
+
+        mlp_type = MODEL_CLASS.replace('mlp', '')
+        mlp_depth, mlp_width = int(mlp_type.split('x')[0]), int(mlp_type.split('x')[1])
+        assert sklearn_model.hidden_layer_sizes == mlp_depth * (mlp_width,)
 
         # Keras model
         sess = tf.InteractiveSession()
 
         fixed_model = keras.Sequential()
-        fixed_model.add(keras.layers.Dense(fixed_model_width, input_shape=(data_dim,), activation=tf.nn.relu))
-        fixed_model.add(keras.layers.Dense(fixed_model_width, input_shape=(fixed_model_width,), activation=tf.nn.relu))
-        fixed_model.add(keras.layers.Dense(1, input_shape=(fixed_model_width,), activation=tf.nn.sigmoid))
+        fixed_model.add(keras.layers.Dense(mlp_width, input_shape=(data_dim,), activation=tf.nn.relu))
+        for i in range(mlp_depth-1):
+            fixed_model.add(keras.layers.Dense(mlp_width, input_shape=(mlp_width,), activation=tf.nn.relu))
+        fixed_model.add(keras.layers.Dense(1, input_shape=(mlp_width,), activation=tf.nn.sigmoid))
 
-        fixed_model.layers[0].set_weights([sklearn_model.coefs_[0].astype('float64'), sklearn_model.intercepts_[0].astype('float64')])
-        fixed_model.layers[1].set_weights([sklearn_model.coefs_[1].astype('float64'), sklearn_model.intercepts_[1].astype('float64')])
-        fixed_model.layers[2].set_weights([sklearn_model.coefs_[2].astype('float64'), sklearn_model.intercepts_[2].astype('float64')])
+        for i in range(mlp_depth+1):
+            fixed_model.layers[i].set_weights([sklearn_model.coefs_[i].astype('float64'), sklearn_model.intercepts_[i].astype('float64')])
+            fixed_model.layers[i].trainable = False
 
-        fixed_model.layers[0].trainable = False
-        fixed_model.layers[1].trainable = False
-        fixed_model.layers[2].trainable = False
     else:
         raise Exception(f"{MODEL_CLASS} not a recognized model class.")
 
@@ -380,6 +380,10 @@ def generateDiCEExplanations(APPROACH, DATASET, MODEL_CLASS, LEARNING_RATE, PROX
 
         # Generate DiCE explanations
         start_time = time.time()
+        if k_cfes == 1:
+            # if we acquire only 1 CFE, then diversity weight should be 0 so that
+            # there is more emphasis on proximity.
+            DIVERSITY_WEIGHT = 0
         dice_exp = exp.generate_counterfactuals(dice_sample,
                                                 total_CFs=k_cfes, desired_class="opposite",
                                                 algorithm="DiverseCF", proximity_weight=PROXIMITY_WEIGHT,
@@ -504,7 +508,7 @@ if __name__ == "__main__":
     parser.add_argument(
         '-k', '--k_cfes',
         type=int,
-        default=10,
+        default=1,
         help='number of diverse counterfactual samples')
 
     parser.add_argument(

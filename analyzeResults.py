@@ -38,7 +38,7 @@ def gatherAndSaveDistances():
   # year = '2019'
 
   parent_folders = [
-    './_experiments'
+    './_experiments/__merged'
     # '/Users/a6karimi/dev/mace/_experiments/__merged_german-lr-one_norm-MACE_eps_1e-3'
   ]
   year = '2020'
@@ -56,10 +56,15 @@ def gatherAndSaveDistances():
   # APPROACHES_VALUES = ['MACE_eps_1e-2', 'MACE_eps_1e-3', 'MACE_eps_1e-5', 'MO', 'PFT', 'AR']
 
   DATASET_VALUES = ['compass', 'credit', 'adult']
+  MODEL_CLASS_VALUES = []
+  for i in range(1, 10):
+    MODEL_CLASS_VALUES.append(f'mlp{i}x10')
+  for i in range(20, 401, 40):
+    MODEL_CLASS_VALUES.append(f'mlp2x{i}')
   # MODEL_CLASS_VALUES = ['lr', 'tree', 'forest', 'mlp2x10']
-  MODEL_CLASS_VALUES = ['mlp2x10']
+  # MODEL_CLASS_VALUES = ['mlp2x10']
   NORM_VALUES = ['one_norm']
-  APPROACHES_VALUES = ['MACE_MIP_OBJ_eps_1e-3', 'dice']
+  APPROACHES_VALUES = ['MACE_MIP_OBJ_eps_1e-3', 'MACE_MIP_EXP_eps_1e-3', 'MACE_MIP_SAT_eps_1e-3', 'MACE_SAT_eps_1e-3', 'dice']
 
   # all_counter = 72 + 18 + 6 # (without the unneccessary FT folders for LR and MLP)
   # assert len(all_child_folders) == all_counter, 'missing, or too many experiment folders'
@@ -984,18 +989,18 @@ def plotScalibility():
 
   DATASET_VALUES = ['compass', 'credit', 'adult']
   MODEL_CLASS_VALUES = []
-  for i in range(1, 21):
+  for i in range(1, 10):
     MODEL_CLASS_VALUES.append(f'mlp{i}x10')
-  # for i in range(20, 401, 20):
+  # for i in range(20, 401, 40):
   #   MODEL_CLASS_VALUES.append(f'mlp2x{i}')
   NORM_VALUES = ['one_norm']
-  APPROACHES_VALUES = ['MACE_MIP_OBJ_eps_1e-3', 'MACE_MIP_EXP_eps_1e-3', 'MACE_MIP_SAT_eps_1e-3', 'MACE_SAT_eps_1e-3']
+  APPROACHES_VALUES = ['MACE_MIP_OBJ_eps_1e-3', 'MACE_MIP_EXP_eps_1e-3', 'MACE_MIP_SAT_eps_1e-3', 'MACE_SAT_eps_1e-3', 'dice']
 
   # tmp_constrained = 'constrained'
   tmp_constrained = 'unconstrained'
   # Remove FeatureTweaking / ActionableRecourse distances that were unsuccessful or non-plausible
 
-  df_all_distances = pickle.load(open(f'_results/df_all_distances_scalibility', 'rb'))
+  df_all_distances = pickle.load(open(f'_results/df_all_distances_scalibility_with_normalization', 'rb'))
 
   # Remove FeatureTweaking / ActionableRecourse distances that were unsuccessful or non-plausible
   df_all_distances = df_all_distances.where(
@@ -1069,9 +1074,25 @@ def plotScalibility():
     'dice': 'DiCE',
   })
 
+  markers = {
+    'MIP_EXP ($\epsilon = 10^{-3}$)': 'D',
+    'MIP_OBJ ($\epsilon = 10^{-3}$)': 'v',
+    'SAT ($\epsilon = 10^{-3}$)': 'h',
+    'MIP_SAT ($\epsilon = 10^{-3}$)': 'o',
+    'DiCE': 's'
+  }
+
+  colors = {
+    'MIP_EXP ($\epsilon = 10^{-3}$)': u'#1f77b4',
+    'MIP_OBJ ($\epsilon = 10^{-3}$)': u'#ff7f0e',
+    'SAT ($\epsilon = 10^{-3}$)': u'#2ca02c',
+    'MIP_SAT ($\epsilon = 10^{-3}$)': u'#d62728',
+    'DiCE': u'#9467bd'
+  }
+
   print(f'Plotting merged files.')
 
-  fig, axs = plt.subplots(1, len(DATASET_VALUES), figsize=(16, 6))
+  fig, axs = plt.subplots(1, len(DATASET_VALUES), figsize=(16, 3))
 
   for i, dataset_string in enumerate(df_all_distances['dataset'].unique()):
 
@@ -1088,13 +1109,15 @@ def plotScalibility():
         std_runtimes.append(
           approach_specific_df.where(approach_specific_df['model'] == mlp_type).dropna()['counterfactual time'].std())
         labels.append(mlp_type.split('x')[0].replace('mlp', ''))
+        # labels.append(mlp_type.split('x')[-1])
         # labels.append(n_samples[mlp_type][0][dataset_string])
 
       est = np.array(mean_runtimes)
       sd = np.array(std_runtimes)
       ax = axs[i]
       ax.scatter(np.arange(len(mean_runtimes)), mean_runtimes)
-      ax.plot(np.arange(len(mean_runtimes)), mean_runtimes, label=approach_string)
+      ax.plot(np.arange(len(mean_runtimes)), mean_runtimes, label=approach_string, color=colors[approach_string],
+              marker=markers[approach_string], markersize=8)
       # ax.fill_between(np.arange(len(mean_runtimes)), est-sd, est+sd, alpha=0.2)
       ax.set_xticks(np.arange(len(mean_runtimes)))
       ax.set_xticklabels(labels, rotation=65)
@@ -1104,8 +1127,9 @@ def plotScalibility():
     axs[i].grid()
     axs[i].set_yscale("log")
     axs[0].set_ylabel("Runtime in seconds")
-    axs[0].legend()
 
+  handles, labels = axs[0].get_legend_handles_labels()
+  fig.legend(handles, labels, loc='upper right')
   # plt.show()
   fig.tight_layout()
   plt.savefig(f'_results/scalibility.png', bboc_inches='tight', pad_inches=0, dpi=400)
@@ -1474,8 +1498,8 @@ if __name__ == '__main__':
   # analyzeAverageDistanceRunTimeCoverage()
 
   # plotDistancesMainBody()
-  plotAllDistancesAppendix()
-  # plotScalibility()
+  # plotAllDistancesAppendix()
+  plotScalibility()
   # plotDiversity()
   # plotAvgDistanceRunTimeCoverageTradeoffAgainstIterations()
 
