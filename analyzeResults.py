@@ -59,8 +59,8 @@ def gatherAndSaveDistances():
   MODEL_CLASS_VALUES = []
   for i in range(1, 10):
     MODEL_CLASS_VALUES.append(f'mlp{i}x10')
-  for i in range(20, 401, 40):
-    MODEL_CLASS_VALUES.append(f'mlp2x{i}')
+  for i in range(20, 401, 20):
+    MODEL_CLASS_VALUES.append(f'mlp1x{i}')
   # MODEL_CLASS_VALUES = ['lr', 'tree', 'forest', 'mlp2x10']
   # MODEL_CLASS_VALUES = ['mlp2x10']
   NORM_VALUES = ['one_norm']
@@ -275,38 +275,14 @@ def gatherAndSaveDiversities():
   DATASET_VALUES = ['compass']
   MODEL_CLASS_VALUES = ['mlp2x10']
   NORM_VALUES = ['one_norm']
-  APPROACHES_VALUES = ['MACE_MIP_OBJ_DIVERSE_eps_1e-3_delta_1e-2', 'MACE_MIP_OBJ_DIVERSE_eps_1e-3_delta_3e-2',
-                       'MACE_MIP_OBJ_DIVERSE_eps_1e-3_delta_5e-2', 'MACE_MIP_OBJ_DIVERSE_eps_1e-3_delta_1e-1',
-                       'MACE_MIP_OBJ_DIVERSE_eps_1e-3_delta_2e-1', 'dice']
+  APPROACHES_VALUES = ['dice_0.1_3.0']
   K_CFES = ['2', '3', '4', '5', '6', '7', '8', '9', '10'] # Number of diverse CFs
 
   # all_counter = 72 + 18 + 6 # (without the unneccessary FT folders for LR and MLP)
   # assert len(all_child_folders) == all_counter, 'missing, or too many experiment folders'
   all_counter = len(DATASET_VALUES) * len(MODEL_CLASS_VALUES) * len(NORM_VALUES) * len(APPROACHES_VALUES) * len(K_CFES)
 
-  df_all_distances = pd.DataFrame({ \
-    'dataset': [], \
-    'model': [], \
-    'norm': [], \
-    'approach': [], \
-    # 'approach_param': [], \
-    'factual sample index': [], \
-    'counterfactual found': [], \
-    'counterfactual plausible': [], \
-    'counterfactual distance': [], \
-    'counterfactual time': [], \
-    'all counterfactual distances': [], \
-    'all counterfactual times': [], \
-    'mean diversity': [], \
-    'mean proximity': [], \
-    'num of cfs': [], \
-    'changed age': [], \
-    'changed gender': [], \
-    'changed race': [], \
-    'age constant': [], \
-    'age increased': [], \
-    'age decreased': [], \
-  })
+  df_all_distances = pickle.load(open(f'_results/df_all_diversities', 'rb'))
 
   print('Loading and merging all distance files.')
 
@@ -987,18 +963,17 @@ def plotAllDistancesAppendix():
 
 def plotScalibility():
 
-  DATASET_VALUES = ['compass', 'credit', 'adult']
+  DATASET_VALUES = ['compass']
   MODEL_CLASS_VALUES = []
-  for i in range(1, 10):
-    MODEL_CLASS_VALUES.append(f'mlp{i}x10')
-  # for i in range(20, 401, 40):
-  #   MODEL_CLASS_VALUES.append(f'mlp2x{i}')
+  # for i in range(1, 10):
+  #   MODEL_CLASS_VALUES.append(f'mlp{i}x10')
+  for i in range(20, 380, 40):
+    MODEL_CLASS_VALUES.append(f'mlp1x{i}')
   NORM_VALUES = ['one_norm']
   APPROACHES_VALUES = ['MACE_MIP_OBJ_eps_1e-3', 'MACE_MIP_EXP_eps_1e-3', 'MACE_MIP_SAT_eps_1e-3', 'MACE_SAT_eps_1e-3', 'dice']
 
   # tmp_constrained = 'constrained'
   tmp_constrained = 'unconstrained'
-  # Remove FeatureTweaking / ActionableRecourse distances that were unsuccessful or non-plausible
 
   df_all_distances = pickle.load(open(f'_results/df_all_distances_scalibility_with_normalization', 'rb'))
 
@@ -1007,6 +982,8 @@ def plotScalibility():
     (df_all_distances['counterfactual found'] == True) &
     (df_all_distances['counterfactual plausible'] == True)
   ).dropna()
+
+  init_df_all_distances = df_all_distances
 
   # get the intersection of all approaches... (as some do not have perfect coverage)
   filtered_df_all_distance = None
@@ -1021,6 +998,13 @@ def plotScalibility():
           (df_all_distances['norm'] == norm) &
           (df_all_distances['dataset'] == dataset)
         ).dropna()
+
+        # Remove approaches that haven't produced CFEs for more than 6 samples
+        for approach in specific_df['approach'].unique():
+          if len(specific_df.where(specific_df['approach'] == approach).dropna()) <= 15:
+            print(approach)
+            print("---------------------------------------------------")
+            specific_df = specific_df.where(specific_df['approach'] != approach).dropna()
 
         n_approaches = len(specific_df['approach'].unique())
         fac_sample_occurances = specific_df['factual sample index'].value_counts()
@@ -1053,46 +1037,115 @@ def plotScalibility():
   # df_all_distances = df_all_distances.where(df_all_distances['norm'] != 'zero_norm').dropna()
   df_all_distances = filtered_df_all_distance
 
-  df_all_distances['norm'] = df_all_distances['norm'].map({
+  # Uncomment only for distance plots
+  # model_mapper = {}
+  # for i in range(1, 10):
+  #   model_mapper[f'mlp{i}x10'] = rf'{i}$\times$10'
+  # for i in range(20, 401, 20):
+  #   model_mapper[f'mlp1x{i}'] = rf'1$\times${i}'
+  # df_all_distances['model'] = df_all_distances['model'].map(model_mapper)
+
+  mapper = {
     'zero_norm': r'$\ell_0$',
     'one_norm': r'$\ell_1$',
     'two_norm': r'$\ell_2$',
     'infty_norm': r'$\ell_\infty$',
-  })
+  }
+  df_all_distances['norm'] = df_all_distances['norm'].map(mapper)
+  init_df_all_distances['norm'] = init_df_all_distances['norm'].map(mapper)
 
-  df_all_distances['dataset'] = df_all_distances['dataset'].map({
+  mapper = {
     'adult': 'Adult',
     'credit': 'Credit',
     'compass': 'COMPAS',
-  })
+  }
+  df_all_distances['dataset'] = df_all_distances['dataset'].map(mapper)
+  init_df_all_distances['dataset'] = init_df_all_distances['dataset'].map(mapper)
 
-  df_all_distances['approach'] = df_all_distances['approach'].map({
-    'MACE_MIP_EXP_eps_1e-3': r'MIP_EXP ($\epsilon = 10^{-3}$)',
-    'MACE_MIP_OBJ_eps_1e-3': r'MIP_OBJ ($\epsilon = 10^{-3}$)',
+  mapper = {
+    'MACE_MIP_EXP_eps_1e-3': r'MIP\_EXP ($\epsilon = 10^{-3}$)',
+    'MACE_MIP_OBJ_eps_1e-3': r'MIP\_OBJ ($\epsilon = 10^{-3}$)',
     'MACE_SAT_eps_1e-3': r'SAT ($\epsilon = 10^{-3}$)',
-    'MACE_MIP_SAT_eps_1e-3': r'MIP_SAT ($\epsilon = 10^{-3}$)',
+    'MACE_MIP_SAT_eps_1e-3': r'MIP\_SAT ($\epsilon = 10^{-3}$)',
     'dice': 'DiCE',
-  })
+  }
+  df_all_distances['approach'] = df_all_distances['approach'].map(mapper)
+  init_df_all_distances['approach'] = init_df_all_distances['approach'].map(mapper)
 
   markers = {
-    'MIP_EXP ($\epsilon = 10^{-3}$)': 'D',
-    'MIP_OBJ ($\epsilon = 10^{-3}$)': 'v',
+    'MIP\_EXP ($\epsilon = 10^{-3}$)': 'D',
+    'MIP\_OBJ ($\epsilon = 10^{-3}$)': 'v',
     'SAT ($\epsilon = 10^{-3}$)': 'h',
-    'MIP_SAT ($\epsilon = 10^{-3}$)': 'o',
+    'MIP\_SAT ($\epsilon = 10^{-3}$)': 'o',
     'DiCE': 's'
   }
 
   colors = {
-    'MIP_EXP ($\epsilon = 10^{-3}$)': u'#1f77b4',
-    'MIP_OBJ ($\epsilon = 10^{-3}$)': u'#ff7f0e',
-    'SAT ($\epsilon = 10^{-3}$)': u'#2ca02c',
-    'MIP_SAT ($\epsilon = 10^{-3}$)': u'#d62728',
+    'MIP\_EXP ($\epsilon = 10^{-3}$)': u'#d62728',
+    'MIP\_OBJ ($\epsilon = 10^{-3}$)': u'#2ca02c',
+    'SAT ($\epsilon = 10^{-3}$)': u'#1f77b4',
+    'MIP\_SAT ($\epsilon = 10^{-3}$)': u'#ff7f0e',
     'DiCE': u'#9467bd'
   }
 
   print(f'Plotting merged files.')
 
-  fig, axs = plt.subplots(1, len(DATASET_VALUES), figsize=(16, 3))
+  # for i, dataset_string in enumerate(df_all_distances['dataset'].unique()):
+  #
+  #   dataset_specific_df = df_all_distances.where(df_all_distances['dataset'] == dataset_string).dropna()
+  #
+  #   hue_order = [r'SAT ($\epsilon = 10^{-3}$)', r'MIP\_SAT ($\epsilon = 10^{-3}$)',
+  #                r'MIP\_OBJ ($\epsilon = 10^{-3}$)', r'MIP\_EXP ($\epsilon = 10^{-3}$)',
+  #                r'DiCE']
+  #
+  #   latexify(6 * 6, 6, font_scale=1.8)
+  #   sns.set_style("whitegrid")
+  #
+  #   ax = sns.catplot(
+  #     x='model',
+  #     y=f'counterfactual distance',
+  #     hue='approach',
+  #     hue_order=hue_order,
+  #     # col='dataset',
+  #     data=dataset_specific_df,
+  #     kind='box',
+  #
+  #     # kind = 'violin',
+  #     # kind = 'swarm',
+  #     height=3.,
+  #     aspect=2.,
+  #     palette=sns.color_palette("muted", 5),
+  #     sharey=False,
+  #     whis=np.inf,
+  #     legend_out=False,
+  #   )
+  #   ax.fig.get_axes()[0].legend().remove()
+  #
+  #   # # write the number of samples under dataset name
+  #   # for i in range(len(ax.fig.axes)):
+  #   #   labels = []
+  #   #   for dataset_text in ax.fig.axes[i].get_xticklabels():
+  #   #     labels.append(dataset_text._text + f'\n(n = {n_samples[model_string][i][dataset_text._text]})')
+  #   #   ax.fig.axes[i].set_xticklabels(labels)
+  #
+  #   # ax.fig.get_axes()[0].legend(loc='lower left', ncol=5, fancybox=True, shadow=True, fontsize='small', bbox_to_anchor=(0.5, -0.5))
+  #
+  #
+  #   # figlegend = plt.figure()
+  #   # figlegend.legend(ax.fig.get_axes()[0].get_legend_handles_labels(), loc='center', ncol=5, fancybox=True, shadow=True,
+  #   #                  fontsize='small', frameon=False)
+  #   # figlegend.savefig('_results/legend.png', bbox='tight', dpi=400)
+  #
+  #   ax.set(ylim=(0, None))
+  #   ax.set_axis_labels("", r"Distance")
+  #   # ax.set_titles('COMPAS')
+  #   ax.set_xlabels()  # remove "dataset" on the x-axis
+  #   ax.savefig(f'_results/all_.png', bbox='tight', dpi=400)
+
+
+  latexify(5.5, 3.5, font_scale=1.2)
+
+  fig, axs = plt.subplots(1, len(DATASET_VALUES), figsize=(5.5, 3.5))
 
   for i, dataset_string in enumerate(df_all_distances['dataset'].unique()):
 
@@ -1102,34 +1155,48 @@ def plotScalibility():
 
       approach_specific_df = dataset_specific_df.where(dataset_specific_df['approach'] == approach_string).dropna()
 
-      mean_runtimes, std_runtimes, labels = [], [], []
+      mean_runtimes, std_runtimes, labels, coverage = [], [], [], []
       for mlp_type in MODEL_CLASS_VALUES:
         mean_runtimes.append(
           approach_specific_df.where(approach_specific_df['model'] == mlp_type).dropna()['counterfactual time'].mean())
         std_runtimes.append(
           approach_specific_df.where(approach_specific_df['model'] == mlp_type).dropna()['counterfactual time'].std())
-        labels.append(mlp_type.split('x')[0].replace('mlp', ''))
+        labels.append(rf"{mlp_type.replace('mlp', '').split('x')[0]}$\times${mlp_type.replace('mlp', '').split('x')[1]}")
+        coverage.append(len(
+          init_df_all_distances.where(
+            (init_df_all_distances['dataset'] == dataset_string) &
+            (init_df_all_distances['approach'] == approach_string) &
+            (init_df_all_distances['model'] == mlp_type)
+          ).dropna()
+        ) / 50 * 100)
         # labels.append(mlp_type.split('x')[-1])
         # labels.append(n_samples[mlp_type][0][dataset_string])
 
-      est = np.array(mean_runtimes)
-      sd = np.array(std_runtimes)
-      ax = axs[i]
+      coverage = [np.mean(np.array(coverage)) for i in range(len(coverage))]
+      # print(coverage)
+      # est = np.array(mean_runtimes)
+      # sd = np.array(std_runtimes)
+      ax = axs[i] if len(DATASET_VALUES) > 1 else axs
       ax.scatter(np.arange(len(mean_runtimes)), mean_runtimes)
-      ax.plot(np.arange(len(mean_runtimes)), mean_runtimes, label=approach_string, color=colors[approach_string],
+      line_shape = '--' if 'DiCE' in approach_string else '-'
+      ax.plot(np.arange(len(mean_runtimes)), mean_runtimes, line_shape, label=approach_string, color=colors[approach_string],
               marker=markers[approach_string], markersize=8)
+      # for i in range(len(mean_runtimes)):
+      #   ax.annotate(coverage[i], (i, mean_runtimes[i]))
       # ax.fill_between(np.arange(len(mean_runtimes)), est-sd, est+sd, alpha=0.2)
       ax.set_xticks(np.arange(len(mean_runtimes)))
-      ax.set_xticklabels(labels, rotation=65)
-      ax.set_title(f'{dataset_string}')
-      ax.set_xlabel('MLP depth')
+      ax.set_xticklabels(labels, rotation=65, fontsize=14)
+      ax.tick_params(axis="y", labelsize=14)
+      ax.set_title(f'{dataset_string}', fontsize=16)
+      ax.set_xlabel('Widening', fontsize=16)
 
-    axs[i].grid()
-    axs[i].set_yscale("log")
-    axs[0].set_ylabel("Runtime in seconds")
+    ax = axs[i] if len(DATASET_VALUES) > 1 else axs
+    ax.grid()
+    ax.set_yscale("log")
+    ax.set_ylabel("Runtime (s)", fontsize=16)
 
-  handles, labels = axs[0].get_legend_handles_labels()
-  fig.legend(handles, labels, loc='upper right')
+  handles, labels = axs.get_legend_handles_labels()
+  # fig.legend(handles, labels, loc='upper right', prop={"size": 12})
   # plt.show()
   fig.tight_layout()
   plt.savefig(f'_results/scalibility.png', bboc_inches='tight', pad_inches=0, dpi=400)
@@ -1140,10 +1207,13 @@ def plotDiversity():
   DATASET_VALUES = ['compass']
   MODEL_CLASS_VALUES = ['mlp2x10']
   NORM_VALUES = ['one_norm']
-  APPROACHES_VALUES = ['MACE_MIP_OBJ_DIVERSE_eps_1e-3_delta_1e-2', 'MACE_MIP_OBJ_DIVERSE_eps_1e-3_delta_3e-2',
-                       'MACE_MIP_OBJ_DIVERSE_eps_1e-3_delta_5e-2', 'MACE_MIP_OBJ_DIVERSE_eps_1e-3_delta_1e-1', 'dice']
+  # APPROACHES_VALUES = ['MACE_MIP_OBJ_DIVERSE_eps_1e-3_delta_1e-2', 'MACE_MIP_OBJ_DIVERSE_eps_1e-3_delta_3e-2',
+  #                      'MACE_MIP_OBJ_DIVERSE_eps_1e-3_delta_5e-2', 'MACE_MIP_OBJ_DIVERSE_eps_1e-3_delta_1e-1', 'dice',
+  #                      'dice_0.5_0.5', 'dice_0.3_1.5', 'dice_0.1_2.0', 'dice_0.1_3.0']
+  APPROACHES_VALUES = ['MACE_MIP_OBJ_DIVERSE_eps_1e-3_delta_1e-2', 'MACE_MIP_OBJ_DIVERSE_eps_1e-3_delta_5e-2',
+                       'MACE_MIP_OBJ_DIVERSE_eps_1e-3_delta_2e-1', 'dice']
   K_CFES = [2, 3, 4, 5, 6, 7, 8, 9, 10]
-  KEY_TO_PLOT = 'counterfactual time'
+  KEYS_TO_PLOT = ['mean proximity', 'mean diversity', 'counterfactual time']
 
   df_all_distances = pickle.load(open(f'_results/df_all_diversities', 'rb'))
 
@@ -1210,67 +1280,90 @@ def plotDiversity():
     'compass': 'COMPAS',
   })
 
-  df_all_distances['approach'] = df_all_distances['approach'].map({
-    'MACE_MIP_OBJ_DIVERSE_eps_1e-3_delta_1e-2': r'MIP_DIVERSE ($\delta = 0.01$)',
-    'MACE_MIP_OBJ_DIVERSE_eps_1e-3_delta_3e-2': r'MIP_DIVERSE ($\delta = 0.03$)',
-    'MACE_MIP_OBJ_DIVERSE_eps_1e-3_delta_5e-2': r'MIP_DIVERSE ($\delta = 0.05$)',
-    'MACE_MIP_OBJ_DIVERSE_eps_1e-3_delta_1e-1': r'MIP_DIVERSE ($\delta = 0.1$)',
-    'MACE_MIP_OBJ_DIVERSE_eps_1e-3_delta_2e-1': r'MIP_DIVERSE ($\delta = 0.2$)',
-    'dice': 'DiCE',
-  })
+  approach_mapper = {
+    'MACE_MIP_OBJ_DIVERSE_eps_1e-3_delta_1e-2': r'MIP\_DIVERSE ($\delta = 0.01$)',
+    'MACE_MIP_OBJ_DIVERSE_eps_1e-3_delta_3e-2': r'MIP\_DIVERSE ($\delta = 0.03$)',
+    'MACE_MIP_OBJ_DIVERSE_eps_1e-3_delta_5e-2': r'MIP\_DIVERSE ($\delta = 0.05$)',
+    'MACE_MIP_OBJ_DIVERSE_eps_1e-3_delta_1e-1': r'MIP\_DIVERSE ($\delta = 0.1$)',
+    'MACE_MIP_OBJ_DIVERSE_eps_1e-3_delta_2e-1': r'MIP\_DIVERSE ($\delta = 0.2$)',
+    'dice': r'DiCE',
+    'dice_0.5_0.5': r'DiCE (0.5, 0.5)',
+    'dice_0.3_1.5': r'DiCE (0.3, 1.5)',
+    'dice_0.1_2.0': r'DiCE (0.1, 2.0)',
+    'dice_0.1_3.0': r'DiCE (0.1, 3.0)'
+  }
+  df_all_distances['approach'] = df_all_distances['approach'].map(approach_mapper)
 
   markers = {
-    'MIP_DIVERSE ($\delta = 0.01$)': 'D',
-    'MIP_DIVERSE ($\delta = 0.03$)': 'v',
-    'MIP_DIVERSE ($\delta = 0.05$)': 'h',
-    'MIP_DIVERSE ($\delta = 0.1$)': 'o',
-    'MIP_DIVERSE ($\delta = 0.2$)': 'd',
-    'DiCE': 's'
+    r'MIP\_DIVERSE ($\delta = 0.01$)': 'D',
+    r'MIP\_DIVERSE ($\delta = 0.03$)': 'v',
+    r'MIP\_DIVERSE ($\delta = 0.05$)': 'h',
+    r'MIP\_DIVERSE ($\delta = 0.1$)': 'o',
+    r'MIP\_DIVERSE ($\delta = 0.2$)': 'd',
+    r'DiCE': 's',
+    r'DiCE (0.5, 0.5)': 'p',
+    r'DiCE (0.3, 1.5)': 'P',
+    r'DiCE (0.1, 2.0)': '*',
+    r'DiCE (0.1, 3.0)': 'X'
   }
 
   print(f'Plotting merged files.')
 
-  fig, axs = plt.subplots(1, len(DATASET_VALUES), figsize=(6, 6))
+  latexify(18, 6.5, font_scale=1.5)
 
-  for model in MODEL_CLASS_VALUES:
-    for norm in df_all_distances['norm'].unique():
-      for i, dataset_string in enumerate(df_all_distances['dataset'].unique()):
-        ax = axs[i] if len(DATASET_VALUES) > 1 else axs
-        for approach_string in sorted(df_all_distances['approach'].unique()):
+  fig, axs = plt.subplots(1, len(KEYS_TO_PLOT), figsize=(18, 6.5))
 
-          specific_df = df_all_distances.where(
-            (df_all_distances['model'] == model) &
-            (df_all_distances['norm'] == norm) &
-            (df_all_distances['dataset'] == dataset_string) &
-            (df_all_distances['approach'] == approach_string)
-          ).dropna()
+  for i, KEY_TO_PLOT in enumerate(KEYS_TO_PLOT):
+    for model in MODEL_CLASS_VALUES:
+      for norm in df_all_distances['norm'].unique():
+        for dataset_string in df_all_distances['dataset'].unique(): # Warning: only 1 dataset is allowed!
+          ax = axs[i] if len(KEYS_TO_PLOT) > 1 else axs
+          for approach_string_nonmapped in APPROACHES_VALUES:
 
-          feature_to_plot, labels = [], []
-          for k_cfe in K_CFES:
-            feature_to_plot.append(specific_df.where(specific_df['num of cfs'] == k_cfe).dropna()[KEY_TO_PLOT].mean())
-            labels.append(f'{k_cfe} CFEs')
+            approach_string = approach_mapper[approach_string_nonmapped]
+            specific_df = df_all_distances.where(
+              (df_all_distances['model'] == model) &
+              (df_all_distances['norm'] == norm) &
+              (df_all_distances['dataset'] == dataset_string) &
+              (df_all_distances['approach'] == approach_string)
+            ).dropna()
 
-          ax.scatter(np.arange(len(feature_to_plot)), feature_to_plot)
-          ax.plot(np.arange(len(feature_to_plot)), feature_to_plot, label=approach_string, marker=markers[approach_string], markersize=8)
-          ax.set_xticks(np.arange(len(feature_to_plot)))
-          ax.set_xticklabels(labels, rotation=45, fontsize=12)
+            feature_to_plot, labels = [], []
+            for k_cfe in K_CFES:
+              feature_to_plot.append(specific_df.where(specific_df['num of cfs'] == k_cfe).dropna()[KEY_TO_PLOT].mean())
+              labels.append(f'{k_cfe} CFEs')
+
+            ax.scatter(np.arange(len(feature_to_plot)), feature_to_plot)
+            if 'DiCE' in approach_string:
+              ax.plot(np.arange(len(feature_to_plot)), feature_to_plot, dashes=(5, 5), label=approach_string,
+                      marker=markers[approach_string], markersize=8)
+            else:
+              ax.plot(np.arange(len(feature_to_plot)), feature_to_plot, label=approach_string,
+                      marker=markers[approach_string], markersize=8)
+            ax.set_xticks(np.arange(len(feature_to_plot)))
+            ax.set_xticklabels(labels, rotation=45, fontsize=20)
+            ax.tick_params(axis="y", labelsize=20)
+
+            if 'time' in KEY_TO_PLOT:
+              ax.set_xlabel('Time (s)', fontsize=30)
+            else:
+              ax.set_xlabel(f'{KEY_TO_PLOT.title()}', fontsize=30)
+            # if 'diversity' in KEY_TO_PLOT:
+            #   ax.legend(prop={"size": 18}, fancybox=True, ncol=4, shadow=True, loc='lower center')
+            # ax.set_xlabel('')
+
+          ax.grid()
           if 'time' in KEY_TO_PLOT:
-            ax.set_title('Time (s)', fontsize=16)
-          else:
-            ax.set_title(f'{KEY_TO_PLOT.title()}', fontsize=16)
-          if 'proximity' in KEY_TO_PLOT:
-            ax.legend()
-          # ax.set_xlabel('')
+            ax.set_yscale("log")
+          # ax.set_ylabel(KEY_TO_PLOT)
 
-        ax.grid()
-        if 'time' in KEY_TO_PLOT:
-          ax.set_yscale("log")
-        # ax.set_ylabel(KEY_TO_PLOT)
-
-
+  handles, labels = axs[0].get_legend_handles_labels()
+  lgd = fig.legend(handles, labels, prop={"size": 20}, fancybox=True, ncol=4, shadow=True, loc='upper center',
+                   bbox_to_anchor=(0.5, 1.1))
   # plt.show()
   fig.tight_layout()
-  plt.savefig(f'_results/diversity_{KEY_TO_PLOT}.png', bboc_inches='tight', pad_inches=0, dpi=400)
+  # fig.subplots_adjust(top=0.2)
+  plt.savefig(f'_results/diversity.png', bbox_inches='tight', dpi=400)
 
 
 def plotAvgDistanceRunTimeCoverageTradeoffAgainstIterations():
