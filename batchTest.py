@@ -167,6 +167,8 @@ def runExperiments(dataset_values, model_class_values, norm_values, approaches_v
 
           # save some files
           dataset_obj = loadData.loadDataset(dataset_string, return_one_hot = one_hot, load_from_cache = False, debug_flag = False)
+          if dataset_obj.n_classes > 2 and model_class_string == 'lr':
+            raise Exception(f'{model_class_string} cannot be used for non-binary ground truth. {dataset_string} dataset has {dataset_obj.n_classes} classes.')
           pickle.dump(dataset_obj, open(f'{experiment_folder_name}/_dataset_obj', 'wb'))
           #     training portion used to train models
           #     testing portion used to compute counterfactuals
@@ -221,7 +223,7 @@ def runExperiments(dataset_values, model_class_values, norm_values, approaches_v
           all_minimum_distances = {}
           for factual_sample_index, factual_sample in iterate_over_data_dict.items():
 
-            factual_sample['y'] = bool(factual_sample['y'])
+            factual_sample['y'] = int(factual_sample['y'])
 
             print(
               '\t\t\t\t'
