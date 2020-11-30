@@ -43,12 +43,19 @@ def getModelFormula(model_symbols, model_trained):
     model_trained,
     model_symbols)
 
-
+'''
 def getCounterfactualFormula(model_symbols, factual_sample):
   return EqualsOrIff(
     model_symbols['output']['y']['symbol'],
     Not(factual_sample['y'])
   ) # meaning we want the decision to be flipped.
+'''
+
+def getCounterfactualFormula(model_symbols, factual_sample):
+  return NotEquals(
+    model_symbols['output']['y']['symbol'],
+    factual_sample['y']
+  ) # meaning we want the decision to be different.
 
 
 def getDistanceFormula(model_symbols, dataset_obj, factual_sample, norm_type, approach_string, norm_threshold):
@@ -528,7 +535,8 @@ def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, f
     #            the label is underfined which causes inconsistency errors
     #            between pysmt and sklearn. We skip the assert at such points.
     class_predict_proba = model_trained.predict_proba([vectorized_sample])[0]
-    if np.abs(class_predict_proba[0] - class_predict_proba[1]) < 1e-10:
+    sorted_proba = np.sort(class_predict_proba)[::-1]
+    if np.abs(sorted_proba[0] - sorted_proba[1]) < 1e-10:
       return
 
     assert sklearn_prediction == pysmt_prediction, 'Pysmt prediction does not match sklearn prediction.'
@@ -587,6 +595,9 @@ def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, f
       iteration_end_time = time.time()
 
       if solved: # joint formula is satisfiable
+        totalp0 = 0
+        totalp1 = 0
+        totalp2 = 0
         model = solver.get_model()
         print('solution exists & found.', file = log_file)
         counterfactual_pysmt_sample = {}
@@ -607,7 +618,7 @@ def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, f
             interventional_pysmt_sample[tmp] = symbol_value
 
         # Convert back from pysmt_sample to dict_sample to compute distance and save
-        counterfactual_sample  = getDictSampleFromPySMTSample(
+        counterfactual_sample = getDictSampleFromPySMTSample(
           counterfactual_pysmt_sample,
           dataset_obj)
         interventional_sample  = getDictSampleFromPySMTSample(
@@ -711,7 +722,7 @@ def getPySMTSampleFromDictSample(dict_sample, dataset_obj):
   for attr_name_kurz in dataset_obj.getInputOutputAttributeNames('kurz'):
     attr_obj = dataset_obj.attributes_kurz[attr_name_kurz]
     if attr_name_kurz not in dataset_obj.getInputAttributeNames('kurz'):
-      pysmt_sample[attr_name_kurz] = Bool(dict_sample[attr_name_kurz])
+      pysmt_sample[attr_name_kurz] = Int(dict_sample[attr_name_kurz])
     elif attr_obj.attr_type == 'numeric-real':
       pysmt_sample[attr_name_kurz] = Real(float(dict_sample[attr_name_kurz]))
     else: # refer to loadData.VALID_ATTRIBUTE_TYPES
@@ -725,9 +736,9 @@ def getDictSampleFromPySMTSample(pysmt_sample, dataset_obj):
     attr_obj = dataset_obj.attributes_kurz[attr_name_kurz]
     try:
       if attr_name_kurz not in dataset_obj.getInputAttributeNames('kurz'):
-        dict_sample[attr_name_kurz] = bool(str(pysmt_sample[attr_name_kurz]) == 'True')
+        dict_sample[attr_name_kurz] = int(str(pysmt_sample[attr_name_kurz]))
       elif attr_obj.attr_type == 'numeric-real':
-        dict_sample[attr_name_kurz] = float(eval(str(pysmt_sample[attr_name_kurz])))
+        dict_sample[attr_name_kurz] = round(float(eval(str(pysmt_sample[attr_name_kurz]))), 4)
       else: # refer to loadData.VALID_ATTRIBUTE_TYPES
         dict_sample[attr_name_kurz] = int(str(pysmt_sample[attr_name_kurz]))
     except:
@@ -761,7 +772,7 @@ def genExp(
   model_symbols = {
     'counterfactual': {},
     'interventional': {},
-    'output': {'y': {'symbol': Symbol('y', BOOL)}}
+    'output': {'y': {'symbol': Symbol('y', INT)}}
   }
 
   # Populate model_symbols['counterfactual'/'interventional'] using the
@@ -797,7 +808,7 @@ def genExp(
       }
   print('\n\n==============================================\n\n', file = log_file)
   print('Model Symbols:', file = log_file)
-  pprint(model_symbols, log_file)
+  print(model_symbols, log_file)
 
   # factual_sample['y'] = False
 

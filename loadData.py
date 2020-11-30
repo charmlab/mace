@@ -53,6 +53,11 @@ try:
 except:
   print('[ENV WARNING] process_test_data not available')
 
+try:
+  from _data_main.process_iris_data import *
+except:
+  print('[ENV WARNING] process_iris_data not available')
+
 VALID_ATTRIBUTE_DATA_TYPES = { \
   'numeric-int', \
   'numeric-real', \
@@ -101,6 +106,8 @@ class Dataset(object):
     data_frame_kurz.columns = self.getAllAttributeNames('kurz')
     self.data_frame_kurz = data_frame_kurz # i.e., data_frame is indexed by attr_name_kurz
     self.attributes_kurz = attributes_kurz # i.e., attributes is indexed by attr_name_kurz
+
+    self.n_classes = max([data_frame_kurz[attr].nunique() for attr in self.getOutputAttributeNames()])
 
     # assert that data_frame and attributes match on variable names (long)
     assert len(np.setdiff1d(
@@ -407,17 +414,20 @@ class Dataset(object):
     output_col = self.getOutputAttributeNames()[0]
 
     # assert only two classes in label (maybe relax later??)
-    assert np.array_equal(
-      np.unique(balanced_data_frame[output_col]),
-      np.array([0, 1]) # only allowing {0, 1} labels
-    )
+    #assert np.array_equal(
+    #  np.unique(balanced_data_frame[output_col]),
+    #  np.array([0, 1]) # only allowing {0, 1} labels
+    #)
 
-    # get balanced dataframe (take minimum of the count, then round down to nearest 250)
+    # get balanced dataframe (take minimum of the count)
     unique_values_and_count = balanced_data_frame[output_col].value_counts()
-    number_of_subsamples_in_each_class = unique_values_and_count.min() // 250 * 250
+    number_of_subsamples_in_each_class = int(unique_values_and_count.min())
+    n_classes = balanced_data_frame[output_col].nunique()
     balanced_data_frame = pd.concat([
-        balanced_data_frame[balanced_data_frame.loc[:,output_col] == 0].sample(number_of_subsamples_in_each_class, random_state = RANDOM_SEED),
-        balanced_data_frame[balanced_data_frame.loc[:,output_col] == 1].sample(number_of_subsamples_in_each_class, random_state = RANDOM_SEED),
+        balanced_data_frame[balanced_data_frame.loc[:, output_col] == i].sample(number_of_subsamples_in_each_class, random_state=RANDOM_SEED)
+        for i in range(n_classes)
+        #balanced_data_frame[balanced_data_frame.loc[:,output_col] == 0].sample(number_of_subsamples_in_each_class, random_state = RANDOM_SEED),
+        #balanced_data_frame[balanced_data_frame.loc[:,output_col] == 1].sample(number_of_subsamples_in_each_class, random_state = RANDOM_SEED),
     ]).sample(frac = 1, random_state = RANDOM_SEED)
     # balanced_data_frame = pd.concat([
     #     balanced_data_frame[balanced_data_frame.loc[:,output_col] == 0],
@@ -501,7 +511,7 @@ class Dataset(object):
         all_data,
         all_true_labels,
         train_size=.7,
-        random_state = RANDOM_SEED)
+        random_state = None)   # For predictable, set RANDOM_SEED
 
       # TODO (2020.05.18): this should be updated so as NOT to update meta variables
       if preprocessing == 'standardize':
@@ -1110,6 +1120,58 @@ def loadDataset(dataset_name, return_one_hot, load_from_cache = False, debug_fla
         parent_name_kurz = -1,
         lower_bound = data_frame_non_hot[col_name].min(),
         upper_bound = data_frame_non_hot[col_name].max())
+
+  elif dataset_name == 'iris':
+
+    data_frame_non_hot = load_iris_data()
+    data_frame_non_hot = data_frame_non_hot.reset_index(drop=True)
+    attributes_non_hot = {}
+
+    input_cols, output_col = getInputOutputColumns(data_frame_non_hot)
+
+    col_name = output_col
+    attributes_non_hot[col_name] = DatasetAttribute(
+      attr_name_long=col_name,
+      attr_name_kurz='y',
+      attr_type='numeric-int',
+      node_type='output',
+      actionability='none',
+      mutability=False,
+      parent_name_long=-1,
+      parent_name_kurz=-1,
+      lower_bound=data_frame_non_hot[col_name].min(),
+      upper_bound=data_frame_non_hot[col_name].max())
+
+    for col_idx, col_name in enumerate(input_cols):
+
+      if col_name == 'septal_length':
+        attr_type = 'numeric-real'
+        actionability = 'any'
+        mutability = True
+      elif col_name == 'septal_width':
+        attr_type = 'numeric-real'
+        actionability = 'any'
+        mutability = True
+      elif col_name == 'petal_length':  # ~ RACE
+        attr_type = 'numeric-real'
+        actionability = 'any'
+        mutability = True
+      elif col_name == 'petal_width':
+        attr_type = 'numeric-real'
+        actionability = 'any'
+        mutability = True
+
+      attributes_non_hot[col_name] = DatasetAttribute(
+        attr_name_long=col_name,
+        attr_name_kurz=f'x{col_idx}',
+        attr_type=attr_type,
+        node_type='input',
+        actionability=actionability,
+        mutability=mutability,
+        parent_name_long=-1,
+        parent_name_kurz=-1,
+        lower_bound=data_frame_non_hot[col_name].min(),
+        upper_bound=data_frame_non_hot[col_name].max())
 
   else:
 
