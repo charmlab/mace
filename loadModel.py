@@ -13,10 +13,10 @@ from matplotlib import pyplot as plt
 import utils
 import loadData
 
-from sklearn.metrics import accuracy_score
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.neural_network import MLPClassifier
-from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score, mean_absolute_error
+from sklearn.tree import DecisionTreeClassifier, DecisionTreeRegressor
+from sklearn.neural_network import MLPClassifier, MLPRegressor
+from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 from sklearn.linear_model import LogisticRegression
 
 from debug import ipsh
@@ -43,7 +43,7 @@ def loadModelForDataset(model_class, dataset_string, scm_class = None, experimen
   if not (model_class in {'lr', 'mlp', 'tree', 'forest'}):
     raise Exception(f'{model_class} not supported.')
 
-  if not (dataset_string in {'synthetic', 'mortgage', 'twomoon', 'german', 'credit', 'compass', 'adult', 'test', 'iris'}):
+  if not (dataset_string in {'synthetic', 'mortgage', 'twomoon', 'german', 'credit', 'compass', 'adult', 'test', 'iris', 'housing', 'wine'}):
     raise Exception(f'{dataset_string} not supported.')
 
   if model_class in {'tree', 'forest'}:
@@ -54,20 +54,30 @@ def loadModelForDataset(model_class, dataset_string, scm_class = None, experimen
   X_train, X_test, y_train, y_test = dataset_obj.getTrainTestSplit()
   X_all = pd.concat([X_train, X_test], axis = 0)
   y_all = pd.concat([y_train, y_test], axis = 0)
-  assert y_all.value_counts().nunique() == 1 # Expected class balance should be equal.
+  if dataset_obj.problem_type == 'classification':
+    assert y_all.value_counts().nunique() == 1 # Expected class balance should be equal.
   feature_names = dataset_obj.getInputAttributeNames('kurz') # easier to read (nothing to do with one-hot vs non-hit!)
 
+  # Define model type
   if model_class == 'tree':
-    model_pretrain = DecisionTreeClassifier()
+    if dataset_obj.problem_type == 'classification':
+      model_pretrain = DecisionTreeClassifier()
+    elif dataset_obj.problem_type == 'regression':
+      model_pretrain = DecisionTreeRegressor()
   elif model_class == 'forest':
-    model_pretrain = RandomForestClassifier()
+    if dataset_obj.problem_type == 'classification':
+      model_pretrain = RandomForestClassifier()
+    elif dataset_obj.problem_type == 'regression':
+      model_pretrain = RandomForestRegressor()
   elif model_class == 'lr':
     # IMPORTANT: The default solver changed from ‘liblinear’ to ‘lbfgs’ in 0.22;
     #            therefore, results may differ slightly from paper.
     model_pretrain = LogisticRegression() # default penalty='l2', i.e., ridge
   elif model_class == 'mlp':
-    #model_pretrain = MLPClassifier(hidden_layer_sizes = (10, 10))
-    model_pretrain = MLPClassifier(hidden_layer_sizes=(8, 4))
+    if dataset_obj.problem_type == 'classification':
+      model_pretrain = MLPClassifier(hidden_layer_sizes=(8, 4))
+    elif dataset_obj.problem_type == 'regression':
+      model_pretrain = MLPRegressor(hidden_layer_sizes=(3, 2))
 
   tmp_text = f'[INFO] Training `{model_class}` on {X_train.shape[0]:,} samples ' + \
     f'(%{100 * X_train.shape[0] / (X_train.shape[0] + X_test.shape[0]):.2f} ' + \
@@ -75,10 +85,16 @@ def loadModelForDataset(model_class, dataset_string, scm_class = None, experimen
   print(tmp_text)
   print(tmp_text, file=log_file)
   model_trained = model_pretrain.fit(X_train, y_train)
-  print(f'\tTraining accuracy: %{accuracy_score(y_train, model_trained.predict(X_train)) * 100:.2f}', file=log_file)
-  print(f'\tTesting accuracy: %{accuracy_score(y_test, model_trained.predict(X_test)) * 100:.2f}', file=log_file)
-  print(f'\tTraining accuracy: %{accuracy_score(y_train, model_trained.predict(X_train)) * 100:.2f}')
-  print(f'\tTesting accuracy: %{accuracy_score(y_test, model_trained.predict(X_test)) * 100:.2f}')
+  if dataset_obj.problem_type == 'classification':
+    print(f'\tTraining accuracy: %{accuracy_score(y_train, model_trained.predict(X_train)) * 100:.2f}', file=log_file)
+    print(f'\tTesting accuracy: %{accuracy_score(y_test, model_trained.predict(X_test)) * 100:.2f}', file=log_file)
+    print(f'\tTraining accuracy: %{accuracy_score(y_train, model_trained.predict(X_train)) * 100:.2f}')
+    print(f'\tTesting accuracy: %{accuracy_score(y_test, model_trained.predict(X_test)) * 100:.2f}')
+  else:
+    print(f'\tTraining MAE: %{mean_absolute_error(y_train, model_trained.predict(X_train)) * 100:.2f}', file=log_file)
+    print(f'\tTesting MAE: %{mean_absolute_error(y_test, model_trained.predict(X_test)) * 100:.2f}', file=log_file)
+    print(f'\tTraining MAE: %{mean_absolute_error(y_train, model_trained.predict(X_train)) * 100:.2f}')
+    print(f'\tTesting MAE: %{mean_absolute_error(y_test, model_trained.predict(X_test)) * 100:.2f}')
   print('[INFO] done.\n', file=log_file)
   print('[INFO] done.\n')
   #assert accuracy_score(y_train, model_trained.predict(X_train)) > 0.70  # TODO uncomment

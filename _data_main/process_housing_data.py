@@ -18,7 +18,7 @@ def load_housing_data():
     # All features are numerical and require no further processing
     for col in raw_df.columns:
         if col != 'MEDV':
-            processed_df[col] = raw_df[col]
+            processed_df[col] = raw_df[col].round(decimals=4)
 
     processed_df.to_csv(processed_file, header=True, index=False)
     return processed_df.astype('float64')

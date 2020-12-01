@@ -432,19 +432,20 @@ class Dataset(object):
     #)
 
     # get balanced dataframe (take minimum of the count)
-    unique_values_and_count = balanced_data_frame[output_col].value_counts()
-    number_of_subsamples_in_each_class = int(unique_values_and_count.min())
-    n_classes = balanced_data_frame[output_col].nunique()
-    balanced_data_frame = pd.concat([
-        balanced_data_frame[balanced_data_frame.loc[:, output_col] == i].sample(number_of_subsamples_in_each_class, random_state=RANDOM_SEED)
-        for i in range(n_classes)
-        #balanced_data_frame[balanced_data_frame.loc[:,output_col] == 0].sample(number_of_subsamples_in_each_class, random_state = RANDOM_SEED),
-        #balanced_data_frame[balanced_data_frame.loc[:,output_col] == 1].sample(number_of_subsamples_in_each_class, random_state = RANDOM_SEED),
-    ]).sample(frac = 1, random_state = RANDOM_SEED)
-    # balanced_data_frame = pd.concat([
-    #     balanced_data_frame[balanced_data_frame.loc[:,output_col] == 0],
-    #     balanced_data_frame[balanced_data_frame.loc[:,output_col] == 1],
-    # ]).sample(frac = 1, random_state = RANDOM_SEED)
+    if self.problem_type == 'classification':
+      unique_values_and_count = balanced_data_frame[output_col].value_counts()
+      number_of_subsamples_in_each_class = int(unique_values_and_count.min())
+      n_classes = balanced_data_frame[output_col].nunique()
+      balanced_data_frame = pd.concat([
+          balanced_data_frame[balanced_data_frame.loc[:, output_col] == i].sample(number_of_subsamples_in_each_class, random_state=RANDOM_SEED)
+          for i in range(n_classes)
+          #balanced_data_frame[balanced_data_frame.loc[:,output_col] == 0].sample(number_of_subsamples_in_each_class, random_state = RANDOM_SEED),
+          #balanced_data_frame[balanced_data_frame.loc[:,output_col] == 1].sample(number_of_subsamples_in_each_class, random_state = RANDOM_SEED),
+      ]).sample(frac = 1, random_state = RANDOM_SEED)
+      # balanced_data_frame = pd.concat([
+      #     balanced_data_frame[balanced_data_frame.loc[:,output_col] == 0],
+      #     balanced_data_frame[balanced_data_frame.loc[:,output_col] == 1],
+      # ]).sample(frac = 1, random_state = RANDOM_SEED)
 
     return balanced_data_frame, meta_cols, input_cols, output_col
 
@@ -1269,7 +1270,7 @@ def loadDataset(dataset_name, return_one_hot, load_from_cache = False, debug_fla
         lower_bound=data_frame_non_hot[col_name].min(),
         upper_bound=data_frame_non_hot[col_name].max())
 
-  elif dataset_name == 'winequality':
+  elif dataset_name == 'wine':
 
     data_frame_non_hot = load_winequality_data()
     data_frame_non_hot = data_frame_non_hot.reset_index(drop=True)

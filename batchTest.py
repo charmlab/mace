@@ -45,7 +45,8 @@ def generateExplanations(
   factual_sample,
   norm_type_string,
   observable_data_dict,
-  standard_deviations):
+  standard_deviations,
+  regression_min_diff):
 
   if 'MACE' in approach_string: # 'MACE_counterfactual':
 
@@ -56,7 +57,8 @@ def generateExplanations(
       factual_sample,
       norm_type_string,
       'mace',
-      getEpsilonInString(approach_string)
+      getEpsilonInString(approach_string),
+      min_diff=regression_min_diff
     )
 
   elif 'MINT' in approach_string: # 'MINT_counterfactual':
@@ -127,7 +129,7 @@ def generateExplanations(
     raise Exception(f'{approach_string} not recognized as a valid `approach_string`.')
 
 
-def runExperiments(dataset_values, model_class_values, norm_values, approaches_values, batch_number, sample_count, gen_cf_for, process_id):
+def runExperiments(dataset_values, model_class_values, norm_values, approaches_values, batch_number, sample_count, gen_cf_for, process_id, regression_min_diff):
 
   for dataset_string in dataset_values:
 
@@ -243,6 +245,7 @@ def runExperiments(dataset_values, model_class_values, norm_values, approaches_v
               norm_type_string,
               observable_data_dict, # used solely for minimum_observable method
               standard_deviations, # used solely for feature_tweaking method
+              regression_min_diff
             )
 
             if 'MINT' in approach_string:
@@ -324,6 +327,12 @@ if __name__ == '__main__':
       default = '0',
       help = 'When running parallel tests on the cluster, process_id guarantees (in addition to time stamped experiment folder) that experiments do not conflict.')
 
+  parser.add_argument(
+      '-r', '--regression_min_diff',
+      type = float,
+      default = 0,
+      help = 'Minimum difference in prediction to be considered a counterfactual for regression problems.')
+
 
   # parsing the args
   args = parser.parse_args()
@@ -345,7 +354,8 @@ if __name__ == '__main__':
     args.batch_number,
     args.sample_count,
     args.gen_cf_for,
-    args.process_id)
+    args.process_id,
+    args.regression_min_diff)
 
 
 

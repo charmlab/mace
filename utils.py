@@ -1,5 +1,6 @@
 import inspect
 import collections
+import math
 
 # See https://www.python-course.eu/python3_memoization.php
 class Memoize:
@@ -34,3 +35,31 @@ class Memoize:
     if hashable_args not in self.memo:
       self.memo[hashable_args] = self.fn(*args)
     return self.memo[hashable_args]
+
+
+def round_decimals_up(number: float, decimals: int = 5):
+  """
+  Returns a value rounded up to a specific number of decimal places.
+  """
+  if not isinstance(decimals, int):
+    raise TypeError("Decimal places must be an integer")
+  elif decimals < 0:
+    raise ValueError("Decimal places has to be 0 or more")
+  elif decimals == 0:
+    return math.ceil(number)
+  factor = 10 ** decimals
+  return math.ceil(number * factor) / factor
+
+
+def round_decimals_down(number: float, decimals: int = 5):
+  """
+  Returns a value rounded up to a specific number of decimal places.
+  """
+  if not isinstance(decimals, int):
+    raise TypeError("Decimal places must be an integer")
+  elif decimals < 0:
+    raise ValueError("Decimal places has to be 0 or more")
+  elif decimals == 0:
+    return math.floor(number)
+  factor = 10 ** decimals
+  return math.floor(number * factor) / factor
