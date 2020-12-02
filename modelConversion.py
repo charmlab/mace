@@ -447,7 +447,7 @@ def mlp2c(model, feature_names):
 
 
 def mlp2formula(model, model_symbols):
-    problem_type = 'classification' if isinstance(model, RandomForestClassifier) else 'regression'
+    problem_type = 'classification' if isinstance(model, MLPClassifier) else 'regression'
     n_classes = 2 if model.n_outputs_ == 1 else model.n_outputs_
     model_symbols['aux'] = {}
     layer_widths = []

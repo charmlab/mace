@@ -45,18 +45,35 @@ def getModelFormula(model_symbols, model_trained):
     model_symbols)
 
 
-def getClassificationCounterfactualFormula(model_symbols, factual_sample):
-  return NotEquals(
+def getClassificationCounterfactualFormula(model_symbols, factual_sample, outcome=None):
+  cf_formula = NotEquals(
     model_symbols['output']['y']['symbol'],
     factual_sample['y']
   ) # meaning we want the decision to be different.
+  if outcome is not None:
+    cf_formula = And(
+      cf_formula,
+      Equals(model_symbols['output']['y']['symbol'],
+             Int(outcome)
+      )
+    ) # we desire a specific outcome
+  return cf_formula
 
 
-def getRegressionCounterfactualFormula(model_symbols, factual_sample, min_diff):
-  return GE(
+def getRegressionCounterfactualFormula(model_symbols, factual_sample, min_diff, outcome=None):
+  cf_formula = GE(
     getAbsoluteDifference(model_symbols['output']['y']['symbol'], factual_sample['y']),
     Real(min_diff)
   ) # meaning we want the decision to be different.
+  if outcome is not None:
+    cf_formula = And(
+      cf_formula,
+      LE(
+        getAbsoluteDifference(model_symbols['output']['y']['symbol'], Real(outcome)),
+        Real(min_diff)
+      )
+    ) # we desire a specific outcome
+  return cf_formula
 
 
 def getAbsoluteDifference(symbol_1, symbol_2):
@@ -516,7 +533,7 @@ def getDiversityFormulaUpdate(model):
   )
 
 
-def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, factual_sample, norm_type, approach_string, epsilon, log_file, min_diff=0):
+def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, factual_sample, norm_type, approach_string, epsilon, log_file, min_diff=0, outcome=None):
 
   def getCenterNormThresholdInRange(lower_bound, upper_bound):
     return (lower_bound + upper_bound) / 2
@@ -545,7 +562,7 @@ def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, f
       if np.abs(sorted_proba[0] - sorted_proba[1]) < 1e-10:
         return
 
-    print("counterfact:", dict_sample, "\nFactual:", factual_sample)
+    print("Counterfactual:", dict_sample, "\nFactual:", factual_sample)
     assert sklearn_prediction == pysmt_prediction, 'Pysmt prediction does not match sklearn prediction.'
     assert sklearn_prediction != factual_prediction, 'Counterfactual and factual samples have the same prediction.'
 
@@ -560,9 +577,9 @@ def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, f
   print('Constructing initial formulas: model, counterfactual, distance, plausibility, diversity\t\t', end = '', file = log_file)
   model_formula = getModelFormula(model_symbols, model_trained)
   if dataset_obj.problem_type == 'classification':
-    counterfactual_formula = getClassificationCounterfactualFormula(model_symbols, factual_pysmt_sample)
+    counterfactual_formula = getClassificationCounterfactualFormula(model_symbols, factual_pysmt_sample, outcome=outcome)
   elif dataset_obj.problem_type == 'regression':
-    counterfactual_formula = getRegressionCounterfactualFormula(model_symbols, factual_pysmt_sample, min_diff=min_diff)
+    counterfactual_formula = getRegressionCounterfactualFormula(model_symbols, factual_pysmt_sample, min_diff=min_diff, outcome=outcome)
   plausibility_formula = getPlausibilityFormula(model_symbols, dataset_obj, factual_pysmt_sample, approach_string)
   distance_formula = getDistanceFormula(model_symbols, dataset_obj, factual_pysmt_sample, norm_type, approach_string, curr_norm_threshold)
   diversity_formula = TRUE() # simply initialize and modify later as new counterfactuals come in
@@ -587,7 +604,6 @@ def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, f
 
     print(f'\tIteration #{iters:03d}: testing norm threshold {curr_norm_threshold:.6f} in range [{norm_lower_bound:.6f}, {norm_upper_bound:.6f}]...\t', end = '', file = log_file)
     iters = iters + 1
-    print("ITER ", iters)
 
     formula = And( # works for both initial iteration and all subsequent iterations
       model_formula,
@@ -769,7 +785,8 @@ def genExp(
   norm_type,
   approach_string,
   epsilon,
-  min_diff=0):
+  min_diff=0,
+  outcome=None):
 
   # # ONLY TO BE USED FOR TEST PURPOSES ON MORTGAGE DATASET
   # factual_sample = {'x0': 75000, 'x1': 25000, 'y': False}
@@ -839,7 +856,8 @@ def genExp(
     approach_string,
     epsilon,
     log_file,
-    min_diff=min_diff
+    min_diff=min_diff,
+    outcome=outcome
   )
 
   print('\n', file = log_file)

@@ -75,9 +75,9 @@ def loadModelForDataset(model_class, dataset_string, scm_class = None, experimen
     model_pretrain = LogisticRegression() # default penalty='l2', i.e., ridge
   elif model_class == 'mlp':
     if dataset_obj.problem_type == 'classification':
-      model_pretrain = MLPClassifier(hidden_layer_sizes=(8, 4))
+      model_pretrain = MLPClassifier(hidden_layer_sizes=(10, 10))
     elif dataset_obj.problem_type == 'regression':
-      model_pretrain = MLPRegressor(hidden_layer_sizes=(3, 2))
+      model_pretrain = MLPRegressor(hidden_layer_sizes=(10, 10))
 
   tmp_text = f'[INFO] Training `{model_class}` on {X_train.shape[0]:,} samples ' + \
     f'(%{100 * X_train.shape[0] / (X_train.shape[0] + X_test.shape[0]):.2f} ' + \
@@ -91,13 +91,13 @@ def loadModelForDataset(model_class, dataset_string, scm_class = None, experimen
     print(f'\tTraining accuracy: %{accuracy_score(y_train, model_trained.predict(X_train)) * 100:.2f}')
     print(f'\tTesting accuracy: %{accuracy_score(y_test, model_trained.predict(X_test)) * 100:.2f}')
   else:
-    print(f'\tTraining MAE: %{mean_absolute_error(y_train, model_trained.predict(X_train)) * 100:.2f}', file=log_file)
-    print(f'\tTesting MAE: %{mean_absolute_error(y_test, model_trained.predict(X_test)) * 100:.2f}', file=log_file)
-    print(f'\tTraining MAE: %{mean_absolute_error(y_train, model_trained.predict(X_train)) * 100:.2f}')
-    print(f'\tTesting MAE: %{mean_absolute_error(y_test, model_trained.predict(X_test)) * 100:.2f}')
+    print(f'\tTraining MAE: {mean_absolute_error(y_train, model_trained.predict(X_train)):.2f}', file=log_file)
+    print(f'\tTesting MAE: {mean_absolute_error(y_test, model_trained.predict(X_test)):.2f}', file=log_file)
+    print(f'\tTraining MAE: {mean_absolute_error(y_train, model_trained.predict(X_train)):.2f}')
+    print(f'\tTesting MAE: {mean_absolute_error(y_test, model_trained.predict(X_test)):.2f}')
   print('[INFO] done.\n', file=log_file)
   print('[INFO] done.\n')
-  #assert accuracy_score(y_train, model_trained.predict(X_train)) > 0.70  # TODO uncomment
+  assert accuracy_score(y_train, model_trained.predict(X_train)) > 0.70  # TODO uncomment
 
   classifier_obj = model_trained
   visualizeDatasetAndFixedModel(dataset_obj, classifier_obj, experiment_folder_name)

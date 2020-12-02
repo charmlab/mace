@@ -46,7 +46,8 @@ def generateExplanations(
   norm_type_string,
   observable_data_dict,
   standard_deviations,
-  regression_min_diff):
+  regression_min_diff,
+  outcome):
 
   if 'MACE' in approach_string: # 'MACE_counterfactual':
 
@@ -58,7 +59,8 @@ def generateExplanations(
       norm_type_string,
       'mace',
       getEpsilonInString(approach_string),
-      min_diff=regression_min_diff
+      min_diff=regression_min_diff,
+      outcome=outcome
     )
 
   elif 'MINT' in approach_string: # 'MINT_counterfactual':
@@ -129,7 +131,7 @@ def generateExplanations(
     raise Exception(f'{approach_string} not recognized as a valid `approach_string`.')
 
 
-def runExperiments(dataset_values, model_class_values, norm_values, approaches_values, batch_number, sample_count, gen_cf_for, process_id, regression_min_diff):
+def runExperiments(dataset_values, model_class_values, norm_values, approaches_values, batch_number, sample_count, gen_cf_for, process_id, regression_min_diff, outcome):
 
   for dataset_string in dataset_values:
 
@@ -215,6 +217,10 @@ def runExperiments(dataset_values, model_class_values, norm_values, approaches_v
           else:
             raise Exception(f'{gen_cf_for} not recognized as a valid `gen_cf_for`.')
 
+          # if desired counterfactual outcome is specified, remove all examples with that predicted label
+          if outcome is not None:
+            iterate_over_data_df = iterate_over_data_df.loc[iterate_over_data_df['y'] != outcome]
+
           # convert to dictionary for easier enumeration (iteration)
           iterate_over_data_dict = iterate_over_data_df.T.to_dict()
           observable_data_dict = observable_data_df.T.to_dict()
@@ -245,7 +251,8 @@ def runExperiments(dataset_values, model_class_values, norm_values, approaches_v
               norm_type_string,
               observable_data_dict, # used solely for minimum_observable method
               standard_deviations, # used solely for feature_tweaking method
-              regression_min_diff
+              regression_min_diff,
+              outcome
             )
 
             if 'MINT' in approach_string:
@@ -333,6 +340,12 @@ if __name__ == '__main__':
       default = 0,
       help = 'Minimum difference in prediction to be considered a counterfactual for regression problems.')
 
+  parser.add_argument(
+      '-o', '--outcome',
+      type = float,
+      default = None,
+      help = 'Value of desired outcome for counterfactual.')
+
 
   # parsing the args
   args = parser.parse_args()
@@ -355,7 +368,8 @@ if __name__ == '__main__':
     args.sample_count,
     args.gen_cf_for,
     args.process_id,
-    args.regression_min_diff)
+    args.regression_min_diff,
+    args.outcome)
 
 
 
