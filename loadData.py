@@ -68,6 +68,11 @@ try:
 except:
   print('[ENV WARNING] process_winequality_data not available')
 
+try:
+  from _data_main.process_poker_data import *
+except:
+  print('[ENV WARNING] process_poker_data not available')
+
 VALID_ATTRIBUTE_DATA_TYPES = { \
   'numeric-int', \
   'numeric-real', \
@@ -524,7 +529,7 @@ class Dataset(object):
         all_data,
         all_true_labels,
         train_size=.7,
-        random_state = None)   # For predictable, set RANDOM_SEED
+        random_state = RANDOM_SEED)   # For predictable, set RANDOM_SEED
 
       # TODO (2020.05.18): this should be updated so as NOT to update meta variables
       if preprocessing == 'standardize':
@@ -1336,6 +1341,82 @@ def loadDataset(dataset_name, return_one_hot, load_from_cache = False, debug_fla
       elif col_name == 'alcohol':
         attr_type = 'numeric-real'
         actionability = 'any'
+        mutability = True
+
+      attributes_non_hot[col_name] = DatasetAttribute(
+        attr_name_long=col_name,
+        attr_name_kurz=f'x{col_idx}',
+        attr_type=attr_type,
+        node_type='input',
+        actionability=actionability,
+        mutability=mutability,
+        parent_name_long=-1,
+        parent_name_kurz=-1,
+        lower_bound=data_frame_non_hot[col_name].min(),
+        upper_bound=data_frame_non_hot[col_name].max())
+
+  elif dataset_name == 'poker':
+
+    data_frame_non_hot = load_poker_data()
+    data_frame_non_hot = data_frame_non_hot.reset_index(drop=True)
+    attributes_non_hot = {}
+
+    input_cols, output_col = getInputOutputColumns(data_frame_non_hot)
+
+    col_name = output_col
+    attributes_non_hot[col_name] = DatasetAttribute(
+      attr_name_long=col_name,
+      attr_name_kurz='y',
+      attr_type='numeric-int',
+      node_type='output',
+      actionability='none',
+      mutability=False,
+      parent_name_long=-1,
+      parent_name_kurz=-1,
+      lower_bound=data_frame_non_hot[col_name].min(),
+      upper_bound=data_frame_non_hot[col_name].max())
+
+    for col_idx, col_name in enumerate(input_cols):
+
+      if col_name == 'S1':
+        attr_type = 'ordinal'
+        actionability = 'any' # 'none'
+        mutability = True
+      elif col_name == 'C1':
+        attr_type = 'ordinal'
+        actionability = 'any'  # 'none'
+        mutability = True
+      elif col_name == 'S2':
+        attr_type = 'ordinal'
+        actionability = 'any'  # 'none'
+        mutability = True
+      elif col_name == 'C2':
+        attr_type = 'ordinal'
+        actionability = 'any'  # 'none'
+        mutability = True
+      elif col_name == 'S3':
+        attr_type = 'ordinal'
+        actionability = 'any'  # 'none'
+        mutability = True
+      elif col_name == 'C3':
+        attr_type = 'ordinal'
+        actionability = 'any'  # 'none'
+        mutability = True
+      elif col_name == 'S4':
+        attr_type = 'ordinal'
+        actionability = 'any'  # 'none'
+        mutability = True
+      elif col_name == 'C4':
+        attr_type = 'ordinal'
+        actionability = 'any'  # 'none'
+        mutability = True
+      elif col_name == 'S5':
+        attr_type = 'ordinal'
+        actionability = 'any'  # 'none'
+        mutability = True
+      elif col_name == 'C5':
+        attr_type = 'ordinal'
+        actionability = 'any'  # 'none'
         mutability = True
 
       attributes_non_hot[col_name] = DatasetAttribute(

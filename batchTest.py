@@ -82,12 +82,13 @@ def generateExplanations(
       dataset_obj,
       factual_sample,
       observable_data_dict,
-      norm_type_string
+      norm_type_string,
+      min_diff=regression_min_diff
     )
 
   elif approach_string == 'FT': # 'feature_tweaking':
 
-    possible_labels = [0, 1]
+    possible_labels = np.arange(dataset_obj.n_classes)
     epsilon = .5
     perform_while_plausibility = False
     return generateFTExplanations.genExp(
@@ -98,12 +99,13 @@ def generateExplanations(
       norm_type_string,
       dataset_obj,
       standard_deviations,
-      perform_while_plausibility
+      perform_while_plausibility,
+      regression_min_diff
     )
 
   elif approach_string == 'PFT': # 'plausible_feature_tweaking':
 
-    possible_labels = [0, 1]
+    possible_labels = np.arange(dataset_obj.n_classes)
     epsilon = .5
     perform_while_plausibility = True
     return generateFTExplanations.genExp(
@@ -114,7 +116,8 @@ def generateExplanations(
       norm_type_string,
       dataset_obj,
       standard_deviations,
-      perform_while_plausibility
+      perform_while_plausibility,
+      regression_min_diff
     )
 
   elif approach_string == 'AR': # 'actionable_recourse':

@@ -40,6 +40,8 @@ $ python batchTest.py -d adult -m lr -n zero_norm -a AR -b 0 -s 1
 $ python batchTest.py -d credit -m mlp -n one_norm -a MACE_eps_1e-3 -b 0 -s 1
 $ python batchTest.py -d german -m tree -n two_norm -a MINT__eps_1e-3 -b 0 -s 1
 $ python batchTest.py -d mortgage -m forest -n infty_norm -a MINT__eps_1e-3 -b 0 -s 1
+$ python batchTest.py -d iris -m mlp -n one_norm -a MACE_eps_1e-3 -b 0 -s 1 -r 1 -g neg_and_pos
+$ python batchTest.py -d wine -m tree -n one_norm -a MACE_eps_1e-3 -b 0 -s 1 -r 1 -o 7 -g neg_and_pos
 ```
 
 Finally, view the results under the _experiments folder.

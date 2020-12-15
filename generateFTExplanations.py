@@ -6,27 +6,31 @@ import scipy.stats
 import normalizedDistance
 
 from pprint import pprint
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.ensemble import RandomForestClassifier
+from sklearn.tree import DecisionTreeClassifier, DecisionTreeRegressor
+from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 
-def search_path(estimator, class_labels, counterfactual_label):
+def search_path(estimator, class_labels, factual_label, min_diff=0):
     """
     return path index list containing [{leaf node id, inequality symbol, threshold, feature index}].
     estimator: decision tree
     maxj: the number of selected leaf nodes
     """
-    """ select leaf nodes whose outcome is counterfactual_label """
+    """ select leaf nodes whose outcome is not factual_label """
     children_left = estimator.tree_.children_left  # information of left child node
     children_right = estimator.tree_.children_right
     feature = estimator.tree_.feature
     threshold = estimator.tree_.threshold
     # leaf nodes ID
     leaf_nodes = np.where(children_left == -1)[0]
-    # outcomes of leaf nodes
-    leaf_values = estimator.tree_.value[leaf_nodes].reshape(len(leaf_nodes), len(class_labels))
-    # select the leaf nodes whose outcome is counterfactual_label
+    # select the leaf nodes whose outcome is not factual_label
     # (select index of leaf node in tree, not in the previous leaf_node array!)
-    leaf_nodes = leaf_nodes[np.where(leaf_values[:, counterfactual_label] != 0)[0]]
+    if isinstance(estimator, DecisionTreeClassifier) or isinstance(estimator, RandomForestClassifier):
+        leaf_values = estimator.tree_.value[leaf_nodes].reshape(len(leaf_nodes), len(class_labels))
+        leaf_nodes = leaf_nodes[~np.where(leaf_values[:, factual_label] != 0)[0]]
+    else:
+        leaf_values = estimator.tree_.value[leaf_nodes].reshape(len(leaf_nodes))
+        leaf_nodes = leaf_nodes[np.where((leaf_values <= factual_label - min_diff) |
+                                         (leaf_values >= factual_label + min_diff))[0]]
     """ search the path to the selected leaf node """
     paths = {}
     for leaf_node in leaf_nodes:
@@ -102,7 +106,7 @@ def esatisfactory_instance(x, epsilon, path_info, standard_deviations):
             print('something wrong')
     return esatisfactory
 
-def genExp(model_trained, factual_sample, class_labels, epsilon, norm_type, dataset_obj, standard_deviations, perform_while_plausibility):
+def genExp(model_trained, factual_sample, class_labels, epsilon, norm_type, dataset_obj, standard_deviations, perform_while_plausibility, min_diff=0):
     """
     This function return the active feature tweaking vector.
     x: feature vector
@@ -112,23 +116,23 @@ def genExp(model_trained, factual_sample, class_labels, epsilon, norm_type, data
 
     """ initialize """
     start_time = time.time()
-    x = np.array(list(factual_sample.values()))
+    x = np.array(list(factual_sample.values()))[:-1]
     # factual_sample['y'] = False
-    counterfactual_label = not factual_sample['y']
+    factual_label = factual_sample['y']
 
     # initialize output in case no solution is found
     closest_counterfactual_sample = dict(zip(factual_sample.keys(), [-1 for elem in factual_sample.values()]))
-    closest_counterfactual_sample['y'] = counterfactual_label
+    closest_counterfactual_sample['y'] = factual_label
     counterfactual_found = False
     closest_distance = 1000  # initialize cost (if no solution is found, this is returned)
 
     # We want to support forest and tree, and we keep in mind that a trained
     # tree does NOT perform the same as a trained forest with 1 tree!
-    if isinstance(model_trained, DecisionTreeClassifier):
+    if isinstance(model_trained, DecisionTreeClassifier) or isinstance(model_trained, DecisionTreeRegressor):
         # ensemble_classifier will in fact not be an ensemble, but only be a tree
         estimator = model_trained
-        if estimator.predict(x.reshape(1, -1) != counterfactual_label):
-            paths_info = search_path(estimator, class_labels, counterfactual_label)
+        if estimator.predict(x.reshape(1, -1)) == factual_label:
+            paths_info = search_path(estimator, class_labels, factual_label, min_diff)
             for key in paths_info:
                 """ generate epsilon-satisfactory instance """
                 path_info = paths_info[key]
@@ -148,9 +152,9 @@ def genExp(model_trained, factual_sample, class_labels, epsilon, norm_type, data
                                 key = lambda x : abs(x - es_instance[idx])
                             )
 
-                if estimator.predict(es_instance.reshape(1, -1)) == counterfactual_label:
+                if estimator.predict(es_instance.reshape(1, -1)) != factual_label:
                     counterfactual_sample = dict(zip(factual_sample.keys(), es_instance))
-                    counterfactual_sample['y'] = counterfactual_label
+                    counterfactual_sample['y'] = estimator.predict(es_instance.reshape(1, -1))
                     distance = normalizedDistance.getDistanceBetweenSamples(
                         factual_sample,
                         counterfactual_sample,
@@ -166,8 +170,8 @@ def genExp(model_trained, factual_sample, class_labels, epsilon, norm_type, data
         ensemble_classifier = model_trained
         for estimator in ensemble_classifier:
             if (ensemble_classifier.predict(x.reshape(1, -1)) == estimator.predict(x.reshape(1, -1))
-                and estimator.predict(x.reshape(1, -1) != counterfactual_label)):
-                paths_info = search_path(estimator, class_labels, counterfactual_label)
+                and estimator.predict(x.reshape(1, -1)) == factual_label):
+                paths_info = search_path(estimator, class_labels, factual_label, min_diff)
                 for key in paths_info:
                     """ generate epsilon-satisfactory instance """
                     path_info = paths_info[key]
@@ -187,9 +191,9 @@ def genExp(model_trained, factual_sample, class_labels, epsilon, norm_type, data
                                     key = lambda x : abs(x - es_instance[idx])
                                 )
 
-                    if ensemble_classifier.predict(es_instance.reshape(1, -1)) == counterfactual_label:
+                    if ensemble_classifier.predict(es_instance.reshape(1, -1)) != factual_label:
                         counterfactual_sample = dict(zip(factual_sample.keys(), es_instance))
-                        counterfactual_sample['y'] = counterfactual_label
+                        counterfactual_sample['y'] = ensemble_classifier.predict(es_instance.reshape(1, -1))
                         distance = normalizedDistance.getDistanceBetweenSamples(
                             factual_sample,
                             counterfactual_sample,

@@ -563,8 +563,14 @@ def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, f
         return
 
     print("Counterfactual:", dict_sample, "\nFactual:", factual_sample)
-    assert sklearn_prediction == pysmt_prediction, 'Pysmt prediction does not match sklearn prediction.'
-    assert sklearn_prediction != factual_prediction, 'Counterfactual and factual samples have the same prediction.'
+    if pysmt_prediction != sklearn_prediction:
+      print('Pysmt prediction does not match sklearn prediction.')
+    elif sklearn_prediction == factual_prediction:
+      print('Counterfactual and factual samples have the same prediction.')
+    else:
+      return True
+    #assert sklearn_prediction == pysmt_prediction, 'Pysmt prediction does not match sklearn prediction.'
+    #assert sklearn_prediction != factual_prediction, 'Counterfactual and factual samples have the same prediction.'
 
   # Convert to pysmt_sample so factual symbols can be used in formulae
   factual_pysmt_sample = getPySMTSampleFromDictSample(factual_sample, dataset_obj)
@@ -652,46 +658,50 @@ def findClosestCounterfactualSample(model_trained, model_symbols, dataset_obj, f
           dataset_obj)
 
         # Assert samples have correct prediction label according to sklearn model
-        assertPrediction(counterfactual_sample, model_trained, dataset_obj)
+        cf_valid = assertPrediction(counterfactual_sample, model_trained, dataset_obj)
         # of course, there is no need to assertPrediction on the interventional_sample
 
-        counterfactual_distance = normalizedDistance.getDistanceBetweenSamples(
-          factual_sample,
-          counterfactual_sample,
-          norm_type,
-          dataset_obj)
-        interventional_distance = normalizedDistance.getDistanceBetweenSamples(
-          factual_sample,
-          interventional_sample,
-          norm_type,
-          dataset_obj)
-        counterfactual_time = iteration_end_time - iteration_start_time
-        counterfactuals.append({
-          'counterfactual_sample': counterfactual_sample,
-          'counterfactual_distance': counterfactual_distance,
-          'interventional_sample': interventional_sample,
-          'interventional_distance': interventional_distance,
-          'time': counterfactual_time,
-          'norm_type': norm_type})
+        if cf_valid:
+          counterfactual_distance = normalizedDistance.getDistanceBetweenSamples(
+            factual_sample,
+            counterfactual_sample,
+            norm_type,
+            dataset_obj)
+          interventional_distance = normalizedDistance.getDistanceBetweenSamples(
+            factual_sample,
+            interventional_sample,
+            norm_type,
+            dataset_obj)
+          counterfactual_time = iteration_end_time - iteration_start_time
+          counterfactuals.append({
+            'counterfactual_sample': counterfactual_sample,
+            'counterfactual_distance': counterfactual_distance,
+            'interventional_sample': interventional_sample,
+            'interventional_distance': interventional_distance,
+            'time': counterfactual_time,
+            'norm_type': norm_type})
 
-        # Update diversity and distance formulas now that we have found a solution
-        # TODO: I think the line below should be removed, because in successive
-        #       reductions of delta, we should be able to re-use previous CFs
-        # diversity_formula = And(diversity_formula, getDiversityFormulaUpdate(model))
+          # Update diversity and distance formulas now that we have found a solution
+          # TODO: I think the line below should be removed, because in successive
+          #       reductions of delta, we should be able to re-use previous CFs
+          # diversity_formula = And(diversity_formula, getDiversityFormulaUpdate(model))
 
-        # IMPORTANT: something odd happens somtimes if use vanilla binary search;
-        #            On the first iteration, with [0, 1] bounds, we may see a CF at
-        #            d = 0.22. When we update the bounds to [0, 0.5] bounds,  we
-        #            sometimes surprisingly see a new CF at distance 0.24. We optimize
-        #            the binary search to solve this.
-        norm_lower_bound = norm_lower_bound
-        # norm_upper_bound = curr_norm_threshold
-        if 'mace' in approach_string:
-          norm_upper_bound = float(counterfactual_distance + epsilon / 100) # not float64
-        elif 'mint' in approach_string:
-          norm_upper_bound = float(interventional_distance + epsilon / 100) # not float64
-        curr_norm_threshold = getCenterNormThresholdInRange(norm_lower_bound, norm_upper_bound)
-        distance_formula = getDistanceFormula(model_symbols, dataset_obj, factual_pysmt_sample, norm_type, approach_string, curr_norm_threshold)
+          # IMPORTANT: something odd happens somtimes if use vanilla binary search;
+          #            On the first iteration, with [0, 1] bounds, we may see a CF at
+          #            d = 0.22. When we update the bounds to [0, 0.5] bounds,  we
+          #            sometimes surprisingly see a new CF at distance 0.24. We optimize
+          #            the binary search to solve this.
+          norm_lower_bound = norm_lower_bound
+          # norm_upper_bound = curr_norm_threshold
+          if 'mace' in approach_string:
+            norm_upper_bound = float(counterfactual_distance + epsilon / 100) # not float64
+          elif 'mint' in approach_string:
+            norm_upper_bound = float(interventional_distance + epsilon / 100) # not float64
+          curr_norm_threshold = getCenterNormThresholdInRange(norm_lower_bound, norm_upper_bound)
+          distance_formula = getDistanceFormula(model_symbols, dataset_obj, factual_pysmt_sample, norm_type, approach_string, curr_norm_threshold)
+        else:
+          print('Halting search here.')
+          break
 
       else: # no solution found in the assigned norm range --> update range and try again
         with Solver(name=solver_name) as neg_solver:

@@ -91,7 +91,6 @@ def tree2c(tree, feature_names, return_value = 'class_idx_max', tree_idx = ''):
 
 def tree2formula(tree, model_symbols, return_value='class_idx_max', tree_idx=''):
     tree_ = tree.tree_
-    #print(export_text(tree, max_depth=50))
     n_classes = tree.n_classes_
     feature_names = list(model_symbols['counterfactual'].keys())
     feature_name = [
@@ -103,7 +102,7 @@ def tree2formula(tree, model_symbols, return_value='class_idx_max', tree_idx='')
     def recurse(node):
         if tree_.feature[node] != _tree.TREE_UNDEFINED:
             name = feature_name[node]
-            threshold = round(float(tree_.threshold[node]), 4)
+            threshold = float(tree_.threshold[node]) - 0.00001
             return Or(
                 And(
                     LE(ToReal(model_symbols['counterfactual'][name]['symbol']), Real(threshold)),
