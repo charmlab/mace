@@ -58,6 +58,21 @@ try:
 except:
   print('[ENV WARNING] process_iris_data not available')
 
+try:
+  from _data_main.process_housing_data import *
+except:
+  print('[ENV WARNING] process_housing_data not available')
+
+try:
+  from _data_main.process_winequality_data import *
+except:
+  print('[ENV WARNING] process_winequality_data not available')
+
+try:
+  from _data_main.process_poker_data import *
+except:
+  print('[ENV WARNING] process_poker_data not available')
+
 VALID_ATTRIBUTE_DATA_TYPES = { \
   'numeric-int', \
   'numeric-real', \
@@ -108,6 +123,8 @@ class Dataset(object):
     self.attributes_kurz = attributes_kurz # i.e., attributes is indexed by attr_name_kurz
 
     self.n_classes = max([data_frame_kurz[attr].nunique() for attr in self.getOutputAttributeNames()])
+    self.problem_type = 'regression' if any([attributes_kurz[name].attr_type == 'numeric-real' for name in self.getOutputAttributeNames()]) \
+      else 'classification'
 
     # assert that data_frame and attributes match on variable names (long)
     assert len(np.setdiff1d(
@@ -420,19 +437,20 @@ class Dataset(object):
     #)
 
     # get balanced dataframe (take minimum of the count)
-    unique_values_and_count = balanced_data_frame[output_col].value_counts()
-    number_of_subsamples_in_each_class = int(unique_values_and_count.min())
-    n_classes = balanced_data_frame[output_col].nunique()
-    balanced_data_frame = pd.concat([
-        balanced_data_frame[balanced_data_frame.loc[:, output_col] == i].sample(number_of_subsamples_in_each_class, random_state=RANDOM_SEED)
-        for i in range(n_classes)
-        #balanced_data_frame[balanced_data_frame.loc[:,output_col] == 0].sample(number_of_subsamples_in_each_class, random_state = RANDOM_SEED),
-        #balanced_data_frame[balanced_data_frame.loc[:,output_col] == 1].sample(number_of_subsamples_in_each_class, random_state = RANDOM_SEED),
-    ]).sample(frac = 1, random_state = RANDOM_SEED)
-    # balanced_data_frame = pd.concat([
-    #     balanced_data_frame[balanced_data_frame.loc[:,output_col] == 0],
-    #     balanced_data_frame[balanced_data_frame.loc[:,output_col] == 1],
-    # ]).sample(frac = 1, random_state = RANDOM_SEED)
+    if self.problem_type == 'classification':
+      unique_values_and_count = balanced_data_frame[output_col].value_counts()
+      number_of_subsamples_in_each_class = int(unique_values_and_count.min())
+      n_classes = balanced_data_frame[output_col].nunique()
+      balanced_data_frame = pd.concat([
+          balanced_data_frame[balanced_data_frame.loc[:, output_col] == i].sample(number_of_subsamples_in_each_class, random_state=RANDOM_SEED)
+          for i in range(n_classes)
+          #balanced_data_frame[balanced_data_frame.loc[:,output_col] == 0].sample(number_of_subsamples_in_each_class, random_state = RANDOM_SEED),
+          #balanced_data_frame[balanced_data_frame.loc[:,output_col] == 1].sample(number_of_subsamples_in_each_class, random_state = RANDOM_SEED),
+      ]).sample(frac = 1, random_state = RANDOM_SEED)
+      # balanced_data_frame = pd.concat([
+      #     balanced_data_frame[balanced_data_frame.loc[:,output_col] == 0],
+      #     balanced_data_frame[balanced_data_frame.loc[:,output_col] == 1],
+      # ]).sample(frac = 1, random_state = RANDOM_SEED)
 
     return balanced_data_frame, meta_cols, input_cols, output_col
 
@@ -511,7 +529,7 @@ class Dataset(object):
         all_data,
         all_true_labels,
         train_size=.7,
-        random_state = None)   # For predictable, set RANDOM_SEED
+        random_state = RANDOM_SEED)   # For predictable, set RANDOM_SEED
 
       # TODO (2020.05.18): this should be updated so as NOT to update meta variables
       if preprocessing == 'standardize':
@@ -1152,13 +1170,253 @@ def loadDataset(dataset_name, return_one_hot, load_from_cache = False, debug_fla
         attr_type = 'numeric-real'
         actionability = 'any'
         mutability = True
-      elif col_name == 'petal_length':  # ~ RACE
+      elif col_name == 'petal_length':
         attr_type = 'numeric-real'
         actionability = 'any'
         mutability = True
       elif col_name == 'petal_width':
         attr_type = 'numeric-real'
         actionability = 'any'
+        mutability = True
+
+      attributes_non_hot[col_name] = DatasetAttribute(
+        attr_name_long=col_name,
+        attr_name_kurz=f'x{col_idx}',
+        attr_type=attr_type,
+        node_type='input',
+        actionability=actionability,
+        mutability=mutability,
+        parent_name_long=-1,
+        parent_name_kurz=-1,
+        lower_bound=data_frame_non_hot[col_name].min(),
+        upper_bound=data_frame_non_hot[col_name].max())
+
+  elif dataset_name == 'housing':
+
+    data_frame_non_hot = load_housing_data()
+    data_frame_non_hot = data_frame_non_hot.reset_index(drop=True)
+    attributes_non_hot = {}
+
+    input_cols, output_col = getInputOutputColumns(data_frame_non_hot)
+
+    col_name = output_col
+    attributes_non_hot[col_name] = DatasetAttribute(
+      attr_name_long=col_name,
+      attr_name_kurz='y',
+      attr_type='numeric-real',
+      node_type='output',
+      actionability='none',
+      mutability=False,
+      parent_name_long=-1,
+      parent_name_kurz=-1,
+      lower_bound=data_frame_non_hot[col_name].min(),
+      upper_bound=data_frame_non_hot[col_name].max())
+
+    for col_idx, col_name in enumerate(input_cols):
+
+      if col_name == 'CRIM':
+        attr_type = 'numeric-real'
+        actionability = 'any'
+        mutability = True
+      elif col_name == 'ZN':
+        attr_type = 'numeric-real'
+        actionability = 'any'
+        mutability = True
+      elif col_name == 'INDUS':
+        attr_type = 'numeric-real'
+        actionability = 'any'
+        mutability = True
+      elif col_name == 'CHAS':
+        attr_type = 'binary'
+        actionability = 'any'
+        mutability = True
+      elif col_name == 'NOX':
+        attr_type = 'numeric-real'
+        actionability = 'any'
+        mutability = True
+      elif col_name == 'RM':
+        attr_type = 'numeric-real'
+        actionability = 'any'
+        mutability = True
+      elif col_name == 'AGE':
+        attr_type = 'numeric-real'
+        actionability = 'any'
+        mutability = True
+      elif col_name == 'DIS':
+        attr_type = 'numeric-real'
+        actionability = 'any'
+        mutability = True
+      elif col_name == 'RAD':
+        attr_type = 'numeric-int'
+        actionability = 'any'
+        mutability = True
+      elif col_name == 'PTRATIO':
+        attr_type = 'numeric-real'
+        actionability = 'any'
+        mutability = True
+      elif col_name == 'B':
+        attr_type = 'numeric-real'
+        actionability = 'any'
+        mutability = True
+      elif col_name == 'LSTAT':
+        attr_type = 'numeric-real'
+        actionability = 'any'
+        mutability = True
+
+      attributes_non_hot[col_name] = DatasetAttribute(
+        attr_name_long=col_name,
+        attr_name_kurz=f'x{col_idx}',
+        attr_type=attr_type,
+        node_type='input',
+        actionability=actionability,
+        mutability=mutability,
+        parent_name_long=-1,
+        parent_name_kurz=-1,
+        lower_bound=data_frame_non_hot[col_name].min(),
+        upper_bound=data_frame_non_hot[col_name].max())
+
+  elif dataset_name == 'wine':
+
+    data_frame_non_hot = load_winequality_data()
+    data_frame_non_hot = data_frame_non_hot.reset_index(drop=True)
+    attributes_non_hot = {}
+
+    input_cols, output_col = getInputOutputColumns(data_frame_non_hot)
+
+    col_name = output_col
+    attributes_non_hot[col_name] = DatasetAttribute(
+      attr_name_long=col_name,
+      attr_name_kurz='y',
+      attr_type='numeric-real',
+      node_type='output',
+      actionability='none',
+      mutability=False,
+      parent_name_long=-1,
+      parent_name_kurz=-1,
+      lower_bound=data_frame_non_hot[col_name].min(),
+      upper_bound=data_frame_non_hot[col_name].max())
+
+    for col_idx, col_name in enumerate(input_cols):
+
+      if col_name == 'fixed acidity':
+        attr_type = 'numeric-real'
+        actionability = 'any'
+        mutability = True
+      elif col_name == 'volatile acidity':
+        attr_type = 'numeric-real'
+        actionability = 'any'
+        mutability = True
+      elif col_name == 'citric acid':
+        attr_type = 'numeric-real'
+        actionability = 'any'
+        mutability = True
+      elif col_name == 'residual sugar':
+        attr_type = 'numeric-real'
+        actionability = 'any'
+        mutability = True
+      elif col_name == 'chlorides':
+        attr_type = 'numeric-real'
+        actionability = 'any'
+        mutability = True
+      elif col_name == 'free sulfur dioxide':
+        attr_type = 'numeric-real'
+        actionability = 'any'
+        mutability = True
+      elif col_name == 'total sulfur dioxide':
+        attr_type = 'numeric-real'
+        actionability = 'any'
+        mutability = True
+      elif col_name == 'density':
+        attr_type = 'numeric-real'
+        actionability = 'any'
+        mutability = True
+      elif col_name == 'pH':
+        attr_type = 'numeric-real'
+        actionability = 'any'
+        mutability = True
+      elif col_name == 'sulphates':
+        attr_type = 'numeric-real'
+        actionability = 'any'
+        mutability = True
+      elif col_name == 'alcohol':
+        attr_type = 'numeric-real'
+        actionability = 'any'
+        mutability = True
+
+      attributes_non_hot[col_name] = DatasetAttribute(
+        attr_name_long=col_name,
+        attr_name_kurz=f'x{col_idx}',
+        attr_type=attr_type,
+        node_type='input',
+        actionability=actionability,
+        mutability=mutability,
+        parent_name_long=-1,
+        parent_name_kurz=-1,
+        lower_bound=data_frame_non_hot[col_name].min(),
+        upper_bound=data_frame_non_hot[col_name].max())
+
+  elif dataset_name == 'poker':
+
+    data_frame_non_hot = load_poker_data()
+    data_frame_non_hot = data_frame_non_hot.reset_index(drop=True)
+    attributes_non_hot = {}
+
+    input_cols, output_col = getInputOutputColumns(data_frame_non_hot)
+
+    col_name = output_col
+    attributes_non_hot[col_name] = DatasetAttribute(
+      attr_name_long=col_name,
+      attr_name_kurz='y',
+      attr_type='numeric-int',
+      node_type='output',
+      actionability='none',
+      mutability=False,
+      parent_name_long=-1,
+      parent_name_kurz=-1,
+      lower_bound=data_frame_non_hot[col_name].min(),
+      upper_bound=data_frame_non_hot[col_name].max())
+
+    for col_idx, col_name in enumerate(input_cols):
+
+      if col_name == 'S1':
+        attr_type = 'ordinal'
+        actionability = 'any' # 'none'
+        mutability = True
+      elif col_name == 'C1':
+        attr_type = 'ordinal'
+        actionability = 'any'  # 'none'
+        mutability = True
+      elif col_name == 'S2':
+        attr_type = 'ordinal'
+        actionability = 'any'  # 'none'
+        mutability = True
+      elif col_name == 'C2':
+        attr_type = 'ordinal'
+        actionability = 'any'  # 'none'
+        mutability = True
+      elif col_name == 'S3':
+        attr_type = 'ordinal'
+        actionability = 'any'  # 'none'
+        mutability = True
+      elif col_name == 'C3':
+        attr_type = 'ordinal'
+        actionability = 'any'  # 'none'
+        mutability = True
+      elif col_name == 'S4':
+        attr_type = 'ordinal'
+        actionability = 'any'  # 'none'
+        mutability = True
+      elif col_name == 'C4':
+        attr_type = 'ordinal'
+        actionability = 'any'  # 'none'
+        mutability = True
+      elif col_name == 'S5':
+        attr_type = 'ordinal'
+        actionability = 'any'  # 'none'
+        mutability = True
+      elif col_name == 'C5':
+        attr_type = 'ordinal'
+        actionability = 'any'  # 'none'
         mutability = True
 
       attributes_non_hot[col_name] = DatasetAttribute(

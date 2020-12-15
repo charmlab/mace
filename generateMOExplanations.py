@@ -12,7 +12,7 @@ seed(RANDOM_SEED) # set the random seed so that the random permutations can be r
 np.random.seed(RANDOM_SEED)
 
 
-def findClosestObservableSample(observable_samples, dataset_obj, factual_sample, norm_type):
+def findClosestObservableSample(observable_samples, dataset_obj, factual_sample, norm_type, min_diff=None):
 
   closest_observable_sample = {'sample': {}, 'distance': np.infty, 'norm_type': None} # in case no observables are found.
 
@@ -20,7 +20,9 @@ def findClosestObservableSample(observable_samples, dataset_obj, factual_sample,
 
     # observable_sample['y'] = True
 
-    if observable_sample['y'] == factual_sample['y']: # make sure the cf flips the prediction
+    if dataset_obj.problem_type == 'classification' and observable_sample['y'] == factual_sample['y']: # make sure the cf flips the prediction
+      continue
+    elif dataset_obj.problem_type == 'regression' and abs(observable_sample['y'] - factual_sample['y'] < min_diff):
       continue
 
     # Only compare against those observable samples that DO NOT differ with the
@@ -78,7 +80,8 @@ def genExp(
   dataset_obj,
   factual_sample,
   observable_samples,
-  norm_type):
+  norm_type,
+  min_diff=None):
 
   start_time = time.time()
 
@@ -90,7 +93,8 @@ def genExp(
     observable_samples,
     dataset_obj,
     factual_sample,
-    norm_type
+    norm_type,
+    min_diff=min_diff
   )
 
   print('\n', file=log_file)
