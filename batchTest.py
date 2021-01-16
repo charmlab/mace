@@ -45,7 +45,9 @@ def generateExplanations(
   factual_sample,
   norm_type_string,
   observable_data_dict,
-  standard_deviations):
+  standard_deviations,
+  regression_min_diff,
+  outcome):
 
   if 'MACE' in approach_string: # 'MACE_counterfactual':
 
@@ -56,7 +58,9 @@ def generateExplanations(
       factual_sample,
       norm_type_string,
       'mace',
-      getEpsilonInString(approach_string)
+      getEpsilonInString(approach_string),
+      min_diff=regression_min_diff,
+      outcome=outcome
     )
 
   elif 'MINT' in approach_string: # 'MINT_counterfactual':
@@ -78,12 +82,13 @@ def generateExplanations(
       dataset_obj,
       factual_sample,
       observable_data_dict,
-      norm_type_string
+      norm_type_string,
+      min_diff=regression_min_diff
     )
 
   elif approach_string == 'FT': # 'feature_tweaking':
 
-    possible_labels = [0, 1]
+    possible_labels = np.arange(dataset_obj.n_classes)
     epsilon = .5
     perform_while_plausibility = False
     return generateFTExplanations.genExp(
@@ -94,12 +99,13 @@ def generateExplanations(
       norm_type_string,
       dataset_obj,
       standard_deviations,
-      perform_while_plausibility
+      perform_while_plausibility,
+      regression_min_diff
     )
 
   elif approach_string == 'PFT': # 'plausible_feature_tweaking':
 
-    possible_labels = [0, 1]
+    possible_labels = np.arange(dataset_obj.n_classes)
     epsilon = .5
     perform_while_plausibility = True
     return generateFTExplanations.genExp(
@@ -110,7 +116,8 @@ def generateExplanations(
       norm_type_string,
       dataset_obj,
       standard_deviations,
-      perform_while_plausibility
+      perform_while_plausibility,
+      regression_min_diff
     )
 
   elif approach_string == 'AR': # 'actionable_recourse':
@@ -127,7 +134,7 @@ def generateExplanations(
     raise Exception(f'{approach_string} not recognized as a valid `approach_string`.')
 
 
-def runExperiments(dataset_values, model_class_values, norm_values, approaches_values, batch_number, sample_count, gen_cf_for, process_id):
+def runExperiments(dataset_values, model_class_values, norm_values, approaches_values, batch_number, sample_count, gen_cf_for, process_id, regression_min_diff, outcome):
 
   for dataset_string in dataset_values:
 
@@ -167,6 +174,8 @@ def runExperiments(dataset_values, model_class_values, norm_values, approaches_v
 
           # save some files
           dataset_obj = loadData.loadDataset(dataset_string, return_one_hot = one_hot, load_from_cache = False, debug_flag = False)
+          if dataset_obj.n_classes > 2 and model_class_string == 'lr':
+            raise Exception(f'{model_class_string} cannot be used for non-binary ground truth. {dataset_string} dataset has {dataset_obj.n_classes} classes.')
           pickle.dump(dataset_obj, open(f'{experiment_folder_name}/_dataset_obj', 'wb'))
           #     training portion used to train models
           #     testing portion used to compute counterfactuals
@@ -211,6 +220,10 @@ def runExperiments(dataset_values, model_class_values, norm_values, approaches_v
           else:
             raise Exception(f'{gen_cf_for} not recognized as a valid `gen_cf_for`.')
 
+          # if desired counterfactual outcome is specified, remove all examples with that predicted label
+          if outcome is not None:
+            iterate_over_data_df = iterate_over_data_df.loc[iterate_over_data_df['y'] != outcome]
+
           # convert to dictionary for easier enumeration (iteration)
           iterate_over_data_dict = iterate_over_data_df.T.to_dict()
           observable_data_dict = observable_data_df.T.to_dict()
@@ -221,7 +234,7 @@ def runExperiments(dataset_values, model_class_values, norm_values, approaches_v
           all_minimum_distances = {}
           for factual_sample_index, factual_sample in iterate_over_data_dict.items():
 
-            factual_sample['y'] = bool(factual_sample['y'])
+            factual_sample['y'] = int(factual_sample['y'])
 
             print(
               '\t\t\t\t'
@@ -241,6 +254,8 @@ def runExperiments(dataset_values, model_class_values, norm_values, approaches_v
               norm_type_string,
               observable_data_dict, # used solely for minimum_observable method
               standard_deviations, # used solely for feature_tweaking method
+              regression_min_diff,
+              outcome
             )
 
             if 'MINT' in approach_string:
@@ -322,6 +337,18 @@ if __name__ == '__main__':
       default = '0',
       help = 'When running parallel tests on the cluster, process_id guarantees (in addition to time stamped experiment folder) that experiments do not conflict.')
 
+  parser.add_argument(
+      '-r', '--regression_min_diff',
+      type = float,
+      default = 0,
+      help = 'Minimum difference in prediction to be considered a counterfactual for regression problems.')
+
+  parser.add_argument(
+      '-o', '--outcome',
+      type = float,
+      default = None,
+      help = 'Value of desired outcome for counterfactual.')
+
 
   # parsing the args
   args = parser.parse_args()
@@ -343,7 +370,9 @@ if __name__ == '__main__':
     args.batch_number,
     args.sample_count,
     args.gen_cf_for,
-    args.process_id)
+    args.process_id,
+    args.regression_min_diff,
+    args.outcome)
 
 
 

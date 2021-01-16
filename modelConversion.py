@@ -1,9 +1,10 @@
 import graphviz
 import numpy as np
-from sklearn.tree import _tree, export_graphviz
+from sklearn.tree import _tree, DecisionTreeClassifier, DecisionTreeRegressor, export_text
+from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
+from sklearn.neural_network import MLPClassifier, MLPRegressor
 from pysmt.shortcuts import *
 from pysmt.typing import *
-
 
 # # Hoare triple examples:
 #     # https://www.cs.cmu.edu/~aldrich/courses/654-sp07/slides/7-hoare.pdf
@@ -88,18 +89,20 @@ def tree2c(tree, feature_names, return_value = 'class_idx_max', tree_idx = ''):
     return '\n'.join(lines)
 
 
-def tree2formula(tree, model_symbols, return_value = 'class_idx_max', tree_idx = ''):
+def tree2formula(tree, model_symbols, return_value='class_idx_max', tree_idx=''):
     tree_ = tree.tree_
+    n_classes = tree.n_classes_
     feature_names = list(model_symbols['counterfactual'].keys())
     feature_name = [
         feature_names[i] if i != _tree.TREE_UNDEFINED else 'undefined!'
         for i in tree_.feature
     ]
+    problem_type = 'classification' if isinstance(tree, DecisionTreeClassifier) else 'regression'
 
     def recurse(node):
         if tree_.feature[node] != _tree.TREE_UNDEFINED:
             name = feature_name[node]
-            threshold = float(tree_.threshold[node])
+            threshold = float(tree_.threshold[node]) - 0.00001
             return Or(
                 And(
                     LE(ToReal(model_symbols['counterfactual'][name]['symbol']), Real(threshold)),
@@ -111,16 +114,19 @@ def tree2formula(tree, model_symbols, return_value = 'class_idx_max', tree_idx =
                 )
             )
         else:
-            if return_value == 'class_idx_max':
-                values = list(tree_.value[node][0])
-                output = bool(values.index(max(values)))
-                return EqualsOrIff(model_symbols['output']['y']['symbol'], Bool(output))
-            elif return_value == 'class_prob_array':
-                prob_array = list(np.divide(tree_.value[node][0], np.sum(tree_.value[node][0])))
-                return And(
-                    EqualsOrIff(model_symbols['aux'][f'p0{tree_idx}']['symbol'], Real(float(prob_array[0]))),
-                    EqualsOrIff(model_symbols['aux'][f'p1{tree_idx}']['symbol'], Real(float(prob_array[1])))
-                )
+            if problem_type == 'classification':
+                if return_value == 'class_idx_max':
+                    values = list(tree_.value[node][0])
+                    output = values.index(max(values))
+                    return EqualsOrIff(model_symbols['output']['y']['symbol'], Int(output))
+                elif return_value == 'class_prob_array':
+                    prob_array = list(np.divide(tree_.value[node][0], np.sum(tree_.value[node][0])))
+                    return And(
+                        EqualsOrIff(model_symbols['aux'][f'p{i}{tree_idx}']['symbol'], Real(float(prob_array[i]))) for i in range(n_classes)
+                    )
+            else:
+                output = float(tree_.value[node][0][0])
+                return Equals(model_symbols['output']['y']['symbol'], Real(output))
 
     return recurse(0)
 
@@ -185,22 +191,57 @@ def forest2c(forest, feature_names):
 
 def forest2formula(forest, model_symbols):
     model_symbols['aux'] = {}
-    for tree_idx in range(len(forest.estimators_)):
-        model_symbols['aux'][f'p0{tree_idx}'] = {'symbol': Symbol(f'p0{tree_idx}', REAL)}
-        model_symbols['aux'][f'p1{tree_idx}'] = {'symbol': Symbol(f'p1{tree_idx}', REAL)}
+    problem_type = 'classification' if isinstance(forest, RandomForestClassifier) else 'regression'
+    if problem_type == 'classification':
+        n_classes = forest.n_classes_
+        for tree_idx in range(len(forest.estimators_)):
+            for i in range(n_classes):
+                model_symbols['aux'][f'p{i}{tree_idx}'] = {'symbol': Symbol(f'p{i}{tree_idx}', REAL)}
 
-    tree_formulas = And([
-        tree2formula(forest.estimators_[tree_idx], model_symbols, return_value = 'class_prob_array', tree_idx = tree_idx)
-        for tree_idx in range(len(forest.estimators_))
-    ])
-    output_formula = Ite(
-        GE(
-            Plus([model_symbols['aux'][f'p0{tree_idx}']['symbol'] for tree_idx in range(len(forest.estimators_))]),
-            Plus([model_symbols['aux'][f'p1{tree_idx}']['symbol'] for tree_idx in range(len(forest.estimators_))])
-        ),
-        EqualsOrIff(model_symbols['output']['y']['symbol'], FALSE()),
-        EqualsOrIff(model_symbols['output']['y']['symbol'], TRUE()),
-    )
+        tree_formulas = And([
+            tree2formula(forest.estimators_[tree_idx], model_symbols, return_value = 'class_prob_array', tree_idx = tree_idx)
+            for tree_idx in range(len(forest.estimators_))
+        ])
+
+        if n_classes == 2:
+            output_formula = Ite(
+                GE(
+                    Plus([model_symbols['aux'][f'p0{tree_idx}']['symbol'] for tree_idx in range(len(forest.estimators_))]),
+                    Plus([model_symbols['aux'][f'p1{tree_idx}']['symbol'] for tree_idx in range(len(forest.estimators_))])
+                ),
+                EqualsOrIff(model_symbols['output']['y']['symbol'], Int(0)),
+                EqualsOrIff(model_symbols['output']['y']['symbol'], Int(1)),
+            )
+        else:
+            items = tuple(Plus([model_symbols['aux'][f'p{j}{tree_idx}']['symbol'] for tree_idx in range(len(forest.estimators_))]) for j in range(n_classes))
+            max_formula = Max(
+                    items
+                )
+
+            output_formula = And([
+                Ite(
+                    EqualsOrIff(max_formula, Plus([model_symbols['aux'][f'p{k}{tree_idx}']['symbol'] for tree_idx in range(len(forest.estimators_))])),
+                    EqualsOrIff(model_symbols['output']['y']['symbol'], Int(k)),
+                    NotEquals(model_symbols['output']['y']['symbol'], Int(k))
+                )
+                for k in range(n_classes)
+            ])
+    else:
+        for tree_idx in range(len(forest.estimators_)):
+            model_symbols['aux'][f'v{tree_idx}'] = {'symbol': Symbol(f'v{tree_idx}', REAL)}
+
+        tree_formulas = And([
+            tree2formula(forest.estimators_[tree_idx], model_symbols, tree_idx = tree_idx)
+            for tree_idx in range(forest.n_estimators)
+        ])
+
+        output_formula = EqualsOrIff(
+            model_symbols['output']['y']['symbol'],
+            Div(
+                Plus([model_symbols['aux'][f'v{tree_idx}']['symbol'] for tree_idx in range(forest.n_estimators)]),
+                Real(forest.n_estimators)
+            )
+        )
 
     return And(
         tree_formulas,
@@ -277,8 +318,8 @@ def lr2formula(model, model_symbols):
                 ])
             ),
             Real(0)),
-        EqualsOrIff(model_symbols['output']['y']['symbol'], TRUE()),
-        EqualsOrIff(model_symbols['output']['y']['symbol'], FALSE())
+        EqualsOrIff(model_symbols['output']['y']['symbol'], Int(1)),
+        EqualsOrIff(model_symbols['output']['y']['symbol'], Int(0))
     )
 
 
@@ -405,7 +446,8 @@ def mlp2c(model, feature_names):
 
 
 def mlp2formula(model, model_symbols):
-
+    problem_type = 'classification' if isinstance(model, MLPClassifier) else 'regression'
+    n_classes = 2 if model.n_outputs_ == 1 else model.n_outputs_
     model_symbols['aux'] = {}
     layer_widths = []
     for interlayer_idx in range(len(model.coefs_)):
@@ -463,6 +505,7 @@ def mlp2formula(model, model_symbols):
                 )
             )
 
+
             formula_assign_feature_values.append(
                 EqualsOrIff(
                     model_symbols['aux'][curr_layer_feature_string_2]['symbol'],
@@ -472,18 +515,42 @@ def mlp2formula(model, model_symbols):
                         Real(0)
                     )
                 )
-
             )
 
-    final_layer_binary_feature_string = f'f_{len(layer_widths) - 1}_0_post_nonlin'
-    output_formula = Ite(
-        GT(
+    if problem_type == 'classification':
+        if n_classes == 2:
+            final_layer_binary_feature_string = f'f_{len(layer_widths) - 1}_0_post_nonlin'
+            output_formula = Ite(
+                GT(
+                    model_symbols['aux'][final_layer_binary_feature_string]['symbol'],
+                    Real(0),
+                ),
+                EqualsOrIff(model_symbols['output']['y']['symbol'], Int(1)),
+                EqualsOrIff(model_symbols['output']['y']['symbol'], Int(0)),
+            )
+        else:
+            final_layer_binary_feature_strings = [f'f_{len(layer_widths) - 1}_{i}_post_nonlin' for i in range(layer_widths[layer_idx])]
+            class_logits = tuple(
+                model_symbols['aux'][s]['symbol'] for s in final_layer_binary_feature_strings
+            )
+            max_formula = Max(
+                class_logits
+            )
+
+            output_formula = And([
+                Ite(
+                    EqualsOrIff(max_formula, model_symbols['aux'][final_layer_binary_feature_strings[k]]['symbol']),
+                    EqualsOrIff(model_symbols['output']['y']['symbol'], Int(k)),
+                    NotEquals(model_symbols['output']['y']['symbol'], Int(k))
+                )
+                for k in range(n_classes)
+            ])
+    else:
+        final_layer_binary_feature_string = f'f_{len(layer_widths) - 1}_0_post_nonlin'
+        output_formula = Equals(
             model_symbols['aux'][final_layer_binary_feature_string]['symbol'],
-            Real(0),
-        ),
-        EqualsOrIff(model_symbols['output']['y']['symbol'], TRUE()),
-        EqualsOrIff(model_symbols['output']['y']['symbol'], FALSE()),
-    )
+            model_symbols['output']['y']['symbol']
+        )
 
     # Flatten before And() to get a & b & c, not (a & b) & c... maybe easier for solver.
     tmp = []

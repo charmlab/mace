@@ -3,6 +3,7 @@ venv/
 _venv/
 __pycache__/
 _tmp/
+.idea/
 
 ### LaTeX ###
 ## Core latex/pdflatex auxiliary files:
