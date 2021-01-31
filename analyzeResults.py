@@ -1311,7 +1311,7 @@ def plotDiversity():
 
   latexify(18, 6.5, font_scale=1.5)
 
-  fig, axs = plt.subplots(1, len(KEYS_TO_PLOT), figsize=(18, 6.5))
+  fig, axs = plt.subplots(1, len(KEYS_TO_PLOT), figsize=(19, 6.5))
 
   for i, KEY_TO_PLOT in enumerate(KEYS_TO_PLOT):
     for model in MODEL_CLASS_VALUES:
@@ -1331,7 +1331,7 @@ def plotDiversity():
             feature_to_plot, labels = [], []
             for k_cfe in K_CFES:
               feature_to_plot.append(specific_df.where(specific_df['num of cfs'] == k_cfe).dropna()[KEY_TO_PLOT].mean())
-              labels.append(f'{k_cfe} CFEs')
+              labels.append(f'{k_cfe}')
 
             ax.scatter(np.arange(len(feature_to_plot)), feature_to_plot)
             if 'DiCE' in approach_string:
@@ -1345,9 +1345,12 @@ def plotDiversity():
             ax.tick_params(axis="y", labelsize=20)
 
             if 'time' in KEY_TO_PLOT:
-              ax.set_xlabel('Time (s)', fontsize=30)
-            else:
-              ax.set_xlabel(f'{KEY_TO_PLOT.title()}', fontsize=30)
+              ax.set_ylabel('Time (s)', fontsize=30, fontweight='bold')
+            elif 'diversity' in KEY_TO_PLOT:
+              ax.set_ylabel(r'Average $k\!-\!diversity$', fontsize=30, fontweight='bold', labelpad=10)
+            elif 'proximity' in KEY_TO_PLOT:
+              ax.set_ylabel(r'Average $k\!-\!distance$', fontsize=30, fontweight='bold', labelpad=10)
+            ax.set_xlabel(r'$k$', fontsize=30, fontweight='bold')
             # if 'diversity' in KEY_TO_PLOT:
             #   ax.legend(prop={"size": 18}, fancybox=True, ncol=4, shadow=True, loc='lower center')
             # ax.set_xlabel('')
@@ -1358,11 +1361,11 @@ def plotDiversity():
           # ax.set_ylabel(KEY_TO_PLOT)
 
   handles, labels = axs[0].get_legend_handles_labels()
-  lgd = fig.legend(handles, labels, prop={"size": 20}, fancybox=True, ncol=4, shadow=True, loc='upper center',
-                   bbox_to_anchor=(0.5, 1.1))
+  lgd = fig.legend(handles, labels, prop={"size": 20, "weight": 'bold'}, fancybox=True, ncol=4, shadow=True,
+                   loc='upper center', bbox_to_anchor=(0.5, 1.1))
   # plt.show()
   fig.tight_layout()
-  # fig.subplots_adjust(top=0.2)
+  # fig.subplots_adjust(left=0.2)
   plt.savefig(f'_results/diversity.png', bbox_inches='tight', dpi=400)
 
 
@@ -1592,8 +1595,8 @@ if __name__ == '__main__':
 
   # plotDistancesMainBody()
   # plotAllDistancesAppendix()
-  plotScalibility()
-  # plotDiversity()
+  # plotScalibility()
+  plotDiversity()
   # plotAvgDistanceRunTimeCoverageTradeoffAgainstIterations()
 
 
