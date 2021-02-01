@@ -112,7 +112,9 @@ def genExp(model_trained, factual_sample, class_labels, epsilon, norm_type, data
 
     """ initialize """
     start_time = time.time()
-    x = np.array(list(factual_sample.values()))
+    x = factual_sample.copy()
+    del x['y']
+    x = np.array(list(x.values()))
     # factual_sample['y'] = False
     counterfactual_label = not factual_sample['y']
 
@@ -127,7 +129,7 @@ def genExp(model_trained, factual_sample, class_labels, epsilon, norm_type, data
     if isinstance(model_trained, DecisionTreeClassifier):
         # ensemble_classifier will in fact not be an ensemble, but only be a tree
         estimator = model_trained
-        if estimator.predict(x.reshape(1, -1) != counterfactual_label):
+        if estimator.predict(x.reshape(1, -1)) != counterfactual_label:
             paths_info = search_path(estimator, class_labels, counterfactual_label)
             for key in paths_info:
                 """ generate epsilon-satisfactory instance """
