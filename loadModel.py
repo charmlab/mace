@@ -46,7 +46,14 @@ def loadModelForDataset(model_class, dataset_string, scm_class = None, experimen
   if not (dataset_string in {'synthetic', 'mortgage', 'twomoon', 'german', 'credit', 'compass', 'adult', 'test'}):
     raise Exception(f'{dataset_string} not supported.')
 
-  dataset_obj = loadData.loadDataset(dataset_string, return_one_hot = True, load_from_cache = False, meta_param = scm_class)
+  if model_class in {'tree', 'forest'}:
+    one_hot = False
+  elif model_class in {'lr', 'mlp'}:
+    one_hot = True
+  else:
+    raise Exception(f'{model_class} not recognized as a valid `model_class`.')
+
+  dataset_obj = loadData.loadDataset(dataset_string, return_one_hot = one_hot, load_from_cache = False, meta_param = scm_class)
   X_train, X_test, y_train, y_test = dataset_obj.getTrainTestSplit()
   X_all = pd.concat([X_train, X_test], axis = 0)
   y_all = pd.concat([y_train, y_test], axis = 0)
